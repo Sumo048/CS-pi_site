@@ -264,8 +264,13 @@ table.results td.best { font-weight: 800; }
 .tabs-results { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 22px; }
 
 /* ---- hardware videos ------------------------------------------------------ */
-.hw-video-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-top: 22px; }
-@media (max-width: 720px) { .hw-video-grid { grid-template-columns: 1fr; } }
+.hw-video-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 16px; margin-top: 22px; }
+.hw-video-grid > .hw-vidcard { grid-column: span 2; }
+.hw-video-grid > .hw-vidcard.wide { grid-column: span 3; }
+@media (max-width: 720px) {
+  .hw-video-grid { grid-template-columns: 1fr; }
+  .hw-video-grid > .hw-vidcard, .hw-video-grid > .hw-vidcard.wide { grid-column: auto; }
+}
 .hw-vidcard { background: #fff; border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
 .hw-vidcard.ours { border-top: 4px solid var(--good); }
 .hw-vidcard.base { border-top: 4px solid var(--bad); }
@@ -277,7 +282,7 @@ table.results td.best { font-weight: 800; }
   padding: 2px 9px; border-radius: 999px;
 }
 .hw-media { background: #0c1726; aspect-ratio: 16 / 9; }
-.hw-media video { width: 100%; height: 100%; object-fit: contain; display: block; background: #0c1726; }
+.hw-media video, .hw-media img { width: 100%; height: 100%; object-fit: contain; display: block; background: #0c1726; }
 .hw-vidnote { padding: 10px 16px; color: var(--ink-soft); font-size: 13.5px; }
 .hw-subhead { font-size: 18px; margin: 34px 0 2px; }
 
@@ -295,6 +300,20 @@ pre.bib {
   overflow-x: auto; font-family: var(--mono); font-size: 13.5px; line-height: 1.6; margin-top: 18px;
 }
 .copybtn { margin-top: 10px; }
+
+/* ---- overview: four-step story with 2D animations ------------------------ */
+.story { display: flex; flex-direction: column; gap: 28px; margin-top: 28px; }
+.story-step { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2.1fr); gap: 24px; align-items: center; }
+@media (max-width: 860px) { .story-step { grid-template-columns: 1fr; gap: 12px; } }
+.story-text h3 { margin: 10px 0 6px; font-size: 20px; }
+.story-text p { margin: 0; color: var(--ink-soft); font-size: 15.5px; }
+.story-num {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 28px; height: 28px; border-radius: 999px; font-family: var(--mono); font-weight: 700;
+  font-size: 14px; color: var(--ink-soft); background: var(--bg-panel); border: 1px solid var(--line);
+}
+.story-num.ours { color: #fff; background: var(--blue-deep); border-color: var(--blue-deep); }
+.story-fig { margin: 0; padding: 8px; }
 
 /* ---- method: algorithm box + 2D figures ---------------------------------- */
 pre.algo {

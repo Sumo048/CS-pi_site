@@ -32,12 +32,13 @@
 <nav class="nav"><div class="wrap">
   <span class="brand" id="brand">CS-Pi</span>
   <span class="spacer"></span>
+  <a class="navlink" href="#hardware">Hardware</a>
   <a class="navlink" href="#abstract">Abstract</a>
-  <a class="navlink" href="#idea">Idea</a>
+  <a class="navlink" href="#story">Overview</a>
   <a class="navlink" href="#method">Method</a>
   <a class="navlink" href="#explorer">Rollouts</a>
   <a class="navlink" href="#results">Results</a>
-  <a class="navlink" href="#hardware">Hardware</a>
+  <a class="navlink" href="#limitations">Limitations</a>
   <a class="navlink" href="#cite">Cite</a>
   <button class="themebtn" id="themeToggle" type="button" aria-label="Toggle dark mode" title="Toggle dark mode"></button>
 </div></nav>
@@ -82,23 +83,23 @@
 <section id="hardware" class="faceoff"><div class="wrap">
   <p class="section-kicker">Hardware</p>
   <h2>Zero-shot on a Franka with π₀.₅</h2>
-  <p class="lead mt">A Franka arm with a Robotiq 2F-85 gripper runs a DROID-finetuned π₀.₅,
+  <p class="lead mt">A Franka FR3 with a Robotiq 2F-85 gripper runs a DROID-finetuned π₀.₅,
     used without further finetuning, on <i>pick up the apple and place it on the blue plate</i>.
     A vision pipeline on the ZED 2 RGB and depth images generates obstacle bounding boxes that
-    form the constraint set; deployment is zero-shot. Over two layouts and 10 trials per method
+    form the safe set; deployment is zero-shot. Over two layouts and 10 trials per method
     per layout, <span class="cs">CS-Pi</span> reaches <b>55%</b> safe success against 40% for
-    projection, 25% for gradient guidance, and 10% for the unguided policy.
-    <b>All clips play at 4× speed.</b></p>
+    projection, 25% for gradient guidance, 20% for Trust Sampling, and 10% for the
+    unconstrained policy. All runs are autonomous; <b>clips play at 4× speed unless marked 1×.</b></p>
   <div class="hw-video-grid" id="hwVideos"></div>
 
   <h3 class="hw-subhead">Annotated rollout frames</h3>
   <p class="lead" style="font-size:15px">Frames run left to right. Green strips are
     <span class="cs">CS-Pi</span>, which enforces the deployment-time obstacle constraint and
-    completes the pick-and-place; red strips are the same π₀.₅ policy run unguided.
+    completes the pick-and-place; red strips are the same π₀.₅ policy run unconstrained.
     <b>Layout 1:</b> <span class="cs">CS-Pi</span> grasps the apple and places it, while the
-    unguided policy clips the cup and loses the grasp. <b>Layout 2:</b>
-    <span class="cs">CS-Pi</span> reaches down and lifts the apple cleanly, while the unguided
-    policy crashes into the obstacle.</p>
+    unconstrained policy clips the cup and loses the grasp. <b>Layout 2:</b>
+    <span class="cs">CS-Pi</span> reaches down and lifts the apple cleanly, while the
+    unconstrained policy collides with the obstacle.</p>
   <div class="hw-strip" id="hwStrips"></div>
 </div></section>
 
@@ -107,59 +108,126 @@
   <p class="section-kicker">Abstract</p>
   <h2>Satisfy a deployment-time constraint without leaving the policy</h2>
   <p class="lead mt">
-    A flow-matching policy deployed in the field must often satisfy a constraint that
-    was absent from its demonstrations, such as a collision-free path or a particular
-    grasp orientation. Existing training-free samplers take one of two approaches.
-    <i>Guidance</i> steers the denoising trajectory with a constraint gradient at noisy
-    intermediates: the gradient at a noisy sample need not point toward a clean feasible
-    one. <i>Projection</i> maps the finished sample onto the feasible set and executes it:
-    it is efficient, but the result is an action the policy would never draw.
+    A flow-matching policy deployed in the field must often satisfy a constraint that was
+    absent from its demonstrations, such as avoiding an obstacle it has never seen.
+    Retraining for every new constraint is impractical, so the constraint must be enforced at
+    inference time. Enforcing it must not discard what the policy learned: an action the
+    policy would rarely sample may avoid the obstacle yet fail the task. We therefore want
+    actions that are both <i>safe</i>, satisfying the constraint, and <i>plausible</i>,
+    remaining likely under the policy.
   </p>
   <p class="lead mt">
-    We find that this dichotomy need not hold. Our key insight is that the projection is
-    a cheap, clean, feasible signal, and the only mistake is executing it. We introduce
-    Constraint-Satisfying Flow Policy Sampling (<span class="cs">CS-Pi</span>): we draw
-    from the policy, project the clean sample to the nearest feasible point, and resample
-    from the flow model biased toward that point. Iterating drives the samples toward
-    constraint satisfaction with no noisy-state gradient and no auxiliary network; the
-    method extends to arbitrary costs with a single tweak in the projection function. We
-    evaluate on a 2D diagnostic, a 7-DoF shelf pick-and-place, and a zero-shot Franka
-    deployment. Among constraint-satisfying samplers, <span class="cs">CS-Pi</span> stays
-    closest to the policy, and it attains the highest safe-success on a real-world
-    obstacle avoidance task.
+    Gradient guidance, the most common approach, steers noisy states, so it must evaluate its
+    cost on the policy's running estimate of the clean action; when the policy is uncertain
+    between passing left or right of an obstacle, this estimate is their average and can pass
+    straight through it. We instead build on rejection and projection. Rejection redraws
+    actions until one is safe: every output is plausible, but the wait is intractable when
+    safe actions are rare. Projection moves an action to the nearest safe one: it is
+    efficient, but the result need not be plausible.
   </p>
+  <p class="lead mt">
+    Our key insight is that flow-matching sampling lets us combine the two, keeping
+    projection's efficiency and rejection's plausibility. <span class="cs">CS-Pi</span>, our
+    draw-project-renoise sampler, projects each draw to the nearest safe action, adds noise
+    back scaled to how far the projection moved it, and re-runs the unmodified policy until a
+    draw is safe. Replacing only the projection step extends <span class="cs">CS-Pi</span> to
+    continuous costs. Across a 2D diagnostic, a 7-DoF shelf pick-and-place, an orientation
+    preference, and a zero-shot Franka deployment, <span class="cs">CS-Pi</span> reaches 81%
+    safe success on the shelf and 55% on hardware, against 55% and 40% for projection, while
+    staying plausible.
+  </p>
+</div></section>
+
+<!-- overview: the argument in four 2D animations -->
+<section id="story" class="faceoff"><div class="wrap">
+  <p class="section-kicker">Overview</p>
+  <h2>Safe isn't enough: the action must also be plausible</h2>
+  <p class="lead mt">No training set anticipates every deployment. A policy that opens drawers
+    will eventually meet a wine glass left beside the drawer, which the arm must not touch.
+    That requirement is a <i>constraint</i>, supplied only at deployment, and it defines a
+    <i>safe set</i>: every action that does not touch the glass. The four animations below
+    walk through the problem on a 2D toy policy.</p>
+
+  <div class="story">
+    <div class="story-step">
+      <div class="story-text">
+        <span class="story-num">1</span>
+        <h3>Safe and plausible</h3>
+        <p>We want actions that are both <b>safe</b>, satisfying the constraint, and
+          <b>plausible</b>, remaining likely under the policy. An action the policy would
+          rarely sample may clear the obstacle yet no longer reach the goal, and it loses the
+          smooth motion learned from demonstrations.</p>
+      </div>
+      <figure class="figcard story-fig">
+        <img src="assets/story/safe_vs_plausible.gif" loading="lazy" alt="2D illustration: smooth demonstrations, then a plausible-but-unsafe, a safe-but-implausible and a safe-and-plausible trajectory">
+      </figure>
+    </div>
+
+    <div class="story-step">
+      <div class="story-text">
+        <span class="story-num">2</span>
+        <h3>Why projection and guidance fail</h3>
+        <p><b>Projection</b> moves the action to the nearest safe one, which the policy would
+          rarely sample: it bends sharply around the obstacle. <b>Gradient guidance</b>
+          evaluates its cost on an average of the actions the policy might still produce. It is
+          unreliable when the policy is multimodal or the cost changes sharply, and here it
+          clears the obstacle but is carried past the goal.</p>
+      </div>
+      <figure class="figcard story-fig">
+        <img src="assets/story/why_both_fail.gif" loading="lazy" alt="2D illustration: projection produces a sharp bend around the obstacle; gradient guidance overshoots the goal">
+      </figure>
+    </div>
+
+    <div class="story-step">
+      <div class="story-text">
+        <span class="story-num">3</span>
+        <h3>Rejection: plausible, but slow</h3>
+        <p>Rejection sampling meets both requirements: sample the policy again and again, and
+          keep the first sample that is safe. Every output is plausible, but the wait is
+          intractable when safe actions are rare. Here 47 of 48 samples are wasted.</p>
+      </div>
+      <figure class="figcard story-fig">
+        <img src="assets/story/rejection.gif" loading="lazy" alt="2D illustration: rejection sampling discards 47 colliding samples before accepting one">
+      </figure>
+    </div>
+
+    <div class="story-step">
+      <div class="story-text">
+        <span class="story-num ours">4</span>
+        <h3><span class="cs">CS-Pi</span>: rejection sampling that knows where to look</h3>
+        <p>Projecting a sample gives extra information: how far that sample is from the safe
+          set. <span class="cs">CS-Pi</span> uses each projection to bias where it searches
+          next. It adds noise back to the projection, more when the projection moved the
+          sample further, and re-runs the unmodified policy from there. The result: samples
+          like rejection's, at a fraction of its inference cost.</p>
+      </div>
+      <figure class="figcard story-fig">
+        <img src="assets/story/cspi_loop.gif" loading="lazy" alt="2D animation of the CS-Pi loop: sample, project, noise to level n, sample again until the draw is safe">
+      </figure>
+    </div>
+  </div>
 </div></section>
 
 <!-- idea / concept figure + method cards -->
 <section id="idea"><div class="wrap">
   <p class="section-kicker">The idea</p>
   <h2>Four ways to enforce a constraint, one that keeps the policy</h2>
-  <p class="lead mt">The sampled action must be both <b>safe</b>, satisfying the constraint,
-    and <b>plausible</b>, remaining likely under the policy. An action the policy would
-    essentially never draw may be jerky, dynamically infeasible, or task-incoherent even when
-    it is geometrically safe, since the policy distribution encodes smoothness, kinematic
-    feasibility, and task structure that the constraint alone does not.</p>
-  <p class="lead mt">Gradient guidance perturbs each denoising step by the gradient of a
-    constraint cost, and that reliance on a gradient is exactly what limits it. A hard
-    constraint such as collision-freeness carries no usable gradient. Even for a smooth cost,
-    the constraint lives on the clean action while guidance acts at noisy states, so it must
-    approximate the gradient of the <i>expected</i> cost by the cost of the <i>expected</i>
-    action, a proxy that is least accurate exactly when the policy is uncertain between modes.</p>
-  <p class="lead mt">Rejection and projection act only on the final action. Rejection keeps
-    every output in-distribution, but the wait is intractable when feasible actions are rare;
-    projection is efficient, but its output can be jerky or task-irrelevant.
-    <span class="cs">CS-Pi</span> keeps projection's efficiency and rejection's plausibility:
-    when a projected action is out-of-distribution, it does not restart from fresh noise, but
-    resamples from a <i>reduced</i> noise level around the projection.</p>
+  <p class="lead mt">Rejection and projection act only on the <i>final</i> sampled action
+    rather than guiding the intermediate noise levels. Flow-matching sampling lets us combine
+    them, keeping projection's efficiency and rejection's plausibility: when a projected
+    action is implausible, we need not take rejection's drastic step of restarting from pure
+    noise. We can instead resample from a <i>reduced</i> noise level around the projection,
+    so the policy returns a safe and plausible action near it.</p>
   <figure class="figcard mt">
     <img src="assets/concept.png" alt="Concept: gradient guidance vs projection vs rejection vs CS-Pi">
-    <figcaption><b>Inference-time constraint enforcement on a frozen flow-matching policy.</b>
-      Gradient guidance steers each ODE step with the constraint gradient evaluated at an
-      estimate of the final sample. Projection runs the unmodified flow and snaps the endpoint
-      onto the feasible set 𝒞. Rejection sampling redraws complete samples until one is
-      feasible. <span class="cs">CS-Pi</span> (ours) runs the flow, projects, and renoises to a
-      depth set by the projection residual δ (deeper for the larger δ₁, shallower for δ₂), then
-      re-runs the flow; every draw stays in-distribution, and iterating drives δ toward zero.</figcaption>
+    <figcaption><b>Inference-time constraint enforcement on a flow-matching policy.</b>
+      Gradient guidance steers each denoising step with the constraint gradient evaluated at a
+      proxy, an estimate of the clean action. Projection runs the unmodified policy and
+      projects the clean action onto the safe set 𝒞. Rejection sampling redraws complete
+      actions until one is safe. <span class="cs">CS-Pi</span> (ours) runs the policy,
+      projects, and renoises to a depth set by the projection residual δ, how far the
+      projection moved the draw (deeper for the larger δ₁, shallower for δ₂), then re-runs the
+      policy; every draw stays plausible, and iterating drives δ toward zero.</figcaption>
   </figure>
   <div class="methodgrid" id="methodGrid"></div>
 </div></section>
@@ -169,23 +237,25 @@
   <p class="section-kicker">Method</p>
   <h2>Draw, project, renoise to n = k/(k+δ), re-run</h2>
   <p class="lead mt"><b>Projection as a resampling target.</b> The projection
-    a<sub>c</sub> = 𝒫(â) of the current clean draw is cheap to compute, feasible by
-    construction, and closer than â to the feasible actions the policy is likely to draw. It
-    tells us <i>where</i> the next draw should concentrate, without executing it. The
-    idealized target biases the policy toward a<sub>c</sub> while preserving its structure:
-    q(a) ∝ π<sub>θ</sub>(a) · 𝒩(a; a<sub>c</sub>, σ²I).</p>
+    a<sub>c</sub> = 𝒫(â) of the current clean draw, which we call the <i>anchor</i>, is
+    cheap to compute, safe by construction, and closer than â to the safe actions the policy
+    is likely to draw. It tells us <i>where</i> the next draw should concentrate, without
+    executing it. The idealized target biases the policy toward the anchor while preserving
+    its structure: q(a) ∝ π<sub>θ</sub>(a) · 𝒩(a; a<sub>c</sub>, σ²I).</p>
   <p class="lead mt"><b>The residual sets the width.</b> We set σ = δ/k from the projection
-    residual δ = ‖â − a<sub>c</sub>‖. A small δ means the previous draw was nearly feasible,
-    so the policy almost certainly has in-distribution mass near a<sub>c</sub> and the next
-    draw should concentrate there. A large δ means a<sub>c</sub> may sit where the policy
-    assigns vanishing mass, so the next draw should be loose enough to reach a different policy
-    mode (right of the obstacle rather than left). The coefficient k is the only
-    hyperparameter, and it slides between the two classical extremes: k → 0 recovers
-    rejection, k → ∞ recovers project-and-execute.</p>
+    residual δ = ‖â − a<sub>c</sub>‖, how far the projection moved the draw. A small δ means
+    the current draw was nearly safe, so plausible actions likely lie near the anchor and the
+    next draw should concentrate there. A large δ means the anchor may sit where the policy
+    assigns vanishing mass, so the next draw should be loose enough to give a different policy
+    mode (passing right of an obstacle rather than left) a chance. The coefficient k is the
+    only hyperparameter, and it slides between the two classical extremes: k → 0 recovers
+    rejection, k → ∞ recovers projection.</p>
   <p class="lead mt"><b>Partial renoising realises the target.</b> Sampling q exactly is
     intractable, since the policy density is defined only through the ODE. Instead we renoise
-    the projection to level n = k/(k+δ) and re-run the unmodified policy from there, feeding
-    each new sample back until it lands in 𝒞.</p>
+    the anchor to time n = k/(k+δ) and re-denoise from there. This ties the amount of noise to
+    σ, since (1 − n)/n = δ/k = σ: a larger residual adds more noise. We pass each new draw back
+    through the loop until it lands within τ of 𝒞; on average each draw lands closer to the
+    safe set than the last.</p>
   <figure class="figcard mt" style="max-width:860px;margin-left:auto;margin-right:auto">
     <img src="assets/method.png" alt="CS-Pi algorithm: flow ODE, project, renoise by depth n, iterate">
     <figcaption>Each <b><span class="cs">CS-Pi</span></b> iteration projects the current clean
@@ -201,18 +271,24 @@
  4      if δ⁽ⁱ⁾ ≤ τ:  return â⁽ⁱ⁾
  5      n⁽ⁱ⁾ ← k / (k + δ⁽ⁱ⁾);  ε⁽ⁱ⁾ ~ 𝒩(0, I)
  6      a<sub>n</sub>⁽ⁱ⁾ ← n⁽ⁱ⁾ a<sub>c</sub>⁽ⁱ⁾ + (1 − n⁽ⁱ⁾) ε⁽ⁱ⁾
- 7      â⁽ⁱ⁺¹⁾ ← π<sub>θ</sub>(a<sub>n</sub>⁽ⁱ⁾; n⁽ⁱ⁾)              <span class="c">▷ re-denoise from level n</span>
+ 7      â⁽ⁱ⁺¹⁾ ← π<sub>θ</sub>(a<sub>n</sub>⁽ⁱ⁾; n⁽ⁱ⁾)              <span class="c">▷ re-denoise from time n</span>
  8  return 𝒫(â⁽ᴷᵐᵃˣ⁾)                            <span class="c">▷ optional terminal projection</span></pre>
   <p class="lead mt"><b>Soft preferences as continuous costs.</b> Deployment also brings
     preferences, behaviours to favour rather than boundaries to clear, such as keeping the
     gripper near-vertical while carrying a full cup. <span class="cs">CS-Pi</span> uses the
-    projection only to produce a target for the next draw, so for a continuous cost L that
-    target comes instead from the proximal operator
-    prox<sub>βL</sub>(â) = argmin<sub>a′</sub> L(a′) + ‖a′ − â‖² / 2β; the rest of the
-    algorithm is unchanged. Hard and soft requirements then compose by priority: applied in
-    sequence, the operators pull toward the preferred orientation first, then project onto
-    the collision-free set, where a gradient method would have to merge both into a single
-    objective.</p>
+    projection only to produce an anchor for the next draw, so for a continuous cost L that
+    anchor comes instead from the proximal operator
+    prox<sub>βL</sub>(â) = argmin<sub>a′</sub> L(a′) + ‖a′ − â‖² / 2β, which trades reducing L
+    against staying close to the current draw; the rest of the algorithm is unchanged. Hard
+    constraints and costs then compose by applying the operators in sequence, with their order
+    encoding priority: pull toward the preferred orientation first, then project onto the safe
+    set, so the constraint takes precedence. A gradient method would have to merge both into a
+    single objective.</p>
+  <p class="lead mt"><b>Optional terminal projection.</b> If no draw lies within τ of 𝒞
+    after K<sub>max</sub> iterations, <span class="cs">CS-Pi</span> can project the last draw
+    and execute the result, trading plausibility for safety when safety must come first. Even
+    then the loop pays off: in simulation, the executed actions are more likely under the
+    policy than a typical one-shot projection.</p>
 </div></section>
 
 <!-- face-off -->
@@ -273,23 +349,26 @@
   <p class="section-kicker">Results</p>
   <h2><span class="cs">CS-Pi</span> departs from the policy only as far as the constraint forces</h2>
   <p class="lead mt">For each sampler we measure two things: whether it satisfies the
-    constraint, and whether its samples stay likely under the policy. The primary metric is
-    <i>safe success</i>, the fraction of rollouts that satisfy the constraint and complete the
-    task. We compare against gradient guidance, Trust Sampling, rejection, projection, the
-    unconstrained prior, and two control-barrier-function samplers (SafeDiffuser and
-    SafeFlowMatcher), each swept over its main hyperparameter and reported at its best
-    configuration; <span class="cs">CS-Pi</span> has a single hyperparameter, k. NFE counts
-    flow-network forward passes and is not comparable across benchmarks. The
-    <span class="cs">CS-Pi</span> row is highlighted; best per column is bold.</p>
+    constraint, and whether its samples are plausible. The primary metric is <i>safe
+    success</i>, the fraction of rollouts that satisfy the constraint and complete the task.
+    Plausibility is measured by logL, the mean log-likelihood the policy assigns to a method's
+    actions (higher is more plausible). We compare against gradient guidance, Trust Sampling,
+    rejection, projection, the unconstrained policy, and two control-barrier-function samplers
+    (SafeDiffuser and SafeFlowMatcher), each reported at the best value of its main
+    hyperparameters; <span class="cs">CS-Pi</span> has a single hyperparameter, k, and is
+    robust across a broad range of it. NFE counts flow-network forward passes and is not
+    comparable across benchmarks. The <span class="cs">CS-Pi</span> row is highlighted; best
+    per column is bold.</p>
   <div class="tabs-results" id="resTabs"></div>
   <div id="resTable"></div>
 
   <h3 class="subhead">2D Avoidance: seeing the whole distribution</h3>
   <p class="lead" style="font-size:16px">Demonstrations reach the goal along distinct paths,
-    so the prior is genuinely multimodal, mirroring manipulation data where demonstrations of
-    one task take different routes. Because the action space is two-dimensional, we can plot
-    every sampler's entire output distribution. At inference we impose obstacles the prior
-    never saw, in six scenarios of varying difficulty.</p>
+    so the policy is multimodal, mirroring manipulation data where demonstrations of one task
+    take different routes. Because the action space is two-dimensional, we can plot every
+    sampler's entire output distribution, and measure plausibility by how many rollouts stay
+    inside the demonstration support. At deployment we impose obstacles the policy never saw,
+    in six scenarios of varying difficulty.</p>
   <figure class="figcard mt">
     <img src="assets/2d_distributions.png" loading="lazy" alt="2D Avoidance trajectory distributions for gradient guidance, Trust Sampling, rejection, CS-Pi and projection">
     <figcaption><b>2D Avoidance trajectory distributions, one scenario per method.</b> 20
@@ -314,6 +393,26 @@
       is flat in α. <span class="cs">CS-Pi</span> (k = 1) is the only method with high joint
       success. Projection-only and rejection cannot target a soft cost and are omitted.</figcaption>
   </figure>
+</div></section>
+
+<!-- limitations -->
+<section id="limitations"><div class="wrap">
+  <p class="section-kicker">Limitations</p>
+  <h2>When no safe, plausible action exists</h2>
+  <p class="lead mt">Sometimes no action is both safe and plausible, and the loop does not
+    reach one. Our theory covers a single iteration, the distribution of the next draw given
+    the current one, but does not prove that the loop converges. When no draw lies within τ of
+    the safe set after K<sub>max</sub> iterations, <span class="cs">CS-Pi</span> must choose:
+    execute the last draw, keeping plausibility but possibly unsafe, or its terminal
+    projection, keeping safety but often less likely under the policy.</p>
+  <p class="lead mt"><span class="cs">CS-Pi</span> also needs a usable projection (or proximal
+    operator): the obstacle and joint-limit sets we use admit closed-form or cheap iterative
+    solutions, but more complex sets need more complex solvers. It is only as good as the safe
+    set itself: on hardware we estimate it from vision once per rollout in static scenes, so
+    dynamic obstacles and errors from segmentation, depth and registration can misplace or
+    mis-size it. Finally, like every sampler we evaluate, it operates on action chunks and is
+    therefore myopic: when the policy commits to a mode that is safe for the current chunk but
+    has no safe continuation, <span class="cs">CS-Pi</span> cannot recover.</p>
 </div></section>
 
 <!-- cite -->

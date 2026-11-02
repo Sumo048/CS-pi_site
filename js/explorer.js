@@ -36,7 +36,7 @@
     $('#brand').textContent = s.method;
     $('#heroBadge').textContent = s.venue;
     $('#heroTitle').innerHTML = csName(s.title);
-    $('#heroSub').textContent = 'Training-free sampling of safe, plausible actions';
+    $('#heroSub').textContent = s.subtitle;
     $('#heroAuthors').textContent = s.authors;
     $('#heroAffil').textContent = s.affiliation || s.venueLong;
     $('#footVenue').textContent = s.venue;
@@ -320,12 +320,15 @@
     draw();
   }
 
-  // ---- hardware videos (4x speed, lazy autoplay) ---------------------------
+  // ---- hardware videos (lazy autoplay; mp4 at 4x, gif at its own speed) -----
+  // First two cards share the top row; the remaining baselines share the next.
   function hardwareVideos() {
     const host = $('#hwVideos'); if (!host) return;
     const vids = [
       { src: 'assets/hardware/cspi_success_0.mp4', poster: 'assets/hardware/cspi_success_0.jpg',
-        method: 'CS-Pi (ours)', cls: 'ours', pill: 'ok', tag: 'safe ✓', note: 'picks the apple and places it on the plate' },
+        method: 'CS-Pi (ours)', cls: 'ours wide', pill: 'ok', tag: 'safe ✓', note: 'picks the apple and places it on the plate' },
+      { src: 'assets/hardware/unconstrained_1x.gif', poster: 'assets/hardware/unconstrained_1x.jpg', speed: '1×',
+        method: 'Unconstrained π₀.₅', cls: 'base wide', pill: 'bad', tag: 'fail ✗', note: 'collides with the bottle and knocks it over' },
       { src: 'assets/hardware/trust_fail.mp4', poster: 'assets/hardware/trust_fail.jpg',
         method: 'Trust Sampling', cls: 'base', pill: 'bad', tag: 'fail ✗', note: 'fails the task' },
       { src: 'assets/hardware/gradient_guidance.mp4', poster: 'assets/hardware/gradient_guidance.jpg',
@@ -336,24 +339,34 @@
     const io = new IntersectionObserver((es) => {
       es.forEach(e => {
         const v = e.target;
+        if (v.tagName === 'IMG') {           // gif: swap in once, then stop watching
+          if (e.isIntersecting) { v.src = v.dataset.src; io.unobserve(v); }
+          return;
+        }
         if (e.isIntersecting) { if (!v.src) v.src = v.dataset.src; v.play().catch(() => {}); }
         else { v.pause(); }
       });
     }, { threshold: 0.25 });
     vids.forEach(d => {
+      const speed = d.speed || '4×';
       const card = el('div', 'hw-vidcard ' + d.cls);
       const head = el('div', 'hw-vidhead');
       head.innerHTML = `<span class="name">${d.method}</span>` +
         (d.tag ? `<span class="pill ${d.pill}">${d.tag}</span>` : '') +
-        `<span class="speed-badge">4×</span>`;
+        `<span class="speed-badge">${speed}</span>`;
       card.appendChild(head);
       const media = el('div', 'hw-media');
-      const v = document.createElement('video');
-      v.muted = true; v.loop = true; v.playsInline = true; v.setAttribute('playsinline', '');
-      v.preload = 'none'; v.poster = d.poster; v.dataset.src = d.src;
-      v.controls = true;
+      let v;
+      if (/\.gif$/.test(d.src)) {
+        v = el('img'); v.alt = d.method; v.src = d.poster; v.dataset.src = d.src;
+      } else {
+        v = document.createElement('video');
+        v.muted = true; v.loop = true; v.playsInline = true; v.setAttribute('playsinline', '');
+        v.preload = 'none'; v.poster = d.poster; v.dataset.src = d.src;
+        v.controls = true;
+      }
       media.appendChild(v); card.appendChild(media);
-      if (d.note) card.appendChild(el('div', 'hw-vidnote', d.note + ' · 4× speed'));
+      if (d.note) card.appendChild(el('div', 'hw-vidnote', `${d.note} · ${speed} speed`));
       host.appendChild(card);
       io.observe(v);
     });
@@ -364,9 +377,9 @@
     const host = $('#hwStrips');
     const strips = [
       { src: 'assets/hw_v1_succ.png', cls: 'ours', lbl: 'Layout 1 — CS-Pi', tag: 'safe ✓', pill: 'ok' },
-      { src: 'assets/hw_v1_fail.png', cls: 'base', lbl: 'Layout 1 — unguided π₀.₅', tag: 'fail ✗', pill: 'bad' },
+      { src: 'assets/hw_v1_fail.png', cls: 'base', lbl: 'Layout 1 — unconstrained π₀.₅', tag: 'fail ✗', pill: 'bad' },
       { src: 'assets/hw_v2_succ.png', cls: 'ours', lbl: 'Layout 2 — CS-Pi', tag: 'safe ✓', pill: 'ok' },
-      { src: 'assets/hw_v2_fail.png', cls: 'base', lbl: 'Layout 2 — unguided π₀.₅', tag: 'fail ✗', pill: 'bad' }
+      { src: 'assets/hw_v2_fail.png', cls: 'base', lbl: 'Layout 2 — unconstrained π₀.₅', tag: 'fail ✗', pill: 'bad' }
     ];
     strips.forEach(s => {
       const c = el('div', 'stripcard ' + s.cls);
