@@ -1,0 +1,766 @@
+{
+  "spheres": {
+    "in_distribution": [
+      {
+        "h": 508,
+        "mp4": "media/viz/spheres_env_gifs/in_distribution_EnvSpheres3D/amr_failure_sample00.mp4",
+        "name": "amr_failure_sample00",
+        "poster": "media/viz/spheres_env_gifs/in_distribution_EnvSpheres3D/amr_failure_sample00.jpg",
+        "w": 1280,
+        "webm": "media/viz/spheres_env_gifs/in_distribution_EnvSpheres3D/amr_failure_sample00.webm"
+      },
+      {
+        "h": 508,
+        "mp4": "media/viz/spheres_env_gifs/in_distribution_EnvSpheres3D/amr_failure_sample01.mp4",
+        "name": "amr_failure_sample01",
+        "poster": "media/viz/spheres_env_gifs/in_distribution_EnvSpheres3D/amr_failure_sample01.jpg",
+        "w": 1280,
+        "webm": "media/viz/spheres_env_gifs/in_distribution_EnvSpheres3D/amr_failure_sample01.webm"
+      },
+      {
+        "h": 508,
+        "mp4": "media/viz/spheres_env_gifs/in_distribution_EnvSpheres3D/amr_failure_sample02.mp4",
+        "name": "amr_failure_sample02",
+        "poster": "media/viz/spheres_env_gifs/in_distribution_EnvSpheres3D/amr_failure_sample02.jpg",
+        "w": 1280,
+        "webm": "media/viz/spheres_env_gifs/in_distribution_EnvSpheres3D/amr_failure_sample02.webm"
+      },
+      {
+        "h": 508,
+        "mp4": "media/viz/spheres_env_gifs/in_distribution_EnvSpheres3D/amr_failure_sample03.mp4",
+        "name": "amr_failure_sample03",
+        "poster": "media/viz/spheres_env_gifs/in_distribution_EnvSpheres3D/amr_failure_sample03.jpg",
+        "w": 1280,
+        "webm": "media/viz/spheres_env_gifs/in_distribution_EnvSpheres3D/amr_failure_sample03.webm"
+      },
+      {
+        "h": 508,
+        "mp4": "media/viz/spheres_env_gifs/in_distribution_EnvSpheres3D/amr_failure_sample04.mp4",
+        "name": "amr_failure_sample04",
+        "poster": "media/viz/spheres_env_gifs/in_distribution_EnvSpheres3D/amr_failure_sample04.jpg",
+        "w": 1280,
+        "webm": "media/viz/spheres_env_gifs/in_distribution_EnvSpheres3D/amr_failure_sample04.webm"
+      },
+      {
+        "h": 508,
+        "mp4": "media/viz/spheres_env_gifs/in_distribution_EnvSpheres3D/amr_success_sample00.mp4",
+        "name": "amr_success_sample00",
+        "poster": "media/viz/spheres_env_gifs/in_distribution_EnvSpheres3D/amr_success_sample00.jpg",
+        "w": 1280,
+        "webm": "media/viz/spheres_env_gifs/in_distribution_EnvSpheres3D/amr_success_sample00.webm"
+      },
+      {
+        "h": 508,
+        "mp4": "media/viz/spheres_env_gifs/in_distribution_EnvSpheres3D/amr_success_sample01.mp4",
+        "name": "amr_success_sample01",
+        "poster": "media/viz/spheres_env_gifs/in_distribution_EnvSpheres3D/amr_success_sample01.jpg",
+        "w": 1280,
+        "webm": "media/viz/spheres_env_gifs/in_distribution_EnvSpheres3D/amr_success_sample01.webm"
+      },
+      {
+        "h": 508,
+        "mp4": "media/viz/spheres_env_gifs/in_distribution_EnvSpheres3D/amr_success_sample02.mp4",
+        "name": "amr_success_sample02",
+        "poster": "media/viz/spheres_env_gifs/in_distribution_EnvSpheres3D/amr_success_sample02.jpg",
+        "w": 1280,
+        "webm": "media/viz/spheres_env_gifs/in_distribution_EnvSpheres3D/amr_success_sample02.webm"
+      },
+      {
+        "h": 508,
+        "mp4": "media/viz/spheres_env_gifs/in_distribution_EnvSpheres3D/amr_success_sample03.mp4",
+        "name": "amr_success_sample03",
+        "poster": "media/viz/spheres_env_gifs/in_distribution_EnvSpheres3D/amr_success_sample03.jpg",
+        "w": 1280,
+        "webm": "media/viz/spheres_env_gifs/in_distribution_EnvSpheres3D/amr_success_sample03.webm"
+      },
+      {
+        "h": 508,
+        "mp4": "media/viz/spheres_env_gifs/in_distribution_EnvSpheres3D/amr_success_sample04.mp4",
+        "name": "amr_success_sample04",
+        "poster": "media/viz/spheres_env_gifs/in_distribution_EnvSpheres3D/amr_success_sample04.jpg",
+        "w": 1280,
+        "webm": "media/viz/spheres_env_gifs/in_distribution_EnvSpheres3D/amr_success_sample04.webm"
+      },
+      {
+        "h": 390,
+        "mp4": "media/viz/spheres_env_gifs/in_distribution_EnvSpheres3D/amr_vs_guidance_sample00.mp4",
+        "name": "amr_vs_guidance_sample00",
+        "poster": "media/viz/spheres_env_gifs/in_distribution_EnvSpheres3D/amr_vs_guidance_sample00.jpg",
+        "w": 960,
+        "webm": "media/viz/spheres_env_gifs/in_distribution_EnvSpheres3D/amr_vs_guidance_sample00.webm"
+      },
+      {
+        "h": 390,
+        "mp4": "media/viz/spheres_env_gifs/in_distribution_EnvSpheres3D/amr_vs_guidance_sample01.mp4",
+        "name": "amr_vs_guidance_sample01",
+        "poster": "media/viz/spheres_env_gifs/in_distribution_EnvSpheres3D/amr_vs_guidance_sample01.jpg",
+        "w": 960,
+        "webm": "media/viz/spheres_env_gifs/in_distribution_EnvSpheres3D/amr_vs_guidance_sample01.webm"
+      },
+      {
+        "h": 508,
+        "mp4": "media/viz/spheres_env_gifs/in_distribution_EnvSpheres3D/unguided_vs_amr_sample00.mp4",
+        "name": "unguided_vs_amr_sample00",
+        "poster": "media/viz/spheres_env_gifs/in_distribution_EnvSpheres3D/unguided_vs_amr_sample00.jpg",
+        "w": 1280,
+        "webm": "media/viz/spheres_env_gifs/in_distribution_EnvSpheres3D/unguided_vs_amr_sample00.webm"
+      },
+      {
+        "h": 508,
+        "mp4": "media/viz/spheres_env_gifs/in_distribution_EnvSpheres3D/unguided_vs_amr_sample01.mp4",
+        "name": "unguided_vs_amr_sample01",
+        "poster": "media/viz/spheres_env_gifs/in_distribution_EnvSpheres3D/unguided_vs_amr_sample01.jpg",
+        "w": 1280,
+        "webm": "media/viz/spheres_env_gifs/in_distribution_EnvSpheres3D/unguided_vs_amr_sample01.webm"
+      },
+      {
+        "h": 508,
+        "mp4": "media/viz/spheres_env_gifs/in_distribution_EnvSpheres3D/unguided_vs_amr_sample02.mp4",
+        "name": "unguided_vs_amr_sample02",
+        "poster": "media/viz/spheres_env_gifs/in_distribution_EnvSpheres3D/unguided_vs_amr_sample02.jpg",
+        "w": 1280,
+        "webm": "media/viz/spheres_env_gifs/in_distribution_EnvSpheres3D/unguided_vs_amr_sample02.webm"
+      }
+    ],
+    "out_of_distribution": [
+      {
+        "h": 390,
+        "mp4": "media/viz/spheres_env_gifs/out_of_distribution_EnvSpheres3DExtraObjectsV00/amr_vs_guidance_sample00.mp4",
+        "name": "amr_vs_guidance_sample00",
+        "poster": "media/viz/spheres_env_gifs/out_of_distribution_EnvSpheres3DExtraObjectsV00/amr_vs_guidance_sample00.jpg",
+        "w": 960,
+        "webm": "media/viz/spheres_env_gifs/out_of_distribution_EnvSpheres3DExtraObjectsV00/amr_vs_guidance_sample00.webm"
+      },
+      {
+        "h": 390,
+        "mp4": "media/viz/spheres_env_gifs/out_of_distribution_EnvSpheres3DExtraObjectsV00/amr_vs_guidance_sample01.mp4",
+        "name": "amr_vs_guidance_sample01",
+        "poster": "media/viz/spheres_env_gifs/out_of_distribution_EnvSpheres3DExtraObjectsV00/amr_vs_guidance_sample01.jpg",
+        "w": 960,
+        "webm": "media/viz/spheres_env_gifs/out_of_distribution_EnvSpheres3DExtraObjectsV00/amr_vs_guidance_sample01.webm"
+      },
+      {
+        "h": 508,
+        "mp4": "media/viz/spheres_env_gifs/out_of_distribution_EnvSpheres3DExtraObjectsV00/unguided_vs_amr_sample00.mp4",
+        "name": "unguided_vs_amr_sample00",
+        "poster": "media/viz/spheres_env_gifs/out_of_distribution_EnvSpheres3DExtraObjectsV00/unguided_vs_amr_sample00.jpg",
+        "w": 1280,
+        "webm": "media/viz/spheres_env_gifs/out_of_distribution_EnvSpheres3DExtraObjectsV00/unguided_vs_amr_sample00.webm"
+      },
+      {
+        "h": 508,
+        "mp4": "media/viz/spheres_env_gifs/out_of_distribution_EnvSpheres3DExtraObjectsV00/unguided_vs_amr_sample01.mp4",
+        "name": "unguided_vs_amr_sample01",
+        "poster": "media/viz/spheres_env_gifs/out_of_distribution_EnvSpheres3DExtraObjectsV00/unguided_vs_amr_sample01.jpg",
+        "w": 1280,
+        "webm": "media/viz/spheres_env_gifs/out_of_distribution_EnvSpheres3DExtraObjectsV00/unguided_vs_amr_sample01.webm"
+      },
+      {
+        "h": 508,
+        "mp4": "media/viz/spheres_env_gifs/out_of_distribution_EnvSpheres3DExtraObjectsV00/unguided_vs_amr_sample02.mp4",
+        "name": "unguided_vs_amr_sample02",
+        "poster": "media/viz/spheres_env_gifs/out_of_distribution_EnvSpheres3DExtraObjectsV00/unguided_vs_amr_sample02.jpg",
+        "w": 1280,
+        "webm": "media/viz/spheres_env_gifs/out_of_distribution_EnvSpheres3DExtraObjectsV00/unguided_vs_amr_sample02.webm"
+      }
+    ]
+  },
+  "tasks": {
+    "3dorient": {
+      "config1": {
+        "amr": {
+          "rollout": {
+            "h": 360,
+            "mp4": "media/viz/orientation_task_gifs/amr_eeprox_ref/config1.mp4",
+            "poster": "media/viz/orientation_task_gifs/amr_eeprox_ref/config1.jpg",
+            "w": 480,
+            "webm": "media/viz/orientation_task_gifs/amr_eeprox_ref/config1.webm"
+          }
+        },
+        "amr_dyn": {
+          "rollout": {
+            "h": 420,
+            "mp4": "media/viz/orientation_task_gifs/amr_eeprox_dynamic/config1.mp4",
+            "poster": "media/viz/orientation_task_gifs/amr_eeprox_dynamic/config1.jpg",
+            "w": 560,
+            "webm": "media/viz/orientation_task_gifs/amr_eeprox_dynamic/config1.webm"
+          }
+        },
+        "amr_joint": {
+          "rollout": {
+            "h": 420,
+            "mp4": "media/viz/orientation_task_gifs/amr_joint_prox/config1.mp4",
+            "poster": "media/viz/orientation_task_gifs/amr_joint_prox/config1.jpg",
+            "w": 560,
+            "webm": "media/viz/orientation_task_gifs/amr_joint_prox/config1.webm"
+          }
+        },
+        "trust": {
+          "rollout": {
+            "h": 360,
+            "mp4": "media/viz/orientation_task_gifs/trust_w0.001/config1.mp4",
+            "poster": "media/viz/orientation_task_gifs/trust_w0.001/config1.jpg",
+            "w": 480,
+            "webm": "media/viz/orientation_task_gifs/trust_w0.001/config1.webm"
+          }
+        },
+        "tweedie": {
+          "rollout": {
+            "h": 360,
+            "mp4": "media/viz/orientation_task_gifs/tweedie_alpha0.03/config1.mp4",
+            "poster": "media/viz/orientation_task_gifs/tweedie_alpha0.03/config1.jpg",
+            "w": 480,
+            "webm": "media/viz/orientation_task_gifs/tweedie_alpha0.03/config1.webm"
+          }
+        },
+        "tweedie_weak": {
+          "rollout": {
+            "h": 420,
+            "mp4": "media/viz/orientation_task_gifs/tweedie_alpha0.003/config1.mp4",
+            "poster": "media/viz/orientation_task_gifs/tweedie_alpha0.003/config1.jpg",
+            "w": 560,
+            "webm": "media/viz/orientation_task_gifs/tweedie_alpha0.003/config1.webm"
+          }
+        },
+        "unguided": {
+          "rollout": {
+            "h": 360,
+            "mp4": "media/viz/orientation_task_gifs/unguided/config1.mp4",
+            "poster": "media/viz/orientation_task_gifs/unguided/config1.jpg",
+            "w": 480,
+            "webm": "media/viz/orientation_task_gifs/unguided/config1.webm"
+          }
+        }
+      },
+      "config2": {
+        "amr": {
+          "rollout": {
+            "h": 360,
+            "mp4": "media/viz/orientation_task_gifs/amr_eeprox_ref/config2.mp4",
+            "poster": "media/viz/orientation_task_gifs/amr_eeprox_ref/config2.jpg",
+            "w": 480,
+            "webm": "media/viz/orientation_task_gifs/amr_eeprox_ref/config2.webm"
+          }
+        },
+        "amr_dyn": {
+          "rollout": {
+            "h": 420,
+            "mp4": "media/viz/orientation_task_gifs/amr_eeprox_dynamic/config2.mp4",
+            "poster": "media/viz/orientation_task_gifs/amr_eeprox_dynamic/config2.jpg",
+            "w": 560,
+            "webm": "media/viz/orientation_task_gifs/amr_eeprox_dynamic/config2.webm"
+          }
+        },
+        "amr_joint": {
+          "rollout": {
+            "h": 420,
+            "mp4": "media/viz/orientation_task_gifs/amr_joint_prox/config2.mp4",
+            "poster": "media/viz/orientation_task_gifs/amr_joint_prox/config2.jpg",
+            "w": 560,
+            "webm": "media/viz/orientation_task_gifs/amr_joint_prox/config2.webm"
+          }
+        },
+        "trust": {
+          "rollout": {
+            "h": 360,
+            "mp4": "media/viz/orientation_task_gifs/trust_w0.001/config2.mp4",
+            "poster": "media/viz/orientation_task_gifs/trust_w0.001/config2.jpg",
+            "w": 480,
+            "webm": "media/viz/orientation_task_gifs/trust_w0.001/config2.webm"
+          }
+        },
+        "tweedie": {
+          "rollout": {
+            "h": 360,
+            "mp4": "media/viz/orientation_task_gifs/tweedie_alpha0.03/config2.mp4",
+            "poster": "media/viz/orientation_task_gifs/tweedie_alpha0.03/config2.jpg",
+            "w": 480,
+            "webm": "media/viz/orientation_task_gifs/tweedie_alpha0.03/config2.webm"
+          }
+        },
+        "tweedie_weak": {
+          "rollout": {
+            "h": 420,
+            "mp4": "media/viz/orientation_task_gifs/tweedie_alpha0.003/config2.mp4",
+            "poster": "media/viz/orientation_task_gifs/tweedie_alpha0.003/config2.jpg",
+            "w": 560,
+            "webm": "media/viz/orientation_task_gifs/tweedie_alpha0.003/config2.webm"
+          }
+        },
+        "unguided": {
+          "rollout": {
+            "h": 360,
+            "mp4": "media/viz/orientation_task_gifs/unguided/config2.mp4",
+            "poster": "media/viz/orientation_task_gifs/unguided/config2.jpg",
+            "w": 480,
+            "webm": "media/viz/orientation_task_gifs/unguided/config2.webm"
+          }
+        }
+      },
+      "task28": {
+        "amr": {
+          "rollout": {
+            "h": 420,
+            "mp4": "media/viz/orientation_task_gifs/amr_eeprox_ref/task28.mp4",
+            "poster": "media/viz/orientation_task_gifs/amr_eeprox_ref/task28.jpg",
+            "w": 560,
+            "webm": "media/viz/orientation_task_gifs/amr_eeprox_ref/task28.webm"
+          }
+        },
+        "amr_dyn": {
+          "rollout": {
+            "h": 420,
+            "mp4": "media/viz/orientation_task_gifs/amr_eeprox_dynamic/task28.mp4",
+            "poster": "media/viz/orientation_task_gifs/amr_eeprox_dynamic/task28.jpg",
+            "w": 560,
+            "webm": "media/viz/orientation_task_gifs/amr_eeprox_dynamic/task28.webm"
+          }
+        },
+        "amr_joint": {
+          "rollout": {
+            "h": 420,
+            "mp4": "media/viz/orientation_task_gifs/amr_joint_prox/task28.mp4",
+            "poster": "media/viz/orientation_task_gifs/amr_joint_prox/task28.jpg",
+            "w": 560,
+            "webm": "media/viz/orientation_task_gifs/amr_joint_prox/task28.webm"
+          }
+        },
+        "trust": {
+          "rollout": {
+            "h": 420,
+            "mp4": "media/viz/orientation_task_gifs/trust_w0.001/task28.mp4",
+            "poster": "media/viz/orientation_task_gifs/trust_w0.001/task28.jpg",
+            "w": 560,
+            "webm": "media/viz/orientation_task_gifs/trust_w0.001/task28.webm"
+          }
+        },
+        "tweedie": {
+          "rollout": {
+            "h": 420,
+            "mp4": "media/viz/orientation_task_gifs/tweedie_alpha0.03/task28.mp4",
+            "poster": "media/viz/orientation_task_gifs/tweedie_alpha0.03/task28.jpg",
+            "w": 560,
+            "webm": "media/viz/orientation_task_gifs/tweedie_alpha0.03/task28.webm"
+          }
+        },
+        "tweedie_weak": {
+          "rollout": {
+            "h": 420,
+            "mp4": "media/viz/orientation_task_gifs/tweedie_alpha0.003/task28.mp4",
+            "poster": "media/viz/orientation_task_gifs/tweedie_alpha0.003/task28.jpg",
+            "w": 560,
+            "webm": "media/viz/orientation_task_gifs/tweedie_alpha0.003/task28.webm"
+          }
+        },
+        "unguided": {
+          "rollout": {
+            "h": 420,
+            "mp4": "media/viz/orientation_task_gifs/unguided/task28.mp4",
+            "poster": "media/viz/orientation_task_gifs/unguided/task28.jpg",
+            "w": 560,
+            "webm": "media/viz/orientation_task_gifs/unguided/task28.webm"
+          }
+        }
+      },
+      "task31": {
+        "amr": {
+          "rollout": {
+            "h": 420,
+            "mp4": "media/viz/orientation_task_gifs/amr_eeprox_ref/task31.mp4",
+            "poster": "media/viz/orientation_task_gifs/amr_eeprox_ref/task31.jpg",
+            "w": 560,
+            "webm": "media/viz/orientation_task_gifs/amr_eeprox_ref/task31.webm"
+          }
+        },
+        "amr_dyn": {
+          "rollout": {
+            "h": 420,
+            "mp4": "media/viz/orientation_task_gifs/amr_eeprox_dynamic/task31.mp4",
+            "poster": "media/viz/orientation_task_gifs/amr_eeprox_dynamic/task31.jpg",
+            "w": 560,
+            "webm": "media/viz/orientation_task_gifs/amr_eeprox_dynamic/task31.webm"
+          }
+        },
+        "amr_joint": {
+          "rollout": {
+            "h": 420,
+            "mp4": "media/viz/orientation_task_gifs/amr_joint_prox/task31.mp4",
+            "poster": "media/viz/orientation_task_gifs/amr_joint_prox/task31.jpg",
+            "w": 560,
+            "webm": "media/viz/orientation_task_gifs/amr_joint_prox/task31.webm"
+          }
+        },
+        "trust": {
+          "rollout": {
+            "h": 420,
+            "mp4": "media/viz/orientation_task_gifs/trust_w0.001/task31.mp4",
+            "poster": "media/viz/orientation_task_gifs/trust_w0.001/task31.jpg",
+            "w": 560,
+            "webm": "media/viz/orientation_task_gifs/trust_w0.001/task31.webm"
+          }
+        },
+        "tweedie": {
+          "rollout": {
+            "h": 420,
+            "mp4": "media/viz/orientation_task_gifs/tweedie_alpha0.03/task31.mp4",
+            "poster": "media/viz/orientation_task_gifs/tweedie_alpha0.03/task31.jpg",
+            "w": 560,
+            "webm": "media/viz/orientation_task_gifs/tweedie_alpha0.03/task31.webm"
+          }
+        },
+        "tweedie_weak": {
+          "rollout": {
+            "h": 420,
+            "mp4": "media/viz/orientation_task_gifs/tweedie_alpha0.003/task31.mp4",
+            "poster": "media/viz/orientation_task_gifs/tweedie_alpha0.003/task31.jpg",
+            "w": 560,
+            "webm": "media/viz/orientation_task_gifs/tweedie_alpha0.003/task31.webm"
+          }
+        },
+        "unguided": {
+          "rollout": {
+            "h": 420,
+            "mp4": "media/viz/orientation_task_gifs/unguided/task31.mp4",
+            "poster": "media/viz/orientation_task_gifs/unguided/task31.jpg",
+            "w": 560,
+            "webm": "media/viz/orientation_task_gifs/unguided/task31.webm"
+          }
+        }
+      },
+      "task43": {
+        "amr": {
+          "rollout": {
+            "h": 420,
+            "mp4": "media/viz/orientation_task_gifs/amr_eeprox_ref/task43.mp4",
+            "poster": "media/viz/orientation_task_gifs/amr_eeprox_ref/task43.jpg",
+            "w": 560,
+            "webm": "media/viz/orientation_task_gifs/amr_eeprox_ref/task43.webm"
+          }
+        },
+        "amr_dyn": {
+          "rollout": {
+            "h": 420,
+            "mp4": "media/viz/orientation_task_gifs/amr_eeprox_dynamic/task43.mp4",
+            "poster": "media/viz/orientation_task_gifs/amr_eeprox_dynamic/task43.jpg",
+            "w": 560,
+            "webm": "media/viz/orientation_task_gifs/amr_eeprox_dynamic/task43.webm"
+          }
+        },
+        "amr_joint": {
+          "rollout": {
+            "h": 420,
+            "mp4": "media/viz/orientation_task_gifs/amr_joint_prox/task43.mp4",
+            "poster": "media/viz/orientation_task_gifs/amr_joint_prox/task43.jpg",
+            "w": 560,
+            "webm": "media/viz/orientation_task_gifs/amr_joint_prox/task43.webm"
+          }
+        },
+        "trust": {
+          "rollout": {
+            "h": 420,
+            "mp4": "media/viz/orientation_task_gifs/trust_w0.001/task43.mp4",
+            "poster": "media/viz/orientation_task_gifs/trust_w0.001/task43.jpg",
+            "w": 560,
+            "webm": "media/viz/orientation_task_gifs/trust_w0.001/task43.webm"
+          }
+        },
+        "tweedie": {
+          "rollout": {
+            "h": 420,
+            "mp4": "media/viz/orientation_task_gifs/tweedie_alpha0.03/task43.mp4",
+            "poster": "media/viz/orientation_task_gifs/tweedie_alpha0.03/task43.jpg",
+            "w": 560,
+            "webm": "media/viz/orientation_task_gifs/tweedie_alpha0.03/task43.webm"
+          }
+        },
+        "tweedie_weak": {
+          "rollout": {
+            "h": 420,
+            "mp4": "media/viz/orientation_task_gifs/tweedie_alpha0.003/task43.mp4",
+            "poster": "media/viz/orientation_task_gifs/tweedie_alpha0.003/task43.jpg",
+            "w": 560,
+            "webm": "media/viz/orientation_task_gifs/tweedie_alpha0.003/task43.webm"
+          }
+        },
+        "unguided": {
+          "rollout": {
+            "h": 420,
+            "mp4": "media/viz/orientation_task_gifs/unguided/task43.mp4",
+            "poster": "media/viz/orientation_task_gifs/unguided/task43.jpg",
+            "w": 560,
+            "webm": "media/viz/orientation_task_gifs/unguided/task43.webm"
+          }
+        }
+      }
+    },
+    "shelf": {
+      "clutter_combo": {
+        "amr": {
+          "success": {
+            "h": 360,
+            "mp4": "media/viz/shelf_scenario_method_gifs/clutter_combo/amr__success.mp4",
+            "poster": "media/viz/shelf_scenario_method_gifs/clutter_combo/amr__success.jpg",
+            "w": 480,
+            "webm": "media/viz/shelf_scenario_method_gifs/clutter_combo/amr__success.webm"
+          }
+        },
+        "projection": {
+          "fail": {
+            "h": 360,
+            "mp4": "media/viz/shelf_scenario_method_gifs/clutter_combo/projection__fail.mp4",
+            "poster": "media/viz/shelf_scenario_method_gifs/clutter_combo/projection__fail.jpg",
+            "w": 480,
+            "webm": "media/viz/shelf_scenario_method_gifs/clutter_combo/projection__fail.webm"
+          },
+          "success": {
+            "h": 360,
+            "mp4": "media/viz/shelf_scenario_method_gifs/clutter_combo/projection__success.mp4",
+            "poster": "media/viz/shelf_scenario_method_gifs/clutter_combo/projection__success.jpg",
+            "w": 480,
+            "webm": "media/viz/shelf_scenario_method_gifs/clutter_combo/projection__success.webm"
+          }
+        },
+        "trust": {
+          "fail": {
+            "h": 360,
+            "mp4": "media/viz/shelf_scenario_method_gifs/clutter_combo/trust__fail.mp4",
+            "poster": "media/viz/shelf_scenario_method_gifs/clutter_combo/trust__fail.jpg",
+            "w": 480,
+            "webm": "media/viz/shelf_scenario_method_gifs/clutter_combo/trust__fail.webm"
+          },
+          "success": {
+            "h": 360,
+            "mp4": "media/viz/shelf_scenario_method_gifs/clutter_combo/trust__success.mp4",
+            "poster": "media/viz/shelf_scenario_method_gifs/clutter_combo/trust__success.jpg",
+            "w": 480,
+            "webm": "media/viz/shelf_scenario_method_gifs/clutter_combo/trust__success.webm"
+          }
+        },
+        "tweedie": {
+          "fail": {
+            "h": 360,
+            "mp4": "media/viz/shelf_scenario_method_gifs/clutter_combo/tweedie__fail.mp4",
+            "poster": "media/viz/shelf_scenario_method_gifs/clutter_combo/tweedie__fail.jpg",
+            "w": 480,
+            "webm": "media/viz/shelf_scenario_method_gifs/clutter_combo/tweedie__fail.webm"
+          },
+          "success": {
+            "h": 360,
+            "mp4": "media/viz/shelf_scenario_method_gifs/clutter_combo/tweedie__success.mp4",
+            "poster": "media/viz/shelf_scenario_method_gifs/clutter_combo/tweedie__success.jpg",
+            "w": 480,
+            "webm": "media/viz/shelf_scenario_method_gifs/clutter_combo/tweedie__success.webm"
+          }
+        }
+      },
+      "low_rung_neighbor_E": {
+        "amr": {
+          "success": {
+            "h": 360,
+            "mp4": "media/viz/shelf_scenario_method_gifs/low_rung_neighbor_E/amr__success.mp4",
+            "poster": "media/viz/shelf_scenario_method_gifs/low_rung_neighbor_E/amr__success.jpg",
+            "w": 480,
+            "webm": "media/viz/shelf_scenario_method_gifs/low_rung_neighbor_E/amr__success.webm"
+          }
+        },
+        "projection": {
+          "success": {
+            "h": 360,
+            "mp4": "media/viz/shelf_scenario_method_gifs/low_rung_neighbor_E/projection__success.mp4",
+            "poster": "media/viz/shelf_scenario_method_gifs/low_rung_neighbor_E/projection__success.jpg",
+            "w": 480,
+            "webm": "media/viz/shelf_scenario_method_gifs/low_rung_neighbor_E/projection__success.webm"
+          }
+        },
+        "trust": {
+          "fail": {
+            "h": 360,
+            "mp4": "media/viz/shelf_scenario_method_gifs/low_rung_neighbor_E/trust__fail.mp4",
+            "poster": "media/viz/shelf_scenario_method_gifs/low_rung_neighbor_E/trust__fail.jpg",
+            "w": 480,
+            "webm": "media/viz/shelf_scenario_method_gifs/low_rung_neighbor_E/trust__fail.webm"
+          }
+        },
+        "tweedie": {
+          "fail": {
+            "h": 360,
+            "mp4": "media/viz/shelf_scenario_method_gifs/low_rung_neighbor_E/tweedie__fail.mp4",
+            "poster": "media/viz/shelf_scenario_method_gifs/low_rung_neighbor_E/tweedie__fail.jpg",
+            "w": 480,
+            "webm": "media/viz/shelf_scenario_method_gifs/low_rung_neighbor_E/tweedie__fail.webm"
+          }
+        }
+      },
+      "mid_rung_neighbor_E": {
+        "amr": {
+          "success": {
+            "h": 360,
+            "mp4": "media/viz/shelf_scenario_method_gifs/mid_rung_neighbor_E/amr__success.mp4",
+            "poster": "media/viz/shelf_scenario_method_gifs/mid_rung_neighbor_E/amr__success.jpg",
+            "w": 480,
+            "webm": "media/viz/shelf_scenario_method_gifs/mid_rung_neighbor_E/amr__success.webm"
+          }
+        },
+        "projection": {
+          "fail": {
+            "h": 360,
+            "mp4": "media/viz/shelf_scenario_method_gifs/mid_rung_neighbor_E/projection__fail.mp4",
+            "poster": "media/viz/shelf_scenario_method_gifs/mid_rung_neighbor_E/projection__fail.jpg",
+            "w": 480,
+            "webm": "media/viz/shelf_scenario_method_gifs/mid_rung_neighbor_E/projection__fail.webm"
+          },
+          "success": {
+            "h": 360,
+            "mp4": "media/viz/shelf_scenario_method_gifs/mid_rung_neighbor_E/projection__success.mp4",
+            "poster": "media/viz/shelf_scenario_method_gifs/mid_rung_neighbor_E/projection__success.jpg",
+            "w": 480,
+            "webm": "media/viz/shelf_scenario_method_gifs/mid_rung_neighbor_E/projection__success.webm"
+          }
+        },
+        "trust": {
+          "fail": {
+            "h": 360,
+            "mp4": "media/viz/shelf_scenario_method_gifs/mid_rung_neighbor_E/trust__fail.mp4",
+            "poster": "media/viz/shelf_scenario_method_gifs/mid_rung_neighbor_E/trust__fail.jpg",
+            "w": 480,
+            "webm": "media/viz/shelf_scenario_method_gifs/mid_rung_neighbor_E/trust__fail.webm"
+          }
+        },
+        "tweedie": {
+          "fail": {
+            "h": 360,
+            "mp4": "media/viz/shelf_scenario_method_gifs/mid_rung_neighbor_E/tweedie__fail.mp4",
+            "poster": "media/viz/shelf_scenario_method_gifs/mid_rung_neighbor_E/tweedie__fail.jpg",
+            "w": 480,
+            "webm": "media/viz/shelf_scenario_method_gifs/mid_rung_neighbor_E/tweedie__fail.webm"
+          },
+          "success": {
+            "h": 360,
+            "mp4": "media/viz/shelf_scenario_method_gifs/mid_rung_neighbor_E/tweedie__success.mp4",
+            "poster": "media/viz/shelf_scenario_method_gifs/mid_rung_neighbor_E/tweedie__success.jpg",
+            "w": 480,
+            "webm": "media/viz/shelf_scenario_method_gifs/mid_rung_neighbor_E/tweedie__success.webm"
+          }
+        }
+      },
+      "tall_table_pillar": {
+        "amr": {
+          "success": {
+            "h": 360,
+            "mp4": "media/viz/shelf_scenario_method_gifs/tall_table_pillar/amr__success.mp4",
+            "poster": "media/viz/shelf_scenario_method_gifs/tall_table_pillar/amr__success.jpg",
+            "w": 480,
+            "webm": "media/viz/shelf_scenario_method_gifs/tall_table_pillar/amr__success.webm"
+          }
+        },
+        "projection": {
+          "fail": {
+            "h": 360,
+            "mp4": "media/viz/shelf_scenario_method_gifs/tall_table_pillar/projection__fail.mp4",
+            "poster": "media/viz/shelf_scenario_method_gifs/tall_table_pillar/projection__fail.jpg",
+            "w": 480,
+            "webm": "media/viz/shelf_scenario_method_gifs/tall_table_pillar/projection__fail.webm"
+          },
+          "success": {
+            "h": 360,
+            "mp4": "media/viz/shelf_scenario_method_gifs/tall_table_pillar/projection__success.mp4",
+            "poster": "media/viz/shelf_scenario_method_gifs/tall_table_pillar/projection__success.jpg",
+            "w": 480,
+            "webm": "media/viz/shelf_scenario_method_gifs/tall_table_pillar/projection__success.webm"
+          }
+        },
+        "trust": {
+          "fail": {
+            "h": 360,
+            "mp4": "media/viz/shelf_scenario_method_gifs/tall_table_pillar/trust__fail.mp4",
+            "poster": "media/viz/shelf_scenario_method_gifs/tall_table_pillar/trust__fail.jpg",
+            "w": 480,
+            "webm": "media/viz/shelf_scenario_method_gifs/tall_table_pillar/trust__fail.webm"
+          },
+          "success": {
+            "h": 360,
+            "mp4": "media/viz/shelf_scenario_method_gifs/tall_table_pillar/trust__success.mp4",
+            "poster": "media/viz/shelf_scenario_method_gifs/tall_table_pillar/trust__success.jpg",
+            "w": 480,
+            "webm": "media/viz/shelf_scenario_method_gifs/tall_table_pillar/trust__success.webm"
+          }
+        },
+        "tweedie": {
+          "fail": {
+            "h": 360,
+            "mp4": "media/viz/shelf_scenario_method_gifs/tall_table_pillar/tweedie__fail.mp4",
+            "poster": "media/viz/shelf_scenario_method_gifs/tall_table_pillar/tweedie__fail.jpg",
+            "w": 480,
+            "webm": "media/viz/shelf_scenario_method_gifs/tall_table_pillar/tweedie__fail.webm"
+          },
+          "success": {
+            "h": 360,
+            "mp4": "media/viz/shelf_scenario_method_gifs/tall_table_pillar/tweedie__success.mp4",
+            "poster": "media/viz/shelf_scenario_method_gifs/tall_table_pillar/tweedie__success.jpg",
+            "w": 480,
+            "webm": "media/viz/shelf_scenario_method_gifs/tall_table_pillar/tweedie__success.webm"
+          }
+        }
+      },
+      "two_flankers_top": {
+        "amr": {
+          "success": {
+            "h": 360,
+            "mp4": "media/viz/shelf_scenario_method_gifs/two_flankers_top/amr__success.mp4",
+            "poster": "media/viz/shelf_scenario_method_gifs/two_flankers_top/amr__success.jpg",
+            "w": 480,
+            "webm": "media/viz/shelf_scenario_method_gifs/two_flankers_top/amr__success.webm"
+          }
+        },
+        "projection": {
+          "fail": {
+            "h": 360,
+            "mp4": "media/viz/shelf_scenario_method_gifs/two_flankers_top/projection__fail.mp4",
+            "poster": "media/viz/shelf_scenario_method_gifs/two_flankers_top/projection__fail.jpg",
+            "w": 480,
+            "webm": "media/viz/shelf_scenario_method_gifs/two_flankers_top/projection__fail.webm"
+          },
+          "success": {
+            "h": 360,
+            "mp4": "media/viz/shelf_scenario_method_gifs/two_flankers_top/projection__success.mp4",
+            "poster": "media/viz/shelf_scenario_method_gifs/two_flankers_top/projection__success.jpg",
+            "w": 480,
+            "webm": "media/viz/shelf_scenario_method_gifs/two_flankers_top/projection__success.webm"
+          }
+        },
+        "trust": {
+          "fail": {
+            "h": 360,
+            "mp4": "media/viz/shelf_scenario_method_gifs/two_flankers_top/trust__fail.mp4",
+            "poster": "media/viz/shelf_scenario_method_gifs/two_flankers_top/trust__fail.jpg",
+            "w": 480,
+            "webm": "media/viz/shelf_scenario_method_gifs/two_flankers_top/trust__fail.webm"
+          },
+          "success": {
+            "h": 360,
+            "mp4": "media/viz/shelf_scenario_method_gifs/two_flankers_top/trust__success.mp4",
+            "poster": "media/viz/shelf_scenario_method_gifs/two_flankers_top/trust__success.jpg",
+            "w": 480,
+            "webm": "media/viz/shelf_scenario_method_gifs/two_flankers_top/trust__success.webm"
+          }
+        },
+        "tweedie": {
+          "fail": {
+            "h": 360,
+            "mp4": "media/viz/shelf_scenario_method_gifs/two_flankers_top/tweedie__fail.mp4",
+            "poster": "media/viz/shelf_scenario_method_gifs/two_flankers_top/tweedie__fail.jpg",
+            "w": 480,
+            "webm": "media/viz/shelf_scenario_method_gifs/two_flankers_top/tweedie__fail.webm"
+          },
+          "success": {
+            "h": 360,
+            "mp4": "media/viz/shelf_scenario_method_gifs/two_flankers_top/tweedie__success.mp4",
+            "poster": "media/viz/shelf_scenario_method_gifs/two_flankers_top/tweedie__success.jpg",
+            "w": 480,
+            "webm": "media/viz/shelf_scenario_method_gifs/two_flankers_top/tweedie__success.webm"
+          }
+        }
+      }
+    }
+  }
+}

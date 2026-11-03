@@ -1,0 +1,51 @@
+---
+// The four result tables from the paper, behind the template's tabs.
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "./starwind/tabs";
+import { RESULTS } from "../data/site";
+
+const order: [string, string][] = [
+  ["hw", "Hardware"],
+  ["shelf", "Shelf"],
+  ["d3il", "2D Avoidance"],
+  ["orient", "3D-Orient"],
+];
+const cs = (t: string) => t.replace(/CS-Pi/g, '<span class="cs">CS-Pi</span>');
+---
+
+<Tabs defaultValue="hw" class="results-tabs wide">
+  <TabsList aria-label="Benchmark">
+    {order.map(([k, label]) => <TabsTrigger value={k}>{label}</TabsTrigger>)}
+  </TabsList>
+  {
+    order.map(([k]) => {
+      const r = RESULTS[k]!;
+      return (
+        <TabsContent value={k}>
+          <h3>{r.title}</h3>
+          {r.lead && <p class="tlead" set:html={cs(r.lead)} />}
+          <div class="tablewrap">
+            <table class="results">
+              <thead>
+                <tr>{r.cols.map((c) => <th scope="col">{c}</th>)}</tr>
+              </thead>
+              <tbody>
+                {r.rows.map((row) => (
+                  <tr class={row.ours ? "ours" : undefined}>
+                    {row.c.map((v, i) =>
+                      i === 0 ? (
+                        <th scope="row" class={row.best?.includes(i) ? "best" : undefined} style="font-weight:inherit">{v}</th>
+                      ) : (
+                        <td class={row.best?.includes(i) ? "best" : undefined}>{v}</td>
+                      ),
+                    )}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <p class="tcap">{r.caption}</p>
+        </TabsContent>
+      );
+    })
+  }
+</Tabs>

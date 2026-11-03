@@ -1,0 +1,11 @@
+---
+interface Props {
+  kind: "ok" | "bad";
+  text?: string;
+}
+const { kind, text } = Astro.props;
+---
+
+<span class:list={["outcome", kind]}>
+  <span class="mark" aria-hidden="true">{kind === "ok" ? "✓" : "✗"}</span>{text ?? (kind === "ok" ? "safe" : "fail")}
+</span>

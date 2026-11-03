@@ -1,0 +1,33 @@
+---
+// One rollout clip with its caption: method name + outcome as text
+// ("✓ safe" / "✗ fail"), so the label never depends on colour alone.
+import Video from "./Video.astro";
+import Outcome from "./Outcome.astro";
+
+interface Props {
+  src: string;
+  webm?: string;
+  poster?: string;
+  w?: number;
+  h?: number;
+  who: string;
+  outcome?: "ok" | "bad";
+  outcomeText?: string;
+  note?: string;
+  controls?: boolean;
+  panel?: boolean;
+}
+const { who, outcome, outcomeText, note, panel = false, ...video } = Astro.props;
+---
+
+<figure class="clip">
+  <div class:list={[panel && "on-panel"]}>
+    <Video {...video} label={`${who}${outcome ? (outcome === "ok" ? ", safe" : ", fail") : ""}`} />
+  </div>
+  <figcaption class="clip-cap">
+    <span class="who" set:html={who} />
+    {outcome && <Outcome kind={outcome} text={outcomeText} />}
+    {note && <span class="note">{note}</span>}
+    <slot />
+  </figcaption>
+</figure>
