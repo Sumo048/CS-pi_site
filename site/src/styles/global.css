@@ -224,7 +224,7 @@ section p { margin-top: 0; margin-bottom: 1.1em; }
   color: var(--ink-2);
 }
 .loop-bar { border-bottom: 1px solid var(--rule); }
-.loop-foot { border-top: 1px solid var(--rule); }
+.loop-foot { border-top: 1px solid var(--rule); max-width: none; margin-top: 0; }
 .loop-bar .title { color: var(--ink); font-weight: 600; }
 .loop-bar .spacer, .loop-foot .spacer { flex: 1; }
 .loop-bar .stat { font-variant-numeric: tabular-nums; min-width: 6ch; }

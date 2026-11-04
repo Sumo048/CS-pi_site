@@ -30,7 +30,7 @@
     Object.assign(C, {
       draw: v('--ink'), ok: v('--ok'), bad: v('--bad'), ink: v('--ink'),
       muted: v('--ink-3'), barA: v('--ink-2'), barB: v('--panel'), bg: v('--bg'),
-      badFill: rgba(v('--bad'), 0.13), badRing: rgba(v('--bad'), 0.4)
+      badFill: rgba(v('--bad'), 0.13)
     });
   }
   readColors();
@@ -193,8 +193,6 @@
     // obstacle
     ctx.fillStyle = C.badFill; ctx.strokeStyle = C.bad; ctx.lineWidth = 2;
     ctx.beginPath(); ctx.arc(o.x, o.y, pr(O.r), 0, 7); ctx.fill(); ctx.stroke();
-    ctx.setLineDash([4, 4]); ctx.strokeStyle = C.badRing;
-    ctx.beginPath(); ctx.arc(o.x, o.y, pr(O.r + MARGIN), 0, 7); ctx.stroke(); ctx.setLineDash([]);
     ctx.fillStyle = C.bad; ctx.textBaseline = 'middle'; ctx.fillText('obstacle', o.x, o.y);
     // start
     ctx.fillStyle = C.ink; ctx.beginPath(); ctx.arc(s.x, s.y, 5, 0, 7); ctx.fill();

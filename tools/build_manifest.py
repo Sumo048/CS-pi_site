@@ -1,40 +1,39 @@
 #!/usr/bin/env python3
-"""Scan viz/ for rollout GIFs and emit the media manifests.
+"""Scan viz/ for rollout GIFs and write site/src/data/media_manifest.json.
 
-Writes:
-  * site/src/data/media_manifest.json -- Astro site (MP4/WebM/poster paths
-    under site/public/media/, produced by tools/convert_media.py)
-  * js/gif_manifest.js + assets/posters/ -- old static page, only with --legacy
+The manifest maps each explorer cell (and each spheres-gallery clip) to the
+MP4 / WebM / poster that tools/convert_media.py produced under
+site/public/media/. The site reads it and never hardcodes clip paths.
 
 Typical use after adding GIFs:
     python3 tools/convert_media.py --ffmpeg /path/to/ffmpeg
     python3 tools/build_manifest.py
 
-Layout expected:
-    viz/<task>_scenario_method_gifs/<scenario>/<method>__<outcome>.gif
-
-where outcome is "success" or "fail". Re-run this whenever new GIFs are
-added (e.g. for the 2D or 3D-Orient tasks). The site reads the emitted
-window.GIF_MANIFEST object and never hardcodes paths.
+Layouts:
+  * Scenario-major, with success/fail (the shelf task):
+        viz/<task>_scenario_method_gifs/<scenario>/<method>__<outcome>.gif
+    where outcome is "success" or "fail". A missing cell is meaningful (see
+    the explorer's absence reasons).
+  * Method-major, one rollout per cell (3D-Orient): registered in
+    SINGLE_OUTCOME_TASKS below.
+  * viz/spheres_env_gifs/<distribution>/*.gif for the spheres gallery.
 """
 from __future__ import annotations
 
 import json
 import re
-import sys
 from pathlib import Path
-
-LEGACY = "--legacy" in sys.argv
 
 try:
     from PIL import Image
-except ImportError:  # posters are optional; site degrades to gif-as-poster
+except ImportError:  # dimensions are optional; they only reserve layout space
     Image = None
 
 ROOT = Path(__file__).resolve().parent.parent
 VIZ = ROOT / "viz"
-POSTER_DIR = ROOT / "assets" / "posters"
-POSTER_MAXW = 480  # downscale wide renders; posters are just placeholders
+PUBLIC = ROOT / "site" / "public"
+OUT = ROOT / "site" / "src" / "data" / "media_manifest.json"
+SPHERES = "spheres_env_gifs"
 
 GIF_RE = re.compile(r"^(?P<method>[a-z0-9_]+)__(?P<outcome>success|fail)\.gif$")
 
@@ -59,71 +58,43 @@ SINGLE_OUTCOME_TASKS = [
 ]
 
 
-def make_poster(gif: Path, rel: str) -> str | None:
-    """Extract frame 0 of a GIF to a small JPG poster. Returns rel path or None."""
-    if Image is None or not LEGACY:  # old-page posters only; the Astro site has its own
-        return None
-    poster_rel = "assets/posters/" + rel[len("viz/"):].replace(".gif", ".jpg")
-    dst = ROOT / poster_rel
-    if dst.exists():
-        return poster_rel
-    dst.parent.mkdir(parents=True, exist_ok=True)
-    try:
-        with Image.open(gif) as im:
-            im.seek(0)
-            frame = im.convert("RGB")
-            if frame.width > POSTER_MAXW:
-                h = round(frame.height * POSTER_MAXW / frame.width)
-                frame = frame.resize((POSTER_MAXW, h), Image.LANCZOS)
-            frame.save(dst, "JPEG", quality=82, optimize=True)
-        return poster_rel
-    except Exception as exc:  # noqa: BLE001
-        print(f"  ! poster failed for {rel}: {exc}")
-        return None
+def to_video(gif: Path) -> dict:
+    """viz/...gif -> {mp4, webm, poster, w, h} with paths relative to site/public."""
+    stem = "media/" + gif.relative_to(ROOT).as_posix()[: -len(".gif")]
+    out: dict = {"mp4": stem + ".mp4", "webm": stem + ".webm", "poster": stem + ".jpg"}
+    for k in ("mp4", "webm", "poster"):
+        if not (PUBLIC / out[k]).is_file():
+            print(f"  ! missing {out[k]} (run tools/convert_media.py)")
+    poster = PUBLIC / out["poster"]
+    if Image is not None and poster.is_file():
+        with Image.open(poster) as im:
+            out["w"], out["h"] = im.size
+    return out
 
 
-def task_key(dirname: str) -> str:
-    # "shelf_scenario_method_gifs" -> "shelf"
-    return dirname.replace("_scenario_method_gifs", "")
-
-
-def build() -> dict:
-    manifest: dict = {}
-    if not VIZ.is_dir():
-        return manifest
-    for task_dir in sorted(VIZ.iterdir()):
+def build_scenario_major() -> dict:
+    tasks: dict = {}
+    for task_dir in sorted(VIZ.iterdir()) if VIZ.is_dir() else []:
         if not task_dir.is_dir() or not task_dir.name.endswith("_scenario_method_gifs"):
             continue
-        task = task_key(task_dir.name)
-        manifest[task] = {}
-        for scen_dir in sorted(task_dir.iterdir()):
-            if not scen_dir.is_dir():
-                continue
+        task = tasks.setdefault(task_dir.name.replace("_scenario_method_gifs", ""), {})
+        for scen_dir in sorted(p for p in task_dir.iterdir() if p.is_dir()):
             cell: dict = {}
             for gif in sorted(scen_dir.glob("*.gif")):
                 m = GIF_RE.match(gif.name)
-                if not m:
-                    continue
-                method = m.group("method")
-                outcome = m.group("outcome")
-                rel = gif.relative_to(ROOT).as_posix()
-                entry = {"gif": rel}
-                poster = make_poster(gif, rel)
-                if poster:
-                    entry["poster"] = poster
-                cell.setdefault(method, {})[outcome] = entry
+                if m:
+                    cell.setdefault(m["method"], {})[m["outcome"]] = to_video(gif)
             if cell:
-                manifest[task][scen_dir.name] = cell
-    return manifest
+                task[scen_dir.name] = cell
+    return tasks
 
 
-def build_single(manifest: dict) -> None:
-    """Merge method-major single-rollout tasks into the manifest."""
+def add_single_outcome(tasks: dict) -> None:
     for spec in SINGLE_OUTCOME_TASKS:
         base = VIZ / spec["dir"]
         if not base.is_dir():
             continue
-        task = manifest.setdefault(spec["task"], {})
+        task = tasks.setdefault(spec["task"], {})
         for scen in spec["scenarios"]:
             cell: dict = {}
             for site_key, folder in spec["methods"]:
@@ -131,92 +102,30 @@ def build_single(manifest: dict) -> None:
                 if not gif.is_file():
                     print(f"  ! missing {gif.relative_to(ROOT)}")
                     continue
-                rel = gif.relative_to(ROOT).as_posix()
-                entry = {"gif": rel}
-                poster = make_poster(gif, rel)
-                if poster:
-                    entry["poster"] = poster
-                cell[site_key] = {"rollout": entry}
+                cell[site_key] = {"rollout": to_video(gif)}
             if cell:
                 task[scen] = cell
-
-
-MEDIA = ROOT / "site" / "public" / "media"
-SPHERES = "spheres_env_gifs"
-
-
-def to_video(entry: dict) -> dict:
-    """GIF entry (viz/...gif) -> {mp4, webm, poster} relative to site/public."""
-    stem = "media/" + entry["gif"][: -len(".gif")]
-    out = {"mp4": stem + ".mp4", "webm": stem + ".webm", "poster": stem + ".jpg"}
-    for k in ("mp4", "webm", "poster"):
-        if not (ROOT / "site" / "public" / out[k]).is_file():
-            print(f"  ! missing {out[k]} (run tools/convert_media.py)")
-    poster = ROOT / "site" / "public" / out["poster"]
-    if Image is not None and poster.is_file():
-        with Image.open(poster) as im:  # aspect ratio only; reserves layout space
-            out["w"], out["h"] = im.size
-    return out
 
 
 def build_spheres() -> dict:
     """Gallery clips for the spheres environment, grouped by distribution."""
     groups: dict = {}
     base = VIZ / SPHERES
-    if not base.is_dir():
-        return groups
-    for d in sorted(base.iterdir()):
-        if not d.is_dir():
-            continue
+    for d in sorted(p for p in base.iterdir() if p.is_dir()) if base.is_dir() else []:
         key = "in_distribution" if d.name.startswith("in_") else "out_of_distribution"
-        groups[key] = [
-            {"name": g.stem, **to_video({"gif": g.relative_to(ROOT).as_posix()})}
-            for g in sorted(d.glob("*.gif"))
-        ]
+        groups[key] = [{"name": g.stem, **to_video(g)} for g in sorted(d.glob("*.gif"))]
     return groups
 
 
-def write_astro(manifest: dict) -> None:
-    videos = {
-        task: {
-            scen: {m: {o: to_video(e) for o, e in outs.items()} for m, outs in cell.items()}
-            for scen, cell in scens.items()
-        }
-        for task, scens in manifest.items()
-    }
-    out = ROOT / "site" / "src" / "data" / "media_manifest.json"
-    out.parent.mkdir(parents=True, exist_ok=True)
-    data = {"tasks": videos, "spheres": build_spheres()}
-    out.write_text(json.dumps(data, indent=2, sort_keys=True) + "\n")
-    print(f"wrote {out.relative_to(ROOT)}")
-
-
 def main() -> None:
-    manifest = build()
-    build_single(manifest)
-    write_astro(manifest)
-    if not LEGACY:
-        print("(pass --legacy to also rewrite js/gif_manifest.js for the old static page)")
-        return
-    out = ROOT / "js" / "gif_manifest.js"
-    out.parent.mkdir(exist_ok=True)
-    body = json.dumps(manifest, indent=2, sort_keys=True)
-    out.write_text(
-        "// AUTO-GENERATED by tools/build_manifest.py -- do not edit by hand.\n"
-        "// Re-run `python3 tools/build_manifest.py` after adding GIFs.\n"
-        f"window.GIF_MANIFEST = {body};\n"
-    )
-    n_gifs = sum(
-        1
-        for t in manifest.values()
-        for s in t.values()
-        for mth in s.values()
-        for _ in mth.values()
-    )
-    print(f"wrote {out.relative_to(ROOT)}: "
-          f"{len(manifest)} task(s), {n_gifs} gif(s)")
-    for task, scens in manifest.items():
-        print(f"  {task}: {len(scens)} scenario(s)")
+    tasks = build_scenario_major()
+    add_single_outcome(tasks)
+    data = {"tasks": tasks, "spheres": build_spheres()}
+    OUT.parent.mkdir(parents=True, exist_ok=True)
+    OUT.write_text(json.dumps(data, indent=2, sort_keys=True) + "\n")
+    n = sum(len(o) for t in tasks.values() for s in t.values() for o in s.values())
+    print(f"wrote {OUT.relative_to(ROOT)}: {len(tasks)} task(s), {n} explorer clip(s), "
+          f"{sum(len(v) for v in data['spheres'].values())} spheres clip(s)")
 
 
 if __name__ == "__main__":
