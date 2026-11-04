@@ -1,19 +1,22 @@
-# Build the Astro site in site/ and deploy it to GitHub Pages.
-# Based on the template's workflow (https://docs.astro.build/en/guides/deploy/github/),
-# simplified to npm and pinned to action releases that run on Node 24.
+# Build the Astro site in site/ and publish it to the gh-pages branch.
+#
+# Why a branch and not actions/deploy-pages: Pages deployments made through
+# actions/deploy-pages sat in GitHub's queue until they timed out on this repo
+# (an open GitHub-side problem: https://github.com/actions/deploy-pages/issues/406),
+# while branch-based Pages builds deploy normally. So the build happens here and
+# GitHub Pages serves the gh-pages branch.
+#
+# Repository setting: Settings -> Pages -> Build and deployment ->
+#   Source: "Deploy from a branch", Branch: gh-pages, Folder: / (root)
 name: Deploy Astro site to Pages
 
 on:
-  # Deploys only from the default branch.
   push:
-    branches: ["main0"]
-  # Allows a manual run from the Actions tab.
+    branches: ["main0", "pages-branch-deploy"] # TEMP: second entry is for a one-off test run
   workflow_dispatch:
 
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+  contents: write # push the built site to gh-pages
 
 # One deployment at a time; don't cancel a deployment that is in progress.
 concurrency:
@@ -22,10 +25,11 @@ concurrency:
 
 env:
   BUILD_PATH: "site" # the Astro project
+  PAGES_BRANCH: "gh-pages"
 
 jobs:
-  build:
-    name: Build
+  deploy:
+    name: Build and publish
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -36,32 +40,36 @@ jobs:
           node-version: "24"
           cache: npm
           cache-dependency-path: ${{ env.BUILD_PATH }}/package-lock.json
-      - name: Setup Pages
-        id: pages
-        uses: actions/configure-pages@v6
       - name: Install dependencies
         run: npm ci
         working-directory: ${{ env.BUILD_PATH }}
       - name: Build with Astro
+        # site and base (https://sumo048.github.io + /CS-pi_site) come from astro.config.ts
         run: |
           npx --no-install astro check
-          npx --no-install astro build \
-            --site "${{ steps.pages.outputs.origin }}" \
-            --base "${{ steps.pages.outputs.base_path }}"
+          npx --no-install astro build
         working-directory: ${{ env.BUILD_PATH }}
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v5
-        with:
-          path: ${{ env.BUILD_PATH }}/dist
-
-  deploy:
-    name: Deploy
-    needs: build
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v5
+      - name: Publish to the gh-pages branch
+        working-directory: ${{ env.BUILD_PATH }}/dist
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          touch .nojekyll   # serve files as-is; Jekyll would drop the _astro/ folder
+          git init -q -b "$PAGES_BRANCH"
+          git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          # Commit on top of the current gh-pages (if it exists) so unchanged media
+          # are stored once and nothing is force-pushed. --soft keeps the freshly
+          # built files as the working tree; `add -A` then records any removals.
+          if git fetch -q --depth=1 origin "$PAGES_BRANCH"; then
+            git reset -q --soft FETCH_HEAD
+          fi
+          git add -A
+          if git diff --cached --quiet; then
+            echo "Site unchanged; nothing to publish."
+            exit 0
+          fi
+          git -c user.name="github-actions[bot]" \
+              -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
+              commit -q -m "Deploy ${GITHUB_SHA::7} from ${GITHUB_REF_NAME}"
+          git push -q origin "HEAD:${PAGES_BRANCH}"
+          echo "Published ${GITHUB_SHA::7} to ${PAGES_BRANCH}."
