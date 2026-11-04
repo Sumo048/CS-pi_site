@@ -12,7 +12,7 @@ name: Deploy Astro site to Pages
 
 on:
   push:
-    branches: ["main0", "pages-branch-deploy"] # TEMP: second entry is for a one-off test run
+    branches: ["main0"]
   workflow_dispatch:
 
 permissions:
