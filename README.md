@@ -4,9 +4,11 @@ Project page for **CS-Pi: Constraint-Satisfying Flow Policy Sampling**
 (CoRL 2026), live at <https://sumo048.github.io/CS-pi_site/>.
 
 The page is an Astro site in [`site/`](site/) (see [`site/README.md`](site/README.md)
-for running, editing and the theme). GitHub Actions builds it and deploys it to
-GitHub Pages on every push to `main0` (`.github/workflows/astro.yml`); the
-repository's **Settings → Pages → Source** must be **GitHub Actions**.
+for running, editing and the theme). On every push to `main0`, GitHub Actions
+builds it and commits the output to the `gh-pages` branch
+(`.github/workflows/astro.yml`), which GitHub Pages serves. Repository setting:
+**Settings → Pages → Source: Deploy from a branch → `gh-pages` / `(root)`**.
+Don't edit `gh-pages` by hand; it is overwritten on every deploy.
 
 | Path | What it is |
 |------|------------|

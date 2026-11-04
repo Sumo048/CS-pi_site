@@ -57,6 +57,10 @@ screenshots). Colours are defined once, as CSS custom properties, at the top of
 
 ## Deploy
 
-`.github/workflows/astro.yml` builds `site/` and deploys to GitHub Pages on
-every push to `main0`. In the repository settings, **Pages → Build and
-deployment → Source** must be set to **GitHub Actions**.
+`.github/workflows/astro.yml` builds `site/` on every push to `main0` (or a
+manual run from the Actions tab) and commits `dist/` to the `gh-pages` branch,
+which GitHub Pages serves. In the repository settings, **Pages → Build and
+deployment → Source** must be **Deploy from a branch**, branch **gh-pages**,
+folder **/ (root)**. (The template's `actions/deploy-pages` route timed out in
+GitHub's Pages queue for this repository; see the comment at the top of the
+workflow.)
