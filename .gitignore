@@ -19,4 +19,6 @@ __pycache__/
 *.mp4
 # ...but keep the converted, web-sized hardware clips
 !assets/hardware/*.mp4
+# ...and the site's converted rollout clips (tools/convert_media.py)
+!site/public/media/**/*.mp4
 
