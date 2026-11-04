@@ -1,0 +1,67 @@
+---
+import { Font } from "astro:assets";
+import "../styles/global.css";
+import ThemeToggle from "../components/ThemeToggle.astro";
+import { Content, frontmatter } from "../paper.mdx";
+import { SITE } from "../data/site";
+
+interface Frontmatter {
+  title: string;
+  description?: string;
+  favicon: string;
+  thumbnail?: string;
+}
+const { title, description, favicon, thumbnail } = frontmatter as Frontmatter;
+const prefix = import.meta.env.BASE_URL.replace(/\/?$/, "/");
+const ogImage = thumbnail ? new URL(prefix + thumbnail, Astro.site).href : undefined;
+---
+
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="color-scheme" content="light dark" />
+    {/* Resolve the theme before first paint: ?theme=, then the saved choice,
+        then the system preference. Inline so there is no flash. */}
+    <script is:inline>
+      (function () {
+        var d = document.documentElement, t = null;
+        try {
+          var q = new URLSearchParams(location.search).get("theme");
+          t = q === "light" || q === "dark" ? q : localStorage.getItem("theme");
+        } catch (e) {}
+        if (t !== "light" && t !== "dark")
+          t = matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+        d.setAttribute("data-theme", t);
+      })();
+    </script>
+    <title>{title}</title>
+    {description && <meta name="description" content={description} />}
+    <link rel="icon" type="image/svg+xml" href={prefix + favicon} />
+    <link rel="canonical" href={new URL(prefix, Astro.site).href} />
+    <meta property="og:title" content={title} />
+    {description && <meta property="og:description" content={description} />}
+    <meta property="og:type" content="website" />
+    {ogImage && <meta property="og:image" content={ogImage} />}
+    <meta name="twitter:card" content="summary_large_image" />
+    <Font cssVariable="--font-source-serif" preload={[{ subset: "latin", style: "normal", weight: "400 700" }]} />
+    <Font cssVariable="--font-plex-sans" />
+    <Font cssVariable="--font-plex-mono" />
+  </head>
+  <body>
+    <div class="page">
+      <ThemeToggle />
+      <main>
+        <Content />
+      </main>
+    </div>
+    <footer class="foot">
+      <span>© 2026 · {SITE.method} · {SITE.venueLong}</span>
+      <span>
+        Built on <a href="https://research-template.roman.technology" rel="nofollow">Roman Hauksson-Neill's project page template</a>
+      </span>
+    </footer>
+  </body>
+</html>

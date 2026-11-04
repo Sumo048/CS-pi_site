@@ -1,0 +1,60 @@
+---
+// Hardware clips (2 featured + 3 baselines) and the annotated frame strips.
+// The strips are the original full-resolution PNGs (not recompressed); they
+// are swapped in only when they approach the viewport.
+import Clip from "./Clip.astro";
+import Outcome from "./Outcome.astro";
+import { base } from "../lib/lazyMedia";
+
+const v = (name: string) => ({
+  src: `media/hardware/${name}.mp4`,
+  webm: `media/hardware/${name}.webm`,
+  poster: `media/hardware/${name}.jpg`,
+});
+const featured = [
+  { ...v("cspi_success_0"), w: 720, h: 406, who: "CS-Pi (ours)", outcome: "ok" as const, note: "picks the apple and places it on the plate · 4× speed" },
+  { ...v("unconstrained_1x"), w: 640, h: 360, who: "Unconstrained π₀.₅", outcome: "bad" as const, note: "collides with the bottle and knocks it over · 1× speed" },
+];
+const baselines = [
+  { ...v("trust_fail"), w: 720, h: 406, who: "Trust Sampling", outcome: "bad" as const, note: "fails the task · 4× speed" },
+  { ...v("gradient_guidance"), w: 720, h: 406, who: "Gradient Guidance", outcome: "bad" as const, note: "fails the task · 4× speed" },
+  { ...v("project_fail"), w: 720, h: 406, who: "Projection", outcome: "bad" as const, note: "fails the task · 4× speed" },
+];
+const strips = [
+  { src: "figures/hw_v1_succ.png", lbl: "Layout 1 — CS-Pi", kind: "ok" as const },
+  { src: "figures/hw_v1_fail.png", lbl: "Layout 1 — unconstrained π₀.₅", kind: "bad" as const },
+  { src: "figures/hw_v2_succ.png", lbl: "Layout 2 — CS-Pi", kind: "ok" as const },
+  { src: "figures/hw_v2_fail.png", lbl: "Layout 2 — unconstrained π₀.₅", kind: "bad" as const },
+];
+---
+
+<div class="hw-grid wide">
+  <div class="grid2">
+    {featured.map((c) => <Clip {...c} controls />)}
+  </div>
+  <div class="grid3">
+    {baselines.map((c) => <Clip {...c} controls />)}
+  </div>
+</div>
+
+<slot />
+
+<div class="strips wide">
+  {
+    strips.map((s) => (
+      <figure class="strip">
+        <img data-src={base(s.src)} width="5039" height="536" alt={`${s.lbl}: annotated rollout frames, left to right`} decoding="async" />
+        <noscript><img src={base(s.src)} width="5039" height="536" alt="" /></noscript>
+        <figcaption class="clip-cap">
+          <span class="who">{s.lbl}</span>
+          <Outcome kind={s.kind} />
+        </figcaption>
+      </figure>
+    ))
+  }
+</div>
+
+<script>
+  import { observeImage } from "../lib/lazyMedia";
+  document.querySelectorAll<HTMLImageElement>(".strip img[data-src]").forEach(observeImage);
+</script>

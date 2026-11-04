@@ -1,0 +1,74 @@
+---
+// Template Video component, extended for GIF-replacement clips:
+//   * MP4 (H.264) first, WebM as a fallback source
+//   * lazy: sources and poster are attached only near the viewport, and the
+//     clip pauses when it scrolls away (see src/lib/lazyMedia.ts)
+//   * always muted + playsinline so it autoplays under mobile Safari rules
+import type { HTMLAttributes } from "astro/types";
+import { base } from "../lib/lazyMedia";
+
+interface Props extends Omit<HTMLAttributes<"video">, "src" | "poster"> {
+  src: string; // MP4, relative to public/
+  webm?: string;
+  poster?: string;
+  w?: number;
+  h?: number;
+  lazy?: boolean;
+  label?: string;
+}
+
+const {
+  src,
+  webm,
+  poster,
+  w,
+  h,
+  lazy = true,
+  label,
+  controls = false,
+  loop = true,
+  class: className,
+  ...videoProps
+} = Astro.props;
+
+const mp4Url = base(src);
+const webmUrl = webm ? base(webm) : undefined;
+const posterUrl = poster ? base(poster) : undefined;
+---
+
+<video
+  class:list={["media", className]}
+  width={w}
+  height={h}
+  style={w && h ? `aspect-ratio: ${w} / ${h}` : undefined}
+  autoplay
+  muted
+  loop={loop}
+  playsinline
+  preload="none"
+  controls={controls}
+  aria-label={label}
+  data-lazy={lazy ? "" : undefined}
+  data-poster={lazy ? posterUrl : undefined}
+  poster={lazy ? undefined : posterUrl}
+  {...videoProps}
+>
+  {
+    lazy ? (
+      <>
+        <source data-src={mp4Url} type="video/mp4" />
+        {webmUrl && <source data-src={webmUrl} type="video/webm" />}
+      </>
+    ) : (
+      <>
+        <source src={mp4Url} type="video/mp4" />
+        {webmUrl && <source src={webmUrl} type="video/webm" />}
+      </>
+    )
+  }
+</video>
+
+<script>
+  import { observeVideo } from "../lib/lazyMedia";
+  document.querySelectorAll<HTMLVideoElement>("video[data-lazy]").forEach(observeVideo);
+</script>

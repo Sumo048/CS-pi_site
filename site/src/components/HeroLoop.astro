@@ -1,0 +1,27 @@
+---
+// The animated CS-Pi loop from the old landing page (src/scripts/hero.js,
+// ported from js/hero.js). The element ids are the ones hero.js expects.
+---
+
+<figure class="loop wide" aria-label="Animation of the CS-Pi loop on a 2D obstacle-avoidance toy">
+  <div class="loop-bar">
+    <span class="title"><span class="cs">CS-Pi</span> loop</span>
+    <span class="stage" id="vizStage" aria-live="off">flow ODE · draw sample</span>
+    <span class="spacer"></span>
+    <span class="stat" id="statIter">iter 1</span>
+    <span class="stat" id="statDelta">δ = 0.000</span>
+    <span class="stat" id="statN">n = —</span>
+  </div>
+  <canvas id="heroCanvas" role="img" aria-label="A sample path is drawn through an obstacle, projected to the nearest feasible path, renoised and re-run until it clears the obstacle. Click to restart."></canvas>
+  <figcaption class="loop-foot">
+    <span class="key draw"><i></i>draw / project</span>
+    <span class="key ok"><i></i>feasible · goal</span>
+    <span class="key bad"><i></i>obstacle (unseen at training)</span>
+    <span class="spacer"></span>
+    <span>draw → project → renoise to n = k/(k+δ) → re-run · click to restart</span>
+  </figcaption>
+</figure>
+
+<script>
+  import "../scripts/hero.js";
+</script>

@@ -1,0 +1,19 @@
+---
+// Numbered section: "03  Overview" over a thin rule, then the heading text.
+interface Props {
+  id: string;
+  num: number;
+  kicker: string;
+  title?: string; // plain text; use the "title" slot for inline markup
+}
+const { id, num, kicker, title } = Astro.props;
+const hasTitleSlot = Astro.slots.has("title");
+---
+
+<section id={id} aria-labelledby={`${id}-h`}>
+  <div class="sec-head">
+    <p class="sec-kicker"><span class="sec-num">{String(num).padStart(2, "0")}</span><span>{kicker}</span></p>
+    <h2 id={`${id}-h`}>{hasTitleSlot ? <slot name="title" /> : title}</h2>
+  </div>
+  <slot />
+</section>

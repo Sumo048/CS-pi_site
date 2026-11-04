@@ -1,5 +1,14 @@
 #!/usr/bin/env python3
-"""Scan viz/ for rollout GIFs and emit js/gif_manifest.js.
+"""Scan viz/ for rollout GIFs and emit the media manifests.
+
+Writes:
+  * site/src/data/media_manifest.json -- Astro site (MP4/WebM/poster paths
+    under site/public/media/, produced by tools/convert_media.py)
+  * js/gif_manifest.js + assets/posters/ -- old static page, only with --legacy
+
+Typical use after adding GIFs:
+    python3 tools/convert_media.py --ffmpeg /path/to/ffmpeg
+    python3 tools/build_manifest.py
 
 Layout expected:
     viz/<task>_scenario_method_gifs/<scenario>/<method>__<outcome>.gif
@@ -8,9 +17,14 @@ where outcome is "success" or "fail". Re-run this whenever new GIFs are
 added (e.g. for the 2D or 3D-Orient tasks). The site reads the emitted
 window.GIF_MANIFEST object and never hardcodes paths.
 """
+from __future__ import annotations
+
 import json
 import re
+import sys
 from pathlib import Path
+
+LEGACY = "--legacy" in sys.argv
 
 try:
     from PIL import Image
@@ -31,11 +45,14 @@ SINGLE_OUTCOME_TASKS = [
     {
         "task": "3dorient",
         "dir": "orientation_task_gifs",
-        "scenarios": ["config1", "config2"],
+        "scenarios": ["config1", "config2", "task28", "task31", "task43"],
         "methods": [
             ("amr", "amr_eeprox_ref"),
+            ("amr_dyn", "amr_eeprox_dynamic"),
+            ("amr_joint", "amr_joint_prox"),
             ("unguided", "unguided"),
             ("tweedie", "tweedie_alpha0.03"),
+            ("tweedie_weak", "tweedie_alpha0.003"),
             ("trust", "trust_w0.001"),
         ],
     },
@@ -44,7 +61,7 @@ SINGLE_OUTCOME_TASKS = [
 
 def make_poster(gif: Path, rel: str) -> str | None:
     """Extract frame 0 of a GIF to a small JPG poster. Returns rel path or None."""
-    if Image is None:
+    if Image is None or not LEGACY:  # old-page posters only; the Astro site has its own
         return None
     poster_rel = "assets/posters/" + rel[len("viz/"):].replace(".gif", ".jpg")
     dst = ROOT / poster_rel
@@ -124,9 +141,63 @@ def build_single(manifest: dict) -> None:
                 task[scen] = cell
 
 
+MEDIA = ROOT / "site" / "public" / "media"
+SPHERES = "spheres_env_gifs"
+
+
+def to_video(entry: dict) -> dict:
+    """GIF entry (viz/...gif) -> {mp4, webm, poster} relative to site/public."""
+    stem = "media/" + entry["gif"][: -len(".gif")]
+    out = {"mp4": stem + ".mp4", "webm": stem + ".webm", "poster": stem + ".jpg"}
+    for k in ("mp4", "webm", "poster"):
+        if not (ROOT / "site" / "public" / out[k]).is_file():
+            print(f"  ! missing {out[k]} (run tools/convert_media.py)")
+    poster = ROOT / "site" / "public" / out["poster"]
+    if Image is not None and poster.is_file():
+        with Image.open(poster) as im:  # aspect ratio only; reserves layout space
+            out["w"], out["h"] = im.size
+    return out
+
+
+def build_spheres() -> dict:
+    """Gallery clips for the spheres environment, grouped by distribution."""
+    groups: dict = {}
+    base = VIZ / SPHERES
+    if not base.is_dir():
+        return groups
+    for d in sorted(base.iterdir()):
+        if not d.is_dir():
+            continue
+        key = "in_distribution" if d.name.startswith("in_") else "out_of_distribution"
+        groups[key] = [
+            {"name": g.stem, **to_video({"gif": g.relative_to(ROOT).as_posix()})}
+            for g in sorted(d.glob("*.gif"))
+        ]
+    return groups
+
+
+def write_astro(manifest: dict) -> None:
+    videos = {
+        task: {
+            scen: {m: {o: to_video(e) for o, e in outs.items()} for m, outs in cell.items()}
+            for scen, cell in scens.items()
+        }
+        for task, scens in manifest.items()
+    }
+    out = ROOT / "site" / "src" / "data" / "media_manifest.json"
+    out.parent.mkdir(parents=True, exist_ok=True)
+    data = {"tasks": videos, "spheres": build_spheres()}
+    out.write_text(json.dumps(data, indent=2, sort_keys=True) + "\n")
+    print(f"wrote {out.relative_to(ROOT)}")
+
+
 def main() -> None:
     manifest = build()
     build_single(manifest)
+    write_astro(manifest)
+    if not LEGACY:
+        print("(pass --legacy to also rewrite js/gif_manifest.js for the old static page)")
+        return
     out = ROOT / "js" / "gif_manifest.js"
     out.parent.mkdir(exist_ok=True)
     body = json.dumps(manifest, indent=2, sort_keys=True)

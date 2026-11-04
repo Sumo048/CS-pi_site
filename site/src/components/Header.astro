@@ -1,0 +1,52 @@
+---
+// Template Header, restyled: left-aligned title block in the reading column,
+// authors and affiliation, then a plain text link row. Links with an empty
+// url are left out, so placeholders never render as dead links.
+type Author = { name: string; url?: string };
+type Link = { name: string; url: string };
+
+interface Props {
+  title: string;
+  subtitle?: string;
+  venue?: string;
+  authors: Author[];
+  affiliation?: string;
+  links?: Link[];
+}
+
+const { title, subtitle, venue, authors, affiliation, links = [] } = Astro.props;
+const shown = links.filter((l) => l.url);
+const isExternal = (u: string) => /^https?:/.test(u);
+---
+
+<header class="hero">
+  <div class="col">
+    {venue && <p class="venue">{venue}</p>}
+    <h1 set:html={title.replace(/CS-Pi/g, '<span class="cs">CS-Pi</span>')} />
+    {subtitle && <p class="subtitle">{subtitle}</p>}
+    <p class="authors">
+      {
+        authors.map((a, i) => (
+          <>
+            {a.url ? <a href={a.url}>{a.name}</a> : <span>{a.name}</span>}
+            {i < authors.length - 1 ? ", " : ""}
+          </>
+        ))
+      }
+    </p>
+    {affiliation && <p class="affil">{affiliation}</p>}
+    {
+      shown.length > 0 && (
+        <ul class="linkrow" aria-label="Links">
+          {shown.map((l) => (
+            <li>
+              <a href={l.url} {...(isExternal(l.url) ? { rel: "noopener" } : {})}>{l.name}</a>
+            </li>
+          ))}
+        </ul>
+      )
+    }
+    <slot />
+  </div>
+  <slot name="after" />
+</header>
