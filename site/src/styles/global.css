@@ -566,12 +566,6 @@ table.results tr.ours > :first-child { font-weight: 600 !important; padding-left
 .tlead { font-size: 16.5px; }
 .tcap { margin-top: 12px; font-size: 14.5px; line-height: 1.55; color: var(--ink-2); }
 
-/* ---------------------------------------------------------------------------
-   Spheres gallery
-   ------------------------------------------------------------------------- */
-.gallery h3 { margin-top: 48px; }
-.gallery .clip-cap { display: block; }
-.gallery .clip-cap .side { display: block; }
 
 /* ---------------------------------------------------------------------------
    BibTeX, footer, theme toggle

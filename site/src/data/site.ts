@@ -5,7 +5,14 @@ export interface Method { key: string; label: string; short: string; ours?: bool
 export interface Scenario { key: string; label: string; desc: string; note?: string }
 export interface Task {
   key: string; label: string; dim: string; available: boolean; outcomes: boolean;
-  methods: string[]; methodLabels?: Record<string, string>; blurb: string; rolloutCaption?: string; scenarios: Scenario[];
+  methods: string[];
+  methodLabels?: Record<string, string>;   // per-task display names
+  methodBlurbs?: Record<string, string>;   // per-task method descriptions
+  blurb: string;
+  rolloutCaption?: string;
+  outcomeCaptions?: { success: string; fail: string };
+  absence?: { amrFail?: string; success?: string; fail?: string };
+  scenarios: Scenario[];
 }
 export interface ResultTable {
   title: string; lead?: string; caption: string; cols: string[];
@@ -86,20 +93,12 @@ export const METHODS: Method[] = [
   // --- extra baseline used by the 3D-Orient comparison --------------------
   {
     key: 'unguided', label: 'Unconstrained', short: 'Policy only', color: '#7b8088', card: false,
-    blurb: 'The policy alone, with no constraint enforcement. It reaches the ' +
-           'goal but ignores the orientation preference, which was absent from ' +
-           'its demonstrations.'
+    blurb: 'The policy alone, with no constraint enforcement.'
   },
   // --- 3D-Orient variants (extra rollouts in viz/orientation_task_gifs) ----
   {
-    key: 'amr_dyn', label: 'CS-Pi, dynamic ref', short: 'EE-prox, dynamic reference', color: 'var(--accent)', card: false,
-    blurb: 'CS-Pi with the end-effector orientation proximal step, with the target ' +
-           'orientation re-evaluated at every step instead of fixed at plan start.'
-  },
-  {
-    key: 'amr_joint', label: 'CS-Pi, joint prox', short: 'Joint-space proximal step', color: 'var(--accent)', card: false,
-    blurb: 'CS-Pi with a joint-space proximal step in place of the end-effector ' +
-           'orientation step.'
+    key: 'amr_dyn', label: 'CS-Pi, cost aligned', short: 'Projection step at the end of the loop', color: 'var(--accent)', card: false,
+    blurb: 'Cost aligned: CS-Pi with a projection step at the end of the loop.'
   },
   {
     key: 'tweedie_weak', label: 'Gradient Guidance (α=0.003)', short: 'Guidance, weak', color: '#b8553f', card: false,
@@ -142,15 +141,23 @@ export const TASKS: Task[] = [
     dim: '7-DoF orientation cost',
     available: true,
     outcomes: false,
-    methods: ['amr', 'amr_dyn', 'amr_joint', 'unguided', 'tweedie', 'tweedie_weak', 'trust'],
-    methodLabels: { tweedie: 'Gradient Guidance (α=0.03)' },
+    methods: ['amr', 'amr_dyn', 'unguided', 'tweedie', 'tweedie_weak', 'trust'],
+    methodLabels: { amr: 'CS-Pi, task aligned', tweedie: 'Gradient Guidance (α=0.03)' },
+    methodBlurbs: {
+      amr: 'Task aligned: CS-Pi with no projection step at the end of the loop.',
+      unguided: 'The policy alone, with no constraint enforcement. It reaches the ' +
+                'goal but ignores the orientation preference, which was absent from ' +
+                'its demonstrations.'
+    },
     blurb:
       'A 7-DoF reach to a goal sampled anywhere in the reachable workspace, with ' +
       'a soft preference added on top: hold a top-down end-effector orientation ' +
       'R*, encoded as the cost λ Σₜ ‖R(qₜ) − R*‖²_F. The test is whether a ' +
       'method can achieve the orientation without giving up the reach. CS-Pi ' +
       'replaces its projection with the proximal operator of this cost; nothing ' +
-      'else changes. Projection, rejection and the CBF samplers need a safe set ' +
+      'else changes. Two CS-Pi variants are shown: task aligned has no projection ' +
+      'step at the end of the loop, and cost aligned adds a projection step at the ' +
+      'end of the loop. Projection, rejection and the CBF samplers need a safe set ' +
       'and do not apply to a continuous cost.',
     rolloutCaption:
       'Reach-and-orient under the orientation preference. Each frame is annotated ' +
@@ -177,6 +184,32 @@ export const TASKS: Task[] = [
         desc: 'A held-out reach target. Read success off the on-frame distance and orientation error.' },
       { key: 'task43', label: 'Validation task 43',
         desc: 'A held-out reach target. Read success off the on-frame distance and orientation error.' }
+    ]
+  },
+  {
+    key: 'spheres',
+    label: 'Sphere avoidance',
+    dim: '7-DoF Panda',
+    available: true,
+    outcomes: true,
+    methods: ['amr', 'tweedie', 'unguided'],
+    methodLabels: { tweedie: 'Gradient Guidance (α=0.5)' },
+    blurb:
+      'A 7-DoF Panda reaches a target through a field of spheres. A rollout is ' +
+      'safe if the arm never touches a sphere. Each frame is annotated with the ' +
+      'rollout’s collision cost and whether it collided.',
+    outcomeCaptions: {
+      success: 'Safe: the arm reaches through the spheres without touching any of them.',
+      fail: 'Failure: the arm collides with a sphere.'
+    },
+    absence: {
+      amrFail: 'This environment shows CS-Pi’s collision-free rollouts only.',
+      success: 'No collision-free rollout of this method is shown for this level.',
+      fail: 'No colliding rollout of this method is shown for this level.'
+    },
+    scenarios: [
+      { key: 'level_1', label: 'Level 1',
+        desc: 'Ten spheres around the arm: the obstacle field of the training environment.' }
     ]
   }
 ];
@@ -254,11 +287,10 @@ export const RESULTS: Record<string, ResultTable> = {
              'of the target position and 0.36 rad of the target orientation. ' +
              'Goal reach: rollouts ending within 10 cm of the target position. ' +
              'logL comparisons are meaningful only at comparable success, since the ' +
-             'guidance configurations attain only 2.2% and 6.7%. Max EE step: largest ' +
-             'single-step end-effector displacement. EE-prox: proximal step on the ' +
-             'orientation cost. NFE: model evaluations per rollout.',
+             'guidance configurations attain only 2.2% and 6.7%. Max step: largest ' +
+             'single-step end-effector displacement. NFE: model evaluations per rollout.',
     cols: ['Method', 'Success ↑', 'Goal reach ↑', 'logL ↑',
-           'Max EE step (m)', 'NFE ↓'],
+           'Max step (m)', 'NFE ↓'],
     rows: [
       { c: ['Unconstrained',                        '2.2%',  '98.9%', '13.46', '0.07', '138'],
         best: [2, 3, 4, 5] },
@@ -266,7 +298,7 @@ export const RESULTS: Record<string, ResultTable> = {
       { c: ['Gradient Guidance (α=0.03)',           '6.7%',  '7.8%',  '9.62',  '0.40', '160'] },
       { c: ['Trust Sampling (w=0.001)',             '1.1%',  '98.9%', '13.44', '0.07', '1379'],
         best: [2, 4] },
-      { c: ['CS-Pi + EE-prox (k=10, Kmax=3) (ours)', '65.6%', '98.9%', '10.21', '0.07', '210'],
+      { c: ['CS-Pi (k=10, Kmax=3) (ours)', '65.6%', '98.9%', '10.21', '0.07', '210'],
         ours: true, best: [1, 2, 4] }
     ]
   },

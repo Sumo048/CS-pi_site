@@ -14,6 +14,9 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / "site" / "public" / "media"
+# Raw side-by-side renders; tools/split_spheres.py turns them into per-method
+# GIFs under viz/spheres_scenario_method_gifs/, which are converted instead.
+SKIP_DIRS = {"spheres_env_gifs"}
 VF = ("scale='min(1280,iw)':-2:flags=lanczos,"
       "scale=trunc(iw/2)*2:trunc(ih/2)*2,format=yuv420p")
 
@@ -27,6 +30,8 @@ def jobs():
     """Yield (src, out_stem, existing_poster_or_None, copy_mp4)."""
     for g in sorted((ROOT / "viz").rglob("*.gif")):
         rel = g.relative_to(ROOT / "viz")
+        if rel.parts[0] in SKIP_DIRS:
+            continue
         poster = ROOT / "assets" / "posters" / rel.with_suffix(".jpg")
         yield g, OUT / "viz" / rel.with_suffix(""), poster, False
     for g in sorted((ROOT / "assets" / "story").glob("*.gif")):

@@ -14,7 +14,6 @@ import Picture from "./components/Picture.astro";
 import Video from "./components/Video.astro";
 import Hardware from "./components/Hardware.astro";
 import ResultsTabs from "./components/ResultsTabs.astro";
-import SpheresGallery from "./components/SpheresGallery.astro";
 import Explorer from "./islands/Explorer.tsx";
 import FaceOff from "./islands/FaceOff.tsx";
 import { SITE, METHODS, TASKS, HEADLINE } from "./data/site";
@@ -181,15 +180,7 @@ Choose any cell to watch the rollout. Some cells have no rollout on purpose: a m
 
 </Section>
 
-<Section id="spheres" num={8} kicker="More rollouts" title="Obstacle avoidance among spheres">
-
-A 7-DoF Panda reaches through a field of spheres, in the 10-sphere environment the policy was trained on and in a variant with 6 extra obstacles it never saw. Every clip is a side-by-side render: the left and right halves are two samplers run on the same task. The label under each clip gives both methods and whether each rollout ends collision-free, as printed on the clip's final frame.
-
-<SpheresGallery />
-
-</Section>
-
-<Section id="results" num={9} kicker="Results">
+<Section id="results" num={8} kicker="Results">
   <Fragment slot="title"><span class="cs">CS-Pi</span> departs from the policy only as far as the constraint forces</Fragment>
 
 For each sampler we measure two things: whether it satisfies the constraint, and whether its samples are plausible. The primary metric is <i>safe success</i>, the fraction of rollouts that satisfy the constraint and complete the task. Plausibility is measured by logL, the mean log-likelihood the policy assigns to a method's actions (higher is more plausible). We compare against gradient guidance, Trust Sampling, rejection, projection, the unconstrained policy, and two control-barrier-function samplers (SafeDiffuser and SafeFlowMatcher), each reported at the best value of its main hyperparameters; <span class="cs">CS-Pi</span> has a single hyperparameter, k, and is robust across a broad range of it. NFE counts flow-network forward passes and is not comparable across benchmarks. The <span class="cs">CS-Pi</span> row is highlighted; best per column is bold.
@@ -216,15 +207,7 @@ A feasibility set cannot express a preference among feasible actions. On the sam
 
 </Section>
 
-<Section id="limitations" num={10} kicker="Limitations" title="When no safe, plausible action exists">
-
-Sometimes no action is both safe and plausible, and the loop does not reach one. Our theory covers a single iteration, the distribution of the next draw given the current one, but does not prove that the loop converges. When no draw lies within τ of the safe set after K<sub>max</sub> iterations, <span class="cs">CS-Pi</span> must choose: execute the last draw, keeping plausibility but possibly unsafe, or its terminal projection, keeping safety but often less likely under the policy.
-
-<span class="cs">CS-Pi</span> also needs a usable projection (or proximal operator): the obstacle and joint-limit sets we use admit closed-form or cheap iterative solutions, but more complex sets need more complex solvers. It is only as good as the safe set itself: on hardware we estimate it from vision once per rollout in static scenes, so dynamic obstacles and errors from segmentation, depth and registration can misplace or mis-size it. Finally, like every sampler we evaluate, it operates on action chunks and is therefore myopic: when the policy commits to a mode that is safe for the current chunk but has no safe continuation, <span class="cs">CS-Pi</span> cannot recover.
-
-</Section>
-
-<Section id="cite" num={11} kicker="Cite" title="BibTeX">
+<Section id="cite" num={9} kicker="Cite" title="BibTeX">
 
 <div class="bib">
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Scan viz/ for rollout GIFs and write site/src/data/media_manifest.json.
 
-The manifest maps each explorer cell (and each spheres-gallery clip) to the
+The manifest maps each explorer cell to the
 MP4 / WebM / poster that tools/convert_media.py produced under
 site/public/media/. The site reads it and never hardcodes clip paths.
 
@@ -13,10 +13,10 @@ Layouts:
   * Scenario-major, with success/fail (the shelf task):
         viz/<task>_scenario_method_gifs/<scenario>/<method>__<outcome>.gif
     where outcome is "success" or "fail". A missing cell is meaningful (see
-    the explorer's absence reasons).
+    the explorer's absence reasons). The spheres task lives here too, made
+    by tools/split_spheres.py from the side-by-side renders.
   * Method-major, one rollout per cell (3D-Orient): registered in
     SINGLE_OUTCOME_TASKS below.
-  * viz/spheres_env_gifs/<distribution>/*.gif for the spheres gallery.
 """
 from __future__ import annotations
 
@@ -33,7 +33,6 @@ ROOT = Path(__file__).resolve().parent.parent
 VIZ = ROOT / "viz"
 PUBLIC = ROOT / "site" / "public"
 OUT = ROOT / "site" / "src" / "data" / "media_manifest.json"
-SPHERES = "spheres_env_gifs"
 
 GIF_RE = re.compile(r"^(?P<method>[a-z0-9_]+)__(?P<outcome>success|fail)\.gif$")
 
@@ -48,7 +47,6 @@ SINGLE_OUTCOME_TASKS = [
         "methods": [
             ("amr", "amr_eeprox_ref"),
             ("amr_dyn", "amr_eeprox_dynamic"),
-            ("amr_joint", "amr_joint_prox"),
             ("unguided", "unguided"),
             ("tweedie", "tweedie_alpha0.03"),
             ("tweedie_weak", "tweedie_alpha0.003"),
@@ -107,25 +105,14 @@ def add_single_outcome(tasks: dict) -> None:
                 task[scen] = cell
 
 
-def build_spheres() -> dict:
-    """Gallery clips for the spheres environment, grouped by distribution."""
-    groups: dict = {}
-    base = VIZ / SPHERES
-    for d in sorted(p for p in base.iterdir() if p.is_dir()) if base.is_dir() else []:
-        key = "in_distribution" if d.name.startswith("in_") else "out_of_distribution"
-        groups[key] = [{"name": g.stem, **to_video(g)} for g in sorted(d.glob("*.gif"))]
-    return groups
-
-
 def main() -> None:
     tasks = build_scenario_major()
     add_single_outcome(tasks)
-    data = {"tasks": tasks, "spheres": build_spheres()}
+    data = {"tasks": tasks}
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(json.dumps(data, indent=2, sort_keys=True) + "\n")
     n = sum(len(o) for t in tasks.values() for s in t.values() for o in s.values())
-    print(f"wrote {OUT.relative_to(ROOT)}: {len(tasks)} task(s), {n} explorer clip(s), "
-          f"{sum(len(v) for v in data['spheres'].values())} spheres clip(s)")
+    print(f"wrote {OUT.relative_to(ROOT)}: {len(tasks)} task(s), {n} explorer clip(s)")
 
 
 if __name__ == "__main__":

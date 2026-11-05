@@ -1,170 +1,4 @@
 {
-  "spheres": {
-    "in_distribution": [
-      {
-        "h": 508,
-        "mp4": "media/viz/spheres_env_gifs/in_distribution_EnvSpheres3D/amr_failure_sample00.mp4",
-        "name": "amr_failure_sample00",
-        "poster": "media/viz/spheres_env_gifs/in_distribution_EnvSpheres3D/amr_failure_sample00.jpg",
-        "w": 1280,
-        "webm": "media/viz/spheres_env_gifs/in_distribution_EnvSpheres3D/amr_failure_sample00.webm"
-      },
-      {
-        "h": 508,
-        "mp4": "media/viz/spheres_env_gifs/in_distribution_EnvSpheres3D/amr_failure_sample01.mp4",
-        "name": "amr_failure_sample01",
-        "poster": "media/viz/spheres_env_gifs/in_distribution_EnvSpheres3D/amr_failure_sample01.jpg",
-        "w": 1280,
-        "webm": "media/viz/spheres_env_gifs/in_distribution_EnvSpheres3D/amr_failure_sample01.webm"
-      },
-      {
-        "h": 508,
-        "mp4": "media/viz/spheres_env_gifs/in_distribution_EnvSpheres3D/amr_failure_sample02.mp4",
-        "name": "amr_failure_sample02",
-        "poster": "media/viz/spheres_env_gifs/in_distribution_EnvSpheres3D/amr_failure_sample02.jpg",
-        "w": 1280,
-        "webm": "media/viz/spheres_env_gifs/in_distribution_EnvSpheres3D/amr_failure_sample02.webm"
-      },
-      {
-        "h": 508,
-        "mp4": "media/viz/spheres_env_gifs/in_distribution_EnvSpheres3D/amr_failure_sample03.mp4",
-        "name": "amr_failure_sample03",
-        "poster": "media/viz/spheres_env_gifs/in_distribution_EnvSpheres3D/amr_failure_sample03.jpg",
-        "w": 1280,
-        "webm": "media/viz/spheres_env_gifs/in_distribution_EnvSpheres3D/amr_failure_sample03.webm"
-      },
-      {
-        "h": 508,
-        "mp4": "media/viz/spheres_env_gifs/in_distribution_EnvSpheres3D/amr_failure_sample04.mp4",
-        "name": "amr_failure_sample04",
-        "poster": "media/viz/spheres_env_gifs/in_distribution_EnvSpheres3D/amr_failure_sample04.jpg",
-        "w": 1280,
-        "webm": "media/viz/spheres_env_gifs/in_distribution_EnvSpheres3D/amr_failure_sample04.webm"
-      },
-      {
-        "h": 508,
-        "mp4": "media/viz/spheres_env_gifs/in_distribution_EnvSpheres3D/amr_success_sample00.mp4",
-        "name": "amr_success_sample00",
-        "poster": "media/viz/spheres_env_gifs/in_distribution_EnvSpheres3D/amr_success_sample00.jpg",
-        "w": 1280,
-        "webm": "media/viz/spheres_env_gifs/in_distribution_EnvSpheres3D/amr_success_sample00.webm"
-      },
-      {
-        "h": 508,
-        "mp4": "media/viz/spheres_env_gifs/in_distribution_EnvSpheres3D/amr_success_sample01.mp4",
-        "name": "amr_success_sample01",
-        "poster": "media/viz/spheres_env_gifs/in_distribution_EnvSpheres3D/amr_success_sample01.jpg",
-        "w": 1280,
-        "webm": "media/viz/spheres_env_gifs/in_distribution_EnvSpheres3D/amr_success_sample01.webm"
-      },
-      {
-        "h": 508,
-        "mp4": "media/viz/spheres_env_gifs/in_distribution_EnvSpheres3D/amr_success_sample02.mp4",
-        "name": "amr_success_sample02",
-        "poster": "media/viz/spheres_env_gifs/in_distribution_EnvSpheres3D/amr_success_sample02.jpg",
-        "w": 1280,
-        "webm": "media/viz/spheres_env_gifs/in_distribution_EnvSpheres3D/amr_success_sample02.webm"
-      },
-      {
-        "h": 508,
-        "mp4": "media/viz/spheres_env_gifs/in_distribution_EnvSpheres3D/amr_success_sample03.mp4",
-        "name": "amr_success_sample03",
-        "poster": "media/viz/spheres_env_gifs/in_distribution_EnvSpheres3D/amr_success_sample03.jpg",
-        "w": 1280,
-        "webm": "media/viz/spheres_env_gifs/in_distribution_EnvSpheres3D/amr_success_sample03.webm"
-      },
-      {
-        "h": 508,
-        "mp4": "media/viz/spheres_env_gifs/in_distribution_EnvSpheres3D/amr_success_sample04.mp4",
-        "name": "amr_success_sample04",
-        "poster": "media/viz/spheres_env_gifs/in_distribution_EnvSpheres3D/amr_success_sample04.jpg",
-        "w": 1280,
-        "webm": "media/viz/spheres_env_gifs/in_distribution_EnvSpheres3D/amr_success_sample04.webm"
-      },
-      {
-        "h": 390,
-        "mp4": "media/viz/spheres_env_gifs/in_distribution_EnvSpheres3D/amr_vs_guidance_sample00.mp4",
-        "name": "amr_vs_guidance_sample00",
-        "poster": "media/viz/spheres_env_gifs/in_distribution_EnvSpheres3D/amr_vs_guidance_sample00.jpg",
-        "w": 960,
-        "webm": "media/viz/spheres_env_gifs/in_distribution_EnvSpheres3D/amr_vs_guidance_sample00.webm"
-      },
-      {
-        "h": 390,
-        "mp4": "media/viz/spheres_env_gifs/in_distribution_EnvSpheres3D/amr_vs_guidance_sample01.mp4",
-        "name": "amr_vs_guidance_sample01",
-        "poster": "media/viz/spheres_env_gifs/in_distribution_EnvSpheres3D/amr_vs_guidance_sample01.jpg",
-        "w": 960,
-        "webm": "media/viz/spheres_env_gifs/in_distribution_EnvSpheres3D/amr_vs_guidance_sample01.webm"
-      },
-      {
-        "h": 508,
-        "mp4": "media/viz/spheres_env_gifs/in_distribution_EnvSpheres3D/unguided_vs_amr_sample00.mp4",
-        "name": "unguided_vs_amr_sample00",
-        "poster": "media/viz/spheres_env_gifs/in_distribution_EnvSpheres3D/unguided_vs_amr_sample00.jpg",
-        "w": 1280,
-        "webm": "media/viz/spheres_env_gifs/in_distribution_EnvSpheres3D/unguided_vs_amr_sample00.webm"
-      },
-      {
-        "h": 508,
-        "mp4": "media/viz/spheres_env_gifs/in_distribution_EnvSpheres3D/unguided_vs_amr_sample01.mp4",
-        "name": "unguided_vs_amr_sample01",
-        "poster": "media/viz/spheres_env_gifs/in_distribution_EnvSpheres3D/unguided_vs_amr_sample01.jpg",
-        "w": 1280,
-        "webm": "media/viz/spheres_env_gifs/in_distribution_EnvSpheres3D/unguided_vs_amr_sample01.webm"
-      },
-      {
-        "h": 508,
-        "mp4": "media/viz/spheres_env_gifs/in_distribution_EnvSpheres3D/unguided_vs_amr_sample02.mp4",
-        "name": "unguided_vs_amr_sample02",
-        "poster": "media/viz/spheres_env_gifs/in_distribution_EnvSpheres3D/unguided_vs_amr_sample02.jpg",
-        "w": 1280,
-        "webm": "media/viz/spheres_env_gifs/in_distribution_EnvSpheres3D/unguided_vs_amr_sample02.webm"
-      }
-    ],
-    "out_of_distribution": [
-      {
-        "h": 390,
-        "mp4": "media/viz/spheres_env_gifs/out_of_distribution_EnvSpheres3DExtraObjectsV00/amr_vs_guidance_sample00.mp4",
-        "name": "amr_vs_guidance_sample00",
-        "poster": "media/viz/spheres_env_gifs/out_of_distribution_EnvSpheres3DExtraObjectsV00/amr_vs_guidance_sample00.jpg",
-        "w": 960,
-        "webm": "media/viz/spheres_env_gifs/out_of_distribution_EnvSpheres3DExtraObjectsV00/amr_vs_guidance_sample00.webm"
-      },
-      {
-        "h": 390,
-        "mp4": "media/viz/spheres_env_gifs/out_of_distribution_EnvSpheres3DExtraObjectsV00/amr_vs_guidance_sample01.mp4",
-        "name": "amr_vs_guidance_sample01",
-        "poster": "media/viz/spheres_env_gifs/out_of_distribution_EnvSpheres3DExtraObjectsV00/amr_vs_guidance_sample01.jpg",
-        "w": 960,
-        "webm": "media/viz/spheres_env_gifs/out_of_distribution_EnvSpheres3DExtraObjectsV00/amr_vs_guidance_sample01.webm"
-      },
-      {
-        "h": 508,
-        "mp4": "media/viz/spheres_env_gifs/out_of_distribution_EnvSpheres3DExtraObjectsV00/unguided_vs_amr_sample00.mp4",
-        "name": "unguided_vs_amr_sample00",
-        "poster": "media/viz/spheres_env_gifs/out_of_distribution_EnvSpheres3DExtraObjectsV00/unguided_vs_amr_sample00.jpg",
-        "w": 1280,
-        "webm": "media/viz/spheres_env_gifs/out_of_distribution_EnvSpheres3DExtraObjectsV00/unguided_vs_amr_sample00.webm"
-      },
-      {
-        "h": 508,
-        "mp4": "media/viz/spheres_env_gifs/out_of_distribution_EnvSpheres3DExtraObjectsV00/unguided_vs_amr_sample01.mp4",
-        "name": "unguided_vs_amr_sample01",
-        "poster": "media/viz/spheres_env_gifs/out_of_distribution_EnvSpheres3DExtraObjectsV00/unguided_vs_amr_sample01.jpg",
-        "w": 1280,
-        "webm": "media/viz/spheres_env_gifs/out_of_distribution_EnvSpheres3DExtraObjectsV00/unguided_vs_amr_sample01.webm"
-      },
-      {
-        "h": 508,
-        "mp4": "media/viz/spheres_env_gifs/out_of_distribution_EnvSpheres3DExtraObjectsV00/unguided_vs_amr_sample02.mp4",
-        "name": "unguided_vs_amr_sample02",
-        "poster": "media/viz/spheres_env_gifs/out_of_distribution_EnvSpheres3DExtraObjectsV00/unguided_vs_amr_sample02.jpg",
-        "w": 1280,
-        "webm": "media/viz/spheres_env_gifs/out_of_distribution_EnvSpheres3DExtraObjectsV00/unguided_vs_amr_sample02.webm"
-      }
-    ]
-  },
   "tasks": {
     "3dorient": {
       "config1": {
@@ -184,15 +18,6 @@
             "poster": "media/viz/orientation_task_gifs/amr_eeprox_dynamic/config1.jpg",
             "w": 560,
             "webm": "media/viz/orientation_task_gifs/amr_eeprox_dynamic/config1.webm"
-          }
-        },
-        "amr_joint": {
-          "rollout": {
-            "h": 420,
-            "mp4": "media/viz/orientation_task_gifs/amr_joint_prox/config1.mp4",
-            "poster": "media/viz/orientation_task_gifs/amr_joint_prox/config1.jpg",
-            "w": 560,
-            "webm": "media/viz/orientation_task_gifs/amr_joint_prox/config1.webm"
           }
         },
         "trust": {
@@ -251,15 +76,6 @@
             "webm": "media/viz/orientation_task_gifs/amr_eeprox_dynamic/config2.webm"
           }
         },
-        "amr_joint": {
-          "rollout": {
-            "h": 420,
-            "mp4": "media/viz/orientation_task_gifs/amr_joint_prox/config2.mp4",
-            "poster": "media/viz/orientation_task_gifs/amr_joint_prox/config2.jpg",
-            "w": 560,
-            "webm": "media/viz/orientation_task_gifs/amr_joint_prox/config2.webm"
-          }
-        },
         "trust": {
           "rollout": {
             "h": 360,
@@ -314,15 +130,6 @@
             "poster": "media/viz/orientation_task_gifs/amr_eeprox_dynamic/task28.jpg",
             "w": 560,
             "webm": "media/viz/orientation_task_gifs/amr_eeprox_dynamic/task28.webm"
-          }
-        },
-        "amr_joint": {
-          "rollout": {
-            "h": 420,
-            "mp4": "media/viz/orientation_task_gifs/amr_joint_prox/task28.mp4",
-            "poster": "media/viz/orientation_task_gifs/amr_joint_prox/task28.jpg",
-            "w": 560,
-            "webm": "media/viz/orientation_task_gifs/amr_joint_prox/task28.webm"
           }
         },
         "trust": {
@@ -381,15 +188,6 @@
             "webm": "media/viz/orientation_task_gifs/amr_eeprox_dynamic/task31.webm"
           }
         },
-        "amr_joint": {
-          "rollout": {
-            "h": 420,
-            "mp4": "media/viz/orientation_task_gifs/amr_joint_prox/task31.mp4",
-            "poster": "media/viz/orientation_task_gifs/amr_joint_prox/task31.jpg",
-            "w": 560,
-            "webm": "media/viz/orientation_task_gifs/amr_joint_prox/task31.webm"
-          }
-        },
         "trust": {
           "rollout": {
             "h": 420,
@@ -444,15 +242,6 @@
             "poster": "media/viz/orientation_task_gifs/amr_eeprox_dynamic/task43.jpg",
             "w": 560,
             "webm": "media/viz/orientation_task_gifs/amr_eeprox_dynamic/task43.webm"
-          }
-        },
-        "amr_joint": {
-          "rollout": {
-            "h": 420,
-            "mp4": "media/viz/orientation_task_gifs/amr_joint_prox/task43.mp4",
-            "poster": "media/viz/orientation_task_gifs/amr_joint_prox/task43.jpg",
-            "w": 560,
-            "webm": "media/viz/orientation_task_gifs/amr_joint_prox/task43.webm"
           }
         },
         "trust": {
@@ -758,6 +547,51 @@
             "poster": "media/viz/shelf_scenario_method_gifs/two_flankers_top/tweedie__success.jpg",
             "w": 480,
             "webm": "media/viz/shelf_scenario_method_gifs/two_flankers_top/tweedie__success.webm"
+          }
+        }
+      }
+    },
+    "spheres": {
+      "level_1": {
+        "amr": {
+          "success": {
+            "h": 390,
+            "mp4": "media/viz/spheres_scenario_method_gifs/level_1/amr__success.mp4",
+            "poster": "media/viz/spheres_scenario_method_gifs/level_1/amr__success.jpg",
+            "w": 480,
+            "webm": "media/viz/spheres_scenario_method_gifs/level_1/amr__success.webm"
+          }
+        },
+        "tweedie": {
+          "fail": {
+            "h": 390,
+            "mp4": "media/viz/spheres_scenario_method_gifs/level_1/tweedie__fail.mp4",
+            "poster": "media/viz/spheres_scenario_method_gifs/level_1/tweedie__fail.jpg",
+            "w": 480,
+            "webm": "media/viz/spheres_scenario_method_gifs/level_1/tweedie__fail.webm"
+          },
+          "success": {
+            "h": 390,
+            "mp4": "media/viz/spheres_scenario_method_gifs/level_1/tweedie__success.mp4",
+            "poster": "media/viz/spheres_scenario_method_gifs/level_1/tweedie__success.jpg",
+            "w": 480,
+            "webm": "media/viz/spheres_scenario_method_gifs/level_1/tweedie__success.webm"
+          }
+        },
+        "unguided": {
+          "fail": {
+            "h": 508,
+            "mp4": "media/viz/spheres_scenario_method_gifs/level_1/unguided__fail.mp4",
+            "poster": "media/viz/spheres_scenario_method_gifs/level_1/unguided__fail.jpg",
+            "w": 640,
+            "webm": "media/viz/spheres_scenario_method_gifs/level_1/unguided__fail.webm"
+          },
+          "success": {
+            "h": 508,
+            "mp4": "media/viz/spheres_scenario_method_gifs/level_1/unguided__success.mp4",
+            "poster": "media/viz/spheres_scenario_method_gifs/level_1/unguided__success.jpg",
+            "w": 640,
+            "webm": "media/viz/spheres_scenario_method_gifs/level_1/unguided__success.webm"
           }
         }
       }
