@@ -521,6 +521,10 @@ pre.algo .c { color: var(--ink-3); }
 }
 .empty .t { font-weight: 600; color: var(--ink); margin-bottom: 6px; }
 .empty .why { font-size: 14px; max-width: 42ch; }
+/* Still images in the explorer (2D panels, Layout 1 frame strips): never
+   upscaled; on the light panel in dark mode, like the paper figures. */
+.explorer img.still { width: auto; max-width: 100%; margin-inline: auto; }
+:root[data-theme="dark"] .explorer img.still { background: var(--fig-panel); padding: var(--fig-pad); box-sizing: border-box; }
 .stage-note { max-width: 46rem; margin-top: 14px; font-size: 16px; line-height: 1.6; color: var(--ink-2); }
 .stage-note .interp { color: var(--ink); }
 .stage-note .scennote {

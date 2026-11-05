@@ -7,7 +7,12 @@ import { base } from "../lib/lazyMedia";
 import { LazyVideo, OutcomeLabel, type VideoEntry } from "./LazyVideo";
 
 type Outcome = "success" | "fail" | "rollout";
-type Cell = Partial<Record<Outcome, VideoEntry>>;
+// A cell shows a clip, or a still image where no clip exists (2D Avoidance
+// panels, hardware Layout 1 frame strips).
+interface StillEntry { img: string; w?: number; h?: number; thumb?: string }
+type Entry = VideoEntry | StillEntry;
+const isStill = (e: Entry): e is StillEntry => "img" in e;
+type Cell = Partial<Record<Outcome, Entry>>;
 type Manifest = Record<string, Record<string, Record<string, Cell>>>;
 
 interface Props {
@@ -91,8 +96,10 @@ export default function Explorer({ tasks, methods, manifest }: Props) {
   const thumb = (s: string) => {
     const c = cell(taskKey, s, task.methods[0]!);
     const e = c.success ?? c.rollout ?? c.fail ?? Object.values(manifest[taskKey]?.[s] ?? {}).flatMap((x) => Object.values(x))[0];
-    return e?.poster;
+    if (!e) return undefined;
+    return isStill(e) ? (e.thumb ?? e.img) : e.poster;
   };
+  const viewLabel = `${label}, ${scenario.label}${task.outcomes ? (outcome === "success" ? ", safe" : ", fail") : ""}`;
 
   return (
     <div className="explorer wide">
@@ -159,7 +166,12 @@ export default function Explorer({ tasks, methods, manifest }: Props) {
 
           <div aria-live="polite">
             {entry ? (
-              <LazyVideo entry={entry} label={`${label}, ${scenario.label}${task.outcomes ? (outcome === "success" ? ", safe" : ", fail") : ""}`} />
+              isStill(entry) ? (
+                <img key={entry.img} className="media still" src={base(entry.img)} width={entry.w} height={entry.h}
+                  alt={viewLabel} loading="lazy" decoding="async" />
+              ) : (
+                <LazyVideo entry={entry} label={viewLabel} />
+              )
             ) : (
               <div className="empty">
                 <div>

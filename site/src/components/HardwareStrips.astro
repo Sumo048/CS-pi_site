@@ -1,0 +1,36 @@
+---
+// Annotated hardware rollout frames (Layouts 1 and 2). The strips are the
+// original full-resolution PNGs (not recompressed); they are swapped in only
+// when they approach the viewport.
+import Outcome from "./Outcome.astro";
+import { base } from "../lib/lazyMedia";
+
+const strips = [
+  { src: "figures/hw_v1_succ.png", lbl: "Layout 1 — CS-Pi", kind: "ok" as const },
+  { src: "figures/hw_v1_fail.png", lbl: "Layout 1 — unconstrained π₀.₅", kind: "bad" as const },
+  { src: "figures/hw_v2_succ.png", lbl: "Layout 2 — CS-Pi", kind: "ok" as const },
+  { src: "figures/hw_v2_fail.png", lbl: "Layout 2 — unconstrained π₀.₅", kind: "bad" as const },
+];
+---
+
+<slot />
+
+<div class="strips wide">
+  {
+    strips.map((s) => (
+      <figure class="strip">
+        <img data-src={base(s.src)} width="5039" height="536" alt={`${s.lbl}: annotated rollout frames, left to right`} decoding="async" />
+        <noscript><img src={base(s.src)} width="5039" height="536" alt="" /></noscript>
+        <figcaption class="clip-cap">
+          <span class="who">{s.lbl}</span>
+          <Outcome kind={s.kind} />
+        </figcaption>
+      </figure>
+    ))
+  }
+</div>
+
+<script>
+  import { observeImage } from "../lib/lazyMedia";
+  document.querySelectorAll<HTMLImageElement>(".strip img[data-src]").forEach(observeImage);
+</script>

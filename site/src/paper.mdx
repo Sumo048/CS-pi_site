@@ -13,6 +13,7 @@ import Figure from "./components/Figure.astro";
 import Picture from "./components/Picture.astro";
 import Video from "./components/Video.astro";
 import Hardware from "./components/Hardware.astro";
+import HardwareStrips from "./components/HardwareStrips.astro";
 import ResultsTabs from "./components/ResultsTabs.astro";
 import Explorer from "./islands/Explorer.tsx";
 import FaceOff from "./islands/FaceOff.tsx";
@@ -61,10 +62,7 @@ export const story = (n) => ({
 
 A Franka FR3 with a Robotiq 2F-85 gripper runs a DROID-finetuned π₀.₅, used without further finetuning, on <i>pick up the apple and place it on the blue plate</i>. A vision pipeline on the ZED 2 RGB and depth images generates obstacle bounding boxes that form the safe set; deployment is zero-shot. Over two layouts and 10 trials per method per layout, <span class="cs">CS-Pi</span> reaches <b>55%</b> safe success against 40% for projection, 25% for gradient guidance, 20% for Trust Sampling, and 10% for the unconstrained policy. All runs are autonomous; <b>clips play at 4× speed unless marked 1×.</b>
 
-<Hardware>
-  <h3 class="col">Annotated rollout frames</h3>
-  <p class="col small">Frames run left to right. Green strips are <span class="cs">CS-Pi</span>, which enforces the deployment-time obstacle constraint and completes the pick-and-place; red strips are the same π₀.₅ policy run unconstrained. <b>Layout 1:</b> <span class="cs">CS-Pi</span> grasps the apple and places it, while the unconstrained policy clips the cup and loses the grasp. <b>Layout 2:</b> <span class="cs">CS-Pi</span> reaches down and lifts the apple cleanly, while the unconstrained policy collides with the obstacle.</p>
-</Hardware>
+<Hardware />
 
 </Section>
 
@@ -177,6 +175,11 @@ Rejection and projection act only on the <i>final</i> sampled action rather than
 Choose any cell to watch the rollout. Some cells have no rollout on purpose: a method that is always safe in a scenario has no failure to show, and a method that never succeeds there has no success to show.
 
 <Explorer client:visible tasks={TASKS} methods={METHODS} manifest={manifest.tasks} />
+
+<HardwareStrips>
+  <h3 class="col">Annotated rollout frames</h3>
+  <p class="col small">Frames run left to right. Green strips are <span class="cs">CS-Pi</span>, which enforces the deployment-time obstacle constraint and completes the pick-and-place; red strips are the same π₀.₅ policy run unconstrained. <b>Layout 1:</b> <span class="cs">CS-Pi</span> grasps the apple and places it, while the unconstrained policy clips the cup and loses the grasp. <b>Layout 2:</b> <span class="cs">CS-Pi</span> reaches down and lifts the apple cleanly, while the unconstrained policy collides with the obstacle.</p>
+</HardwareStrips>
 
 </Section>
 

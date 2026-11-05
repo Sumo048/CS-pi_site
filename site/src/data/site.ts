@@ -43,7 +43,7 @@ export const SITE = {
     pdf: '',       // e.g. 'assets/paper.pdf'
     arxiv: '',     // e.g. 'https://arxiv.org/abs/2611.xxxxx'
     code: 'https://github.com/Sumo048/CS-Pi',
-    video: '#hardware',
+    video: '#explorer',   // the interactive explorer; Hardware is its first task
     bibtex: '#cite'
   }
 };
@@ -110,6 +110,36 @@ export const METHODS: Method[] = [
 // --- Benchmarks. Only `shelf` has GIFs today; the others are placeholders that
 //     light up automatically once tools/build_manifest.py finds their folders.
 export const TASKS: Task[] = [
+  {
+    key: 'hardware',
+    label: 'Hardware',
+    dim: 'Franka FR3 + π₀.₅',
+    available: true,
+    outcomes: true,
+    methods: ['amr', 'unguided', 'tweedie', 'trust', 'projection'],
+    methodLabels: { unguided: 'Unconstrained π₀.₅' },
+    blurb:
+      'A Franka FR3 runs a DROID-finetuned π₀.₅, zero-shot, on “pick up the apple ' +
+      'and place it on the blue plate.” Obstacle bounding boxes from a ZED 2 vision ' +
+      'pipeline form the safe set. Clips play at 4× speed unless marked 1×.',
+    outcomeCaptions: {
+      success: 'Safe and successful: the arm picks the apple and places it on the blue plate without touching the obstacle.',
+      fail: 'Failure: the arm hits the obstacle or does not complete the pick-and-place.'
+    },
+    absence: {
+      amrFail: 'No failed CS-Pi run was filmed.',
+      success: 'No successful run of this method was filmed for this layout.',
+      fail: 'No failed run of this method was filmed for this layout.'
+    },
+    scenarios: [
+      { key: 'layout_1', label: 'Layout 1',
+        desc: 'A box and two cups sit between the arm and the apple.',
+        note: 'Layout 1 was not filmed. These are its annotated rollout frames ' +
+              'from the paper, left to right.' },
+      { key: 'layout_2', label: 'Layout 2',
+        desc: 'A tall bottle stands between the arm and the apple.' }
+    ]
+  },
   {
     key: 'shelf',
     label: 'Shelf pick-and-place',
@@ -184,6 +214,37 @@ export const TASKS: Task[] = [
         desc: 'A held-out reach target. Read success off the on-frame distance and orientation error.' },
       { key: 'task43', label: 'Validation task 43',
         desc: 'A held-out reach target. Read success off the on-frame distance and orientation error.' }
+    ]
+  },
+  {
+    key: '2d',
+    label: '2D Avoidance',
+    dim: '2D toy policy',
+    available: true,
+    outcomes: false,
+    methods: ['amr', 'tweedie', 'trust', 'rejection', 'projection'],
+    blurb:
+      'Demonstrations reach the goal along distinct paths, so the policy is ' +
+      'multimodal. At deployment we impose obstacles the policy never saw, in six ' +
+      'scenarios of varying difficulty. Each panel overlays 20 rollouts on the ' +
+      'demonstration support (shaded green); obstacles are outlined in navy and the ' +
+      'goal region is yellow.',
+    rolloutCaption:
+      '2D Avoidance trajectory distributions: 20 rollouts overlaid on the ' +
+      'demonstration support (shaded); the obstacles are outlined.',
+    scenarios: [
+      { key: 'left', label: 'Left',
+        desc: 'Two obstacles block the routes near the start.' },
+      { key: 'right', label: 'Right',
+        desc: 'Two obstacles sit in front of the goal.' },
+      { key: 'both', label: 'Both',
+        desc: 'Obstacles near the start and in front of the goal.' },
+      { key: 'cluttered', label: 'Cluttered',
+        desc: 'Ten small obstacles spread across the workspace.' },
+      { key: 'narrow', label: 'Narrow passage',
+        desc: 'Six large obstacles leave a narrow corridor to the goal.' },
+      { key: 'narrower', label: 'Narrower passage',
+        desc: 'Larger obstacles leave an even narrower corridor.' }
     ]
   },
   {
