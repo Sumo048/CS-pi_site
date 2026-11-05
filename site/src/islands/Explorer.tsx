@@ -8,7 +8,7 @@ import { LazyVideo, OutcomeLabel, type VideoEntry } from "./LazyVideo";
 
 type Outcome = "success" | "fail" | "rollout";
 // A cell shows a clip, or a still image where no clip exists (2D Avoidance
-// panels, hardware Layout 1 frame strips).
+// panels).
 interface StillEntry { img: string; w?: number; h?: number; thumb?: string }
 type Entry = VideoEntry | StillEntry;
 const isStill = (e: Entry): e is StillEntry => "img" in e;
