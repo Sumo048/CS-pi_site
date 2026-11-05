@@ -21,6 +21,7 @@
   --accent-ink: #ffffff;
   --ok: #2c6a3c;
   --bad: #9c3826;
+  --bar-muted: #8f918e;  /* non-highlighted chart bars, 3:1 on --bg */
   --fig-panel: transparent; /* white-background figures sit directly on --bg */
   --fig-pad: 0px;
 
@@ -51,6 +52,7 @@
   --accent-ink: #111214;
   --ok: #86b993;
   --bad: #df9383;
+  --bar-muted: #6e7074;  /* 3:1 on the dark --bg */
   --fig-panel: #e7e6e1; /* light neutral panel so white figures don't glare */
   --fig-pad: 14px;
 }
@@ -375,6 +377,23 @@ figcaption b { color: var(--ink); }
   background: var(--sw, var(--ink-3));
 }
 
+/* Abstract, folded behind a disclosure */
+details.abstract > summary {
+  cursor: pointer;
+  width: fit-content;
+  font-family: var(--sans);
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--accent);
+}
+details.abstract > summary:hover { text-decoration: underline; text-underline-offset: 3px; }
+details.abstract[open] > summary { margin-bottom: 14px; }
+
+/* Method: three short points instead of paragraphs */
+ul.keys { padding-left: 1.1em; margin-top: 0; margin-bottom: 8px; }
+ul.keys li { margin-bottom: 8px; line-height: 1.55; }
+ul.keys li::marker { color: var(--ink-3); }
+
 /* Real-world results (explorer section): one method toggle, one clip */
 .realworld { margin-top: 20px; }
 .realworld-stage { max-width: 860px; margin-top: 18px; }
@@ -389,6 +408,7 @@ figcaption b { color: var(--ink); }
 
 /* Algorithm */
 pre.algo {
+  max-width: 47rem !important;   /* wider than the text column so line comments fit */
   margin-top: 32px;
   margin-bottom: 32px;
   padding: 18px 20px;
@@ -578,6 +598,34 @@ table.results .best { font-weight: 600 !important; }
 table.results tr.ours > * { background: var(--panel); }
 table.results tr.ours > :first-child { font-weight: 600 !important; padding-left: 8px; }
 .results-tabs h3 { margin-top: 28px; }
+
+/* Safe-success bar chart (one measure; CS-Pi in the accent, the rest grey).
+   Bars <= 24px, square at the baseline, 4px rounded data end; values shown on
+   CS-Pi and the runner-up, the rest on hover/focus (all in the table too). */
+.barchart { max-width: 46rem; margin: 6px 0 22px; font-family: var(--sans); }
+.barchart-title { margin: 0 0 10px; font-size: 13.5px; color: var(--ink-2); }
+.bars { list-style: none; margin: 0; padding: 0; display: grid; gap: 7px; }
+.bar-row { display: grid; grid-template-columns: 9.5rem minmax(0, 1fr); align-items: center; gap: 12px; outline-offset: 3px; }
+.bar-label { font-size: 13.5px; color: var(--ink-2); text-align: right; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.bar-row.ours .bar-label { color: var(--ink); font-weight: 600; }
+.bar-track { position: relative; height: 18px; border-left: 1px solid var(--rule-strong); margin-right: 4.5rem; }
+.bar { position: absolute; left: 0; top: 0; bottom: 0; background: var(--bar-muted); border-radius: 0 4px 4px 0; }
+.bar-row.ours .bar { background: var(--accent); }
+.bar-value { position: absolute; top: 50%; transform: translate(8px, -50%); font-size: 13px; font-variant-numeric: tabular-nums; color: var(--ink); white-space: nowrap; opacity: 0; }
+.bar-row.shown .bar-value, .bar-row:hover .bar-value, .bar-row:focus-visible .bar-value { opacity: 1; }
+.bar-row.ours .bar-value { font-weight: 600; }
+.bar-row:hover .bar { filter: brightness(0.92); }
+.bar-axis { display: grid; grid-template-columns: 9.5rem minmax(0, 1fr); gap: 12px; margin-top: 6px; }
+.bar-axis .ticks { position: relative; height: 1.2em; margin-right: 4.5rem; font-size: 12px; color: var(--ink-3); font-variant-numeric: tabular-nums; }
+.bar-axis .ticks i { position: absolute; top: 0; font-style: normal; transform: translateX(-50%); }
+.bar-axis .ticks i:nth-child(1) { left: 0; transform: none; }
+.bar-axis .ticks i:nth-child(2) { left: 50%; }
+.bar-axis .ticks i:nth-child(3) { left: 100%; }
+@media (max-width: 520px) {
+  .bar-row, .bar-axis { grid-template-columns: 8.5rem minmax(0, 1fr); gap: 8px; }
+  .bar-label { font-size: 12.5px; }
+  .bar-track, .bar-axis .ticks { margin-right: 3.2rem; }
+}
 .results-tabs :where(h3, .tlead, .tcap) { max-width: 46rem; }
 .tlead { font-size: 16.5px; }
 .tcap { margin-top: 12px; font-size: 14.5px; line-height: 1.55; color: var(--ink-2); }

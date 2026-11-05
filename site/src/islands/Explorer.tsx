@@ -87,7 +87,9 @@ export default function Explorer({ tasks, methods, manifest }: Props) {
   const label = task.methodLabels?.[method] ?? m.label;
   const entry = cell(taskKey, scen, method)[outcome];
   const scenario = task.scenarios.find((s) => s.key === scen)!;
-  const blurb = task.methodBlurbs?.[method] ?? m.blurb;
+  // Only task-specific method notes are shown; the generic method descriptions
+  // are covered by the concept figure and would repeat under every clip.
+  const blurb = task.methodBlurbs?.[method];
   const caption = !entry
     ? absenceReason(task, method, outcome)
     : task.outcomes
