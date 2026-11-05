@@ -1,0 +1,23 @@
+---
+// /paper/ forwards to the paper's public page. The target lives in
+// SITE.links.paper (src/data/site.ts), so changing it there updates both the
+// header "Paper" button and this redirect.
+import { SITE } from "../data/site";
+
+const target = SITE.links.paper || SITE.links.pdf;
+if (!target) throw new Error("SITE.links.paper is empty; /paper/ has nowhere to go");
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>{SITE.method} paper</title>
+    <meta name="robots" content="noindex" />
+    <link rel="canonical" href={target} />
+    <meta http-equiv="refresh" content={`0; url=${target}`} />
+    <script is:inline define:vars={{ target }}>location.replace(target);</script>
+  </head>
+  <body>
+    <p>Redirecting to <a href={target}>the paper</a>…</p>
+  </body>
+</html>
