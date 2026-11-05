@@ -66,13 +66,16 @@
   const BASE = [];
   for (let i = 0; i <= NPTS; i++) BASE.push(bezier(i / NPTS, CP));
 
-  // y of the feasible boundary directly above p (p.y if p is already feasible)
-  function liftY(p) {
+  // y of the boundary of radius r directly above p (p.y if p is already outside)
+  function liftY(p, r = R) {
     const dx = p.x - O.x;
-    if (Math.abs(dx) >= R) return p.y;
-    const h = Math.sqrt(R * R - dx * dx);
+    if (Math.abs(dx) >= r) return p.y;
+    const h = Math.sqrt(r * r - dx * dx);
     return (p.y > O.y - h && p.y < O.y + h) ? O.y - h : p.y;
   }
+  // The converged sample keeps a little daylight from the drawn obstacle edge
+  // (about one line width), so the final path never touches or crosses it.
+  const CLEAR = 0.008;
   // pointwise projection onto the feasible set: violating points land on the
   // boundary, the rest stay put, so the projected path hugs the constraint
   function project(pts) { return pts.map(p => ({ x: p.x, y: liftY(p) })); }
@@ -91,7 +94,7 @@
   // neighbour average, never below the requirement): it follows the arc and
   // only rounds the shoulders where the path meets the boundary. LIFT >= need,
   // so h=1 is feasible and the converged path hugs the constraint.
-  const need = BASE.map(p => p.y - liftY(p));
+  const need = BASE.map(p => p.y - liftY(p, R + CLEAR));
   let LIFT = need.slice();
   for (let it = 0; it < 40; it++) {
     const next = LIFT.slice();
@@ -101,7 +104,11 @@
   function sampleAt(h) { return BASE.map((p, i) => ({ x: p.x, y: p.y - h * LIFT[i] })); }
   function lerpPts(a, b, k) { return a.map((p, i) => ({ x: p.x + (b[i].x - p.x) * k, y: p.y + (b[i].y - p.y) * k })); }
 
-  const RHO = 0.20;             // residual kept per re-run (Phase-2-like): ~3 iters
+  // How far each draw is pulled toward the safe shape (0 = the policy's straight
+  // line, 1 = the converged, feasible sample). Draw 2 is only half-way there, so
+  // it still cuts through the obstacle and its projection has sharp corners where
+  // it meets the edge; draw 3 is smooth and fully outside.
+  const H = [0, 0.5, 1];
 
   // stable noise pattern so the "denoising" settles instead of flickering
   const noisePat = [];
@@ -116,7 +123,7 @@
   function reset() {
     st = {
       phase: PH.DRAW, t0: performance.now(), iter: 1,
-      h: 0.0, from: null,
+      k: 0, h: H[0], from: null,
       delta: violation(sampleAt(0)).delta, n: 0.0, denoiseFrom: 0.0
     };
     hud();
@@ -313,7 +320,8 @@
       case PH.RENOISE: {
         // re-run from the renoised projection; it lands closer to c each time
         st.from = project(sampleAt(st.h));
-        st.h = 1 - RHO * (1 - st.h);
+        st.k = Math.min(st.k + 1, H.length - 1);
+        st.h = H[st.k];
         st.iter += 1; st.denoiseFrom = st.n;
         go(PH.DRAW);
         break;
