@@ -190,9 +190,10 @@
     ctx.fillStyle = C.ok; ctx.beginPath(); ctx.arc(g.x, g.y, 4, 0, 7); ctx.fill();
     ctx.fillStyle = C.ok; ctx.font = '600 12px ' + SANS;
     ctx.textAlign = 'center'; ctx.textBaseline = 'bottom'; ctx.fillText('goal', g.x, g.y - 16);
-    // obstacle
+    // obstacle, drawn at its clearance radius (O.r + MARGIN): that is the
+    // boundary the projection snaps to, so the projected path hugs the drawn edge
     ctx.fillStyle = C.badFill; ctx.strokeStyle = C.bad; ctx.lineWidth = 2;
-    ctx.beginPath(); ctx.arc(o.x, o.y, pr(O.r), 0, 7); ctx.fill(); ctx.stroke();
+    ctx.beginPath(); ctx.arc(o.x, o.y, pr(O.r + MARGIN), 0, 7); ctx.fill(); ctx.stroke();
     ctx.fillStyle = C.bad; ctx.textBaseline = 'middle'; ctx.fillText('obstacle', o.x, o.y);
     // start
     ctx.fillStyle = C.ink; ctx.beginPath(); ctx.arc(s.x, s.y, 5, 0, 7); ctx.fill();

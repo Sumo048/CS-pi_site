@@ -27,7 +27,7 @@ const { who, outcome, outcomeText, note, panel = false, ...video } = Astro.props
   <figcaption class="clip-cap">
     <span class="who" set:html={who} />
     {outcome && <Outcome kind={outcome} text={outcomeText} />}
-    {note && <span class="note">{note}</span>}
     <slot />
+    {note && <span class="note">{note}</span>}
   </figcaption>
 </figure>

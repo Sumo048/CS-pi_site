@@ -375,6 +375,13 @@ figcaption b { color: var(--ink); }
   background: var(--sw, var(--ink-3));
 }
 
+/* Soft-preference clips in the Method section */
+.soft-pref { margin: 36px auto 44px; }
+.soft-pref h4 { font-size: 18px; font-weight: 600; margin: 32px auto 6px; }
+.soft-pref .grid2, .soft-pref .grid3 { margin-top: 16px; }
+.soft-pref .clip-cap { justify-content: flex-start; gap: 2px 12px; }
+.soft-pref .clip-cap .who { flex-basis: 100%; }
+
 /* Algorithm */
 pre.algo {
   margin-top: 32px;
@@ -521,6 +528,10 @@ pre.algo .c { color: var(--ink-3); }
 }
 .empty .t { font-weight: 600; color: var(--ink); margin-bottom: 6px; }
 .empty .why { font-size: 14px; max-width: 42ch; }
+/* Still images in the explorer (2D panels, Layout 1 frame strips): never
+   upscaled; on the light panel in dark mode, like the paper figures. */
+.explorer img.still { width: auto; max-width: 100%; margin-inline: auto; }
+:root[data-theme="dark"] .explorer img.still { background: var(--fig-panel); padding: var(--fig-pad); box-sizing: border-box; }
 .stage-note { max-width: 46rem; margin-top: 14px; font-size: 16px; line-height: 1.6; color: var(--ink-2); }
 .stage-note .interp { color: var(--ink); }
 .stage-note .scennote {
@@ -566,12 +577,6 @@ table.results tr.ours > :first-child { font-weight: 600 !important; padding-left
 .tlead { font-size: 16.5px; }
 .tcap { margin-top: 12px; font-size: 14.5px; line-height: 1.55; color: var(--ink-2); }
 
-/* ---------------------------------------------------------------------------
-   Spheres gallery
-   ------------------------------------------------------------------------- */
-.gallery h3 { margin-top: 48px; }
-.gallery .clip-cap { display: block; }
-.gallery .clip-cap .side { display: block; }
 
 /* ---------------------------------------------------------------------------
    BibTeX, footer, theme toggle

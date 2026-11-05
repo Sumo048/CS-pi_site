@@ -7,7 +7,12 @@ import { base } from "../lib/lazyMedia";
 import { LazyVideo, OutcomeLabel, type VideoEntry } from "./LazyVideo";
 
 type Outcome = "success" | "fail" | "rollout";
-type Cell = Partial<Record<Outcome, VideoEntry>>;
+// A cell shows a clip, or a still image where no clip exists (2D Avoidance
+// panels, hardware Layout 1 frame strips).
+interface StillEntry { img: string; w?: number; h?: number; thumb?: string }
+type Entry = VideoEntry | StillEntry;
+const isStill = (e: Entry): e is StillEntry => "img" in e;
+type Cell = Partial<Record<Outcome, Entry>>;
 type Manifest = Record<string, Record<string, Record<string, Cell>>>;
 
 interface Props {
@@ -21,13 +26,14 @@ const OUTCOME_CAPTION: Record<string, string> = {
   fail: "Failure: a collision, or the gripper clears the obstacle but loses the cube.",
 };
 
-function absenceReason(method: string, outcome: Outcome) {
+function absenceReason(task: Task, method: string, outcome: Outcome) {
+  const a = task.absence ?? {};
   if (method === "amr" && outcome === "fail")
-    return "CS-Pi is collision-free on all five scenarios, so no failure rollout exists.";
+    return a.amrFail ?? "CS-Pi is collision-free on all five scenarios, so no failure rollout exists.";
   if (outcome === "success")
-    return "This method scores 0% safe-success in this scenario, so there is no successful rollout to show.";
+    return a.success ?? "This method scores 0% safe-success in this scenario, so there is no successful rollout to show.";
   if (outcome === "rollout") return "No rollout was rendered for this cell.";
-  return "This method is safe on every trial in this scenario, so there is no failure rollout to show.";
+  return a.fail ?? "This method is safe on every trial in this scenario, so there is no failure rollout to show.";
 }
 
 const csName = (t: string) => t.replace(/CS-Pi/g, '<span class="cs">CS-Pi</span>');
@@ -81,16 +87,19 @@ export default function Explorer({ tasks, methods, manifest }: Props) {
   const label = task.methodLabels?.[method] ?? m.label;
   const entry = cell(taskKey, scen, method)[outcome];
   const scenario = task.scenarios.find((s) => s.key === scen)!;
+  const blurb = task.methodBlurbs?.[method] ?? m.blurb;
   const caption = !entry
-    ? absenceReason(method, outcome)
+    ? absenceReason(task, method, outcome)
     : task.outcomes
-      ? OUTCOME_CAPTION[outcome]!
+      ? (task.outcomeCaptions?.[outcome as "success" | "fail"] ?? OUTCOME_CAPTION[outcome]!)
       : (task.rolloutCaption ?? "");
   const thumb = (s: string) => {
     const c = cell(taskKey, s, task.methods[0]!);
     const e = c.success ?? c.rollout ?? c.fail ?? Object.values(manifest[taskKey]?.[s] ?? {}).flatMap((x) => Object.values(x))[0];
-    return e?.poster;
+    if (!e) return undefined;
+    return isStill(e) ? (e.thumb ?? e.img) : e.poster;
   };
+  const viewLabel = `${label}, ${scenario.label}${task.outcomes ? (outcome === "success" ? ", safe" : ", fail") : ""}`;
 
   return (
     <div className="explorer wide">
@@ -157,12 +166,17 @@ export default function Explorer({ tasks, methods, manifest }: Props) {
 
           <div aria-live="polite">
             {entry ? (
-              <LazyVideo entry={entry} label={`${label}, ${scenario.label}${task.outcomes ? (outcome === "success" ? ", safe" : ", fail") : ""}`} />
+              isStill(entry) ? (
+                <img key={entry.img} className="media still" src={base(entry.img)} width={entry.w} height={entry.h}
+                  alt={viewLabel} loading="lazy" decoding="async" />
+              ) : (
+                <LazyVideo entry={entry} label={viewLabel} />
+              )
             ) : (
               <div className="empty">
                 <div>
                   <div className="t">No rollout for this cell</div>
-                  <div className="why">{absenceReason(method, outcome)}</div>
+                  <div className="why">{absenceReason(task, method, outcome)}</div>
                 </div>
               </div>
             )}
@@ -171,7 +185,7 @@ export default function Explorer({ tasks, methods, manifest }: Props) {
           <div className="stage-note">
             <span className="interp">{caption}</span>
             {scenario.note && <span className="scennote">{scenario.note}</span>}
-            {m.blurb && (<><br /><span dangerouslySetInnerHTML={{ __html: csName(m.blurb) }} /></>)}
+            {blurb && (<><br /><span dangerouslySetInnerHTML={{ __html: csName(blurb) }} /></>)}
           </div>
         </div>
       </div>
