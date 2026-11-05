@@ -176,7 +176,7 @@ Rejection and projection act only on the <i>final</i> sampled action rather than
     </Clip>
   </div>
   <h4 class="col">Setting 2: the goal cannot be reached while holding the preference</h4>
-  <p class="col small">Here the task and the preference conflict, and <span class="cs">CS-Pi</span> can prioritize either one, depending on how it is used. <b><span class="cs">CS-Pi</span>, task aligned</b> completes the reach and gives up the orientation where the two oppose each other. <b><span class="cs">CS-Pi</span>, cost aligned</b> holds the orientation and gives up the reach.</p>
+  <p class="col small">Here the task and the preference conflict, and <span class="cs">CS-Pi</span> can prioritize either one, depending on how it is used. <b><span class="cs">CS-Pi</span>, task aligned</b>, with no projection step at the end of the loop, completes the reach and gives up the orientation where the two oppose each other. <b><span class="cs">CS-Pi</span>, cost aligned</b>, with a projection step at the end of the loop, holds the orientation and gives up the reach.</p>
   <div class="grid3">
     <Clip src="media/soft_pref/conflict_unconstrained.mp4" webm="media/soft_pref/conflict_unconstrained.webm" poster="media/soft_pref/conflict_unconstrained.jpg" w={640} h={604} panel who="Unconstrained" note="5.4 cm from the goal · orientation error 2.32">
       <Outcome kind="ok" text="reaches the goal" /> <Outcome kind="bad" text="orientation not held" />
