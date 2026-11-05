@@ -12,6 +12,8 @@ import Section from "./components/Section.astro";
 import Figure from "./components/Figure.astro";
 import Picture from "./components/Picture.astro";
 import Video from "./components/Video.astro";
+import Clip from "./components/Clip.astro";
+import Outcome from "./components/Outcome.astro";
 import Hardware from "./components/Hardware.astro";
 import HardwareStrips from "./components/HardwareStrips.astro";
 import ResultsTabs from "./components/ResultsTabs.astro";
@@ -160,6 +162,33 @@ Rejection and projection act only on the <i>final</i> sampled action rather than
  8  return 𝒫(â⁽ᴷᵐᵃˣ⁾)                            `}<span class="c">▷ optional terminal projection</span></pre>
 
 **Soft preferences as continuous costs.** Deployment also brings preferences, behaviours to favour rather than boundaries to clear, such as keeping the gripper near-vertical while carrying a full cup. <span class="cs">CS-Pi</span> uses the projection only to produce an anchor for the next draw, so for a continuous cost L that anchor comes instead from the proximal operator prox<sub>βL</sub>(â) = argmin<sub>a′</sub> L(a′) + ‖a′ − â‖² / 2β, which trades reducing L against staying close to the current draw; the rest of the algorithm is unchanged. Hard constraints and costs then compose by applying the operators in sequence, with their order encoding priority: pull toward the preferred orientation first, then project onto the safe set, so the constraint takes precedence. A gradient method would have to merge both into a single objective.
+
+<div class="soft-pref wide">
+  <p class="col small">In the clips below the preference is an end-effector orientation: the arm should reach the blue goal with its gripper (bold axes) matching the target orientation R* (pale axes at the goal). Each clip reports the distance from the gripper to the goal and the orientation error |R − R*|.</p>
+  <h4 class="col">Setting 1: the goal and the preference agree</h4>
+  <p class="col small">The unconstrained policy reaches the goal but ignores the orientation. With the orientation cost, <span class="cs">CS-Pi</span> reaches the goal and holds the target orientation.</p>
+  <div class="grid2">
+    <Clip src="media/soft_pref/agree_unconstrained.mp4" webm="media/soft_pref/agree_unconstrained.webm" poster="media/soft_pref/agree_unconstrained.jpg" w={640} h={604} panel who="Unconstrained" note="2.8 cm from the goal · orientation error 2.62">
+      <Outcome kind="ok" text="reaches the goal" /> <Outcome kind="bad" text="orientation not held" />
+    </Clip>
+    <Clip src="media/soft_pref/agree_cspi.mp4" webm="media/soft_pref/agree_cspi.webm" poster="media/soft_pref/agree_cspi.jpg" w={640} h={604} panel who="CS-Pi (ours)" note="8.3 cm from the goal · orientation error ≈ 0">
+      <Outcome kind="ok" text="reaches the goal" /> <Outcome kind="ok" text="orientation held" />
+    </Clip>
+  </div>
+  <h4 class="col">Setting 2: the goal cannot be reached while holding the preference</h4>
+  <p class="col small">Here the task and the preference conflict, and <span class="cs">CS-Pi</span> can prioritize either one, depending on how it is used. <b><span class="cs">CS-Pi</span>, task aligned</b> completes the reach and gives up the orientation where the two oppose each other. <b><span class="cs">CS-Pi</span>, cost aligned</b> holds the orientation and gives up the reach.</p>
+  <div class="grid3">
+    <Clip src="media/soft_pref/conflict_unconstrained.mp4" webm="media/soft_pref/conflict_unconstrained.webm" poster="media/soft_pref/conflict_unconstrained.jpg" w={640} h={604} panel who="Unconstrained" note="5.4 cm from the goal · orientation error 2.32">
+      <Outcome kind="ok" text="reaches the goal" /> <Outcome kind="bad" text="orientation not held" />
+    </Clip>
+    <Clip src="media/soft_pref/conflict_task_aligned.mp4" webm="media/soft_pref/conflict_task_aligned.webm" poster="media/soft_pref/conflict_task_aligned.jpg" w={640} h={604} panel who="CS-Pi, task aligned" note="5.7 cm from the goal · orientation error 1.22">
+      <Outcome kind="ok" text="reaches the goal" /> <Outcome kind="bad" text="orientation not held" />
+    </Clip>
+    <Clip src="media/soft_pref/conflict_cost_aligned.mp4" webm="media/soft_pref/conflict_cost_aligned.webm" poster="media/soft_pref/conflict_cost_aligned.jpg" w={640} h={604} panel who="CS-Pi, cost aligned" note="75.8 cm from the goal · orientation error 0.10">
+      <Outcome kind="bad" text="goal not reached" /> <Outcome kind="ok" text="orientation held" />
+    </Clip>
+  </div>
+</div>
 
 **Optional terminal projection.** If no draw lies within τ of 𝒞 after K<sub>max</sub> iterations, <span class="cs">CS-Pi</span> can project the last draw and execute the result, trading plausibility for safety when safety must come first. Even then the loop pays off: in simulation, the executed actions are more likely under the policy than a typical one-shot projection.
 

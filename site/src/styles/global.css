@@ -375,6 +375,13 @@ figcaption b { color: var(--ink); }
   background: var(--sw, var(--ink-3));
 }
 
+/* Soft-preference clips in the Method section */
+.soft-pref { margin: 36px auto 44px; }
+.soft-pref h4 { font-size: 18px; font-weight: 600; margin: 32px auto 6px; }
+.soft-pref .grid2, .soft-pref .grid3 { margin-top: 16px; }
+.soft-pref .clip-cap { justify-content: flex-start; gap: 2px 12px; }
+.soft-pref .clip-cap .who { flex-basis: 100%; }
+
 /* Algorithm */
 pre.algo {
   margin-top: 32px;
