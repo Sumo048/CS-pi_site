@@ -105,18 +105,6 @@ def add_single_outcome(tasks: dict) -> None:
                 task[scen] = cell
 
 
-def media_video(stem: str) -> dict:
-    """A clip already converted under site/public/media (e.g. hardware/...)."""
-    out: dict = {"mp4": f"media/{stem}.mp4", "webm": f"media/{stem}.webm", "poster": f"media/{stem}.jpg"}
-    for k in ("mp4", "webm", "poster"):
-        if not (PUBLIC / out[k]).is_file():
-            print(f"  ! missing {out[k]}")
-    if Image is not None and (PUBLIC / out["poster"]).is_file():
-        with Image.open(PUBLIC / out["poster"]) as im:
-            out["w"], out["h"] = im.size
-    return out
-
-
 def still(path: str, thumb: str | None = None) -> dict:
     """A still image (relative to site/public) shown in place of a video."""
     out: dict = {"img": path}
@@ -128,33 +116,6 @@ def still(path: str, thumb: str | None = None) -> dict:
     if thumb:
         out["thumb"] = thumb
     return out
-
-
-# Hardware (Franka + pi0.5). Every filmed run is Layout 2; Layout 1 was not
-# filmed, so it shows the annotated frame strips from the paper instead.
-HARDWARE = {
-    "layout_1": {
-        "amr": {"success": ("still", "figures/hw_v1_succ.png", "figures/thumbs/hw_layout_1.jpg")},
-        "unguided": {"fail": ("still", "figures/hw_v1_fail.png", "figures/thumbs/hw_layout_1.jpg")},
-    },
-    "layout_2": {
-        "amr": {"success": ("video", "hardware/cspi_success_0")},
-        "unguided": {"fail": ("video", "hardware/unconstrained_1x")},
-        "tweedie": {"fail": ("video", "hardware/gradient_guidance")},
-        "trust": {"fail": ("video", "hardware/trust_fail")},
-        "projection": {"fail": ("video", "hardware/project_fail")},
-    },
-}
-
-
-def add_hardware(tasks: dict) -> None:
-    task = tasks.setdefault("hardware", {})
-    for scen, cell in HARDWARE.items():
-        task[scen] = {
-            m: {o: (still(*spec[1:]) if spec[0] == "still" else media_video(spec[1]))
-                for o, spec in outs.items()}
-            for m, outs in cell.items()
-        }
 
 
 def add_2d(tasks: dict) -> None:
@@ -173,7 +134,6 @@ def add_2d(tasks: dict) -> None:
 def main() -> None:
     tasks = build_scenario_major()
     add_single_outcome(tasks)
-    add_hardware(tasks)
     add_2d(tasks)
     data = {"tasks": tasks}
     OUT.parent.mkdir(parents=True, exist_ok=True)

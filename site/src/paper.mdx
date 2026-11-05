@@ -16,6 +16,7 @@ import Clip from "./components/Clip.astro";
 import Outcome from "./components/Outcome.astro";
 import Hardware from "./components/Hardware.astro";
 import HardwareStrips from "./components/HardwareStrips.astro";
+import RealWorld from "./components/RealWorld.astro";
 import ResultsTabs from "./components/ResultsTabs.astro";
 import Explorer from "./islands/Explorer.tsx";
 import FaceOff from "./islands/FaceOff.tsx";
@@ -201,7 +202,13 @@ Rejection and projection act only on the <i>final</i> sampled action rather than
 
 <Section id="explorer" num={7} kicker="Interactive explorer" title="Pick a task, a scenario, and a method">
 
-Choose any cell to watch the rollout. Some cells have no rollout on purpose: a method that is always safe in a scenario has no failure to show, and a method that never succeeds there has no success to show.
+<h3 class="col">Real world</h3>
+<p class="col small">A Franka FR3 runs a DROID-finetuned π₀.₅, zero-shot, on <i>pick up the apple and place it on the blue plate</i>. Obstacle bounding boxes from a ZED 2 vision pipeline form the safe set. Choose a method to watch its rollout; clips play at 4× speed unless marked 1×.</p>
+
+<RealWorld />
+
+<h3 class="col">Simulation</h3>
+<p class="col small">Choose any cell to watch the rollout. Some cells have no rollout on purpose: a method that is always safe in a scenario has no failure to show, and a method that never succeeds there has no success to show.</p>
 
 <Explorer client:visible tasks={TASKS} methods={METHODS} manifest={manifest.tasks} />
 

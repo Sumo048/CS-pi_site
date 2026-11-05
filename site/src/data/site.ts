@@ -43,7 +43,7 @@ export const SITE = {
     pdf: '',       // e.g. 'assets/paper.pdf'
     arxiv: '',     // e.g. 'https://arxiv.org/abs/2611.xxxxx'
     code: 'https://github.com/Sumo048/CS-Pi',
-    video: '#explorer',   // the interactive explorer; Hardware is its first task
+    video: '#explorer',   // the results explorer; real-world clips come first
     bibtex: '#cite'
   }
 };
@@ -110,36 +110,6 @@ export const METHODS: Method[] = [
 // --- Benchmarks. Only `shelf` has GIFs today; the others are placeholders that
 //     light up automatically once tools/build_manifest.py finds their folders.
 export const TASKS: Task[] = [
-  {
-    key: 'hardware',
-    label: 'Hardware',
-    dim: 'Franka FR3 + π₀.₅',
-    available: true,
-    outcomes: true,
-    methods: ['amr', 'unguided', 'tweedie', 'trust', 'projection'],
-    methodLabels: { unguided: 'Unconstrained π₀.₅' },
-    blurb:
-      'A Franka FR3 runs a DROID-finetuned π₀.₅, zero-shot, on “pick up the apple ' +
-      'and place it on the blue plate.” Obstacle bounding boxes from a ZED 2 vision ' +
-      'pipeline form the safe set. Clips play at 4× speed unless marked 1×.',
-    outcomeCaptions: {
-      success: 'Safe and successful: the arm picks the apple and places it on the blue plate without touching the obstacle.',
-      fail: 'Failure: the arm hits the obstacle or does not complete the pick-and-place.'
-    },
-    absence: {
-      amrFail: 'No failed CS-Pi run was filmed.',
-      success: 'No successful run of this method was filmed for this layout.',
-      fail: 'No failed run of this method was filmed for this layout.'
-    },
-    scenarios: [
-      { key: 'layout_1', label: 'Layout 1',
-        desc: 'A box and two cups sit between the arm and the apple.',
-        note: 'Layout 1 was not filmed. These are its annotated rollout frames ' +
-              'from the paper, left to right.' },
-      { key: 'layout_2', label: 'Layout 2',
-        desc: 'A tall bottle stands between the arm and the apple.' }
-    ]
-  },
   {
     key: 'shelf',
     label: 'Shelf pick-and-place',

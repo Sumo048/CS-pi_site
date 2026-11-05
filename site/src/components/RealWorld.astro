@@ -1,0 +1,73 @@
+---
+// Real-world results in the explorer section: one method toggle over the
+// filmed hardware runs. Clips not selected are hidden, so they are not
+// fetched until chosen (lazy loading only starts for visible videos).
+import Clip from "./Clip.astro";
+
+const v = (name: string) => ({
+  src: `media/hardware/${name}.mp4`,
+  webm: `media/hardware/${name}.webm`,
+  poster: `media/hardware/${name}.jpg`,
+});
+const runs = [
+  { key: "amr", label: "CS-Pi (ours)", color: "var(--accent)",
+    clip: { ...v("cspi_success_0"), w: 720, h: 406, who: "CS-Pi (ours)", outcome: "ok" as const,
+      note: "picks the apple and places it on the blue plate without touching the obstacle · 4× speed" } },
+  { key: "unguided", label: "Unconstrained π₀.₅", color: "#7b8088",
+    clip: { ...v("unconstrained_1x"), w: 640, h: 360, who: "Unconstrained π₀.₅", outcome: "bad" as const,
+      note: "collides with the bottle and knocks it over · 1× speed" } },
+  { key: "tweedie", label: "Gradient Guidance", color: "#b8553f",
+    clip: { ...v("gradient_guidance"), w: 720, h: 406, who: "Gradient Guidance", outcome: "bad" as const,
+      note: "fails the task · 4× speed" } },
+  { key: "trust", label: "Trust Sampling", color: "#5d7d3a",
+    clip: { ...v("trust_fail"), w: 720, h: 406, who: "Trust Sampling", outcome: "bad" as const,
+      note: "fails the task · 4× speed" } },
+  { key: "projection", label: "Projection", color: "#8a6d4b",
+    clip: { ...v("project_fail"), w: 720, h: 406, who: "Projection", outcome: "bad" as const,
+      note: "fails the task · 4× speed" } },
+];
+---
+
+<div class="realworld wide" data-realworld>
+  <div class="ctl-row" role="group" aria-label="Method">
+    {
+      runs.map((r, i) => (
+        <button type="button" class="ctl" aria-pressed={i === 0 ? "true" : "false"} data-run={r.key}>
+          <span class="swatch" style={`--sw:${r.color}`} aria-hidden="true"></span>
+          {r.label}
+        </button>
+      ))
+    }
+  </div>
+  <div class="realworld-stage">
+    {
+      runs.map((r, i) => (
+        <div data-run-panel={r.key} hidden={i !== 0}>
+          <Clip {...r.clip} controls />
+        </div>
+      ))
+    }
+  </div>
+</div>
+
+<script>
+  import { observeVideo } from "../lib/lazyMedia";
+  document.querySelectorAll<HTMLElement>("[data-realworld]").forEach((root) => {
+    const buttons = root.querySelectorAll<HTMLButtonElement>("[data-run]");
+    const panels = root.querySelectorAll<HTMLElement>("[data-run-panel]");
+    buttons.forEach((b) =>
+      b.addEventListener("click", () => {
+        const key = b.dataset.run;
+        buttons.forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
+        panels.forEach((p) => {
+          const show = p.dataset.runPanel === key;
+          p.hidden = !show;
+          const vid = p.querySelector("video");
+          if (!vid) return;
+          if (show) observeVideo(vid);   // re-observe so it loads and plays now
+          else vid.pause();
+        });
+      }),
+    );
+  });
+</script>

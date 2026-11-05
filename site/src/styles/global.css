@@ -375,6 +375,11 @@ figcaption b { color: var(--ink); }
   background: var(--sw, var(--ink-3));
 }
 
+/* Real-world results (explorer section): one method toggle, one clip */
+.realworld { margin-top: 20px; }
+.realworld-stage { max-width: 860px; margin-top: 18px; }
+#explorer h3 + p.small { margin-top: 4px; }
+
 /* Soft-preference clips in the Method section */
 .soft-pref { margin: 36px auto 44px; }
 .soft-pref h4 { font-size: 18px; font-weight: 600; margin: 32px auto 6px; }
