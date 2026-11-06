@@ -196,15 +196,41 @@ export const TASKS: Task[] = [
     },
     absence: {
       amrFail: 'This environment shows CS-Pi’s collision-free rollouts only.',
-      success: 'No collision-free rollout of this method is shown for this level.',
-      fail: 'No colliding rollout of this method is shown for this level.'
+      success: 'This method was not run on this scene.',
+      fail: 'This method was not run on this scene.'
     },
+    // Each scene is one render: both methods in a scene ran on the same task.
     scenarios: [
-      { key: 'level_1', label: 'Level 1',
-        desc: 'Ten spheres around the arm: the obstacle field of the training environment.' }
+      { key: 'level_1_scene_1', label: 'Level 1, scene 1', desc: '' },
+      { key: 'level_1_scene_2', label: 'Level 1, scene 2', desc: '' },
+      { key: 'level_1_scene_3', label: 'Level 1, scene 3', desc: '' },
+      { key: 'level_1_scene_4', label: 'Level 1, scene 4', desc: '' }
     ]
   }
 ];
+
+// --- Real-world runs, as a task for the Results comparison ------------------
+// (the filmed hardware runs; one setting, so one scenario)
+export const HARDWARE_TASK: Task = {
+  key: 'hardware',
+  label: 'Real world',
+  dim: 'Franka FR3 + π₀.₅',
+  available: true,
+  outcomes: true,
+  methods: ['amr', 'unguided', 'tweedie', 'trust', 'projection'],
+  methodLabels: { unguided: 'Unconstrained π₀.₅' },
+  blurb: 'Pick up the apple and place it on the blue plate. Baseline clips play at 4×, the unconstrained run at 1×.',
+  outcomeCaptions: {
+    success: 'Picks the apple and places it on the plate without touching the obstacle.',
+    fail: 'Hits the obstacle or does not complete the pick-and-place.'
+  },
+  absence: {
+    amrFail: 'No failed CS-Pi run was filmed.',
+    success: 'No successful run of this method was filmed.',
+    fail: 'No failed run of this method was filmed.'
+  },
+  scenarios: [{ key: 'real', label: 'Pick and place', desc: '' }]
+};
 
 // --- Result tables (from the paper) -----------------------------------------
 // `ours` flags the CS-Pi row; `best` lists column indices where this row holds

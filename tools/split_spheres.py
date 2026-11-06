@@ -31,19 +31,27 @@ ROOT = Path(__file__).resolve().parent.parent
 SRC = ROOT / "viz" / "spheres_env_gifs" / "in_distribution_EnvSpheres3D"
 DST = ROOT / "viz" / "spheres_scenario_method_gifs"
 
-# (level, method key, outcome) -> (source render, half)
+# Each Level 1 scene is one side-by-side render, so both methods in a scene
+# ran on the same task. (scene, method key, outcome) -> (source render, half)
 CLIPS = {
-    ("level_1", "amr", "success"): ("amr_vs_guidance_sample00", "right"),
-    ("level_1", "tweedie", "fail"): ("amr_vs_guidance_sample00", "left"),
-    ("level_1", "tweedie", "success"): ("amr_vs_guidance_sample01", "left"),
-    ("level_1", "unguided", "fail"): ("amr_success_sample01", "left"),
-    ("level_1", "unguided", "success"): ("amr_success_sample00", "left"),
+    ("level_1_scene_1", "amr", "success"): ("amr_vs_guidance_sample00", "right"),
+    ("level_1_scene_1", "tweedie", "fail"): ("amr_vs_guidance_sample00", "left"),
+    ("level_1_scene_2", "amr", "success"): ("amr_vs_guidance_sample01", "right"),
+    ("level_1_scene_2", "tweedie", "success"): ("amr_vs_guidance_sample01", "left"),
+    ("level_1_scene_3", "amr", "success"): ("amr_success_sample00", "right"),
+    ("level_1_scene_3", "unguided", "success"): ("amr_success_sample00", "left"),
+    ("level_1_scene_4", "amr", "success"): ("amr_success_sample01", "right"),
+    ("level_1_scene_4", "unguided", "fail"): ("amr_success_sample01", "left"),
 }
+# The renders carry a dark title bar (rows 0-29) and a "METHOD cost=... OK"
+# line (rows 36-45) with internal method names; the scene starts below row 58.
+TOP_CROP = 50
 
 
 def crop(ffmpeg: str, src: Path, half: str, dst: Path) -> None:
-    x = "0" if half == "left" else "iw/2"
-    vf = (f"crop=iw/2:ih:{x}:0,split[a][b];"
+    # drop 2 px at the seam so the 1-px divider between the halves is not kept
+    x = "0" if half == "left" else "iw/2+2"
+    vf = (f"crop=iw/2-2:ih-{TOP_CROP}:{x}:{TOP_CROP},split[a][b];"
           "[a]palettegen=reserve_transparent=0:stats_mode=full[p];"
           "[b][p]paletteuse=dither=none")
     dst.parent.mkdir(parents=True, exist_ok=True)
