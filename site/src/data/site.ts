@@ -187,24 +187,53 @@ export const TASKS: Task[] = [
     dim: '7-DoF Panda',
     available: true,
     outcomes: true,
-    methods: ['amr', 'tweedie', 'unguided'],
-    methodLabels: { tweedie: 'Gradient Guidance (α=0.5)' },
-    blurb: 'A 7-DoF Panda reaches through a field of spheres; safe means no contact.',
+    methods: ['amr', 'projection', 'trust', 'tweedie', 'unguided'],
+    methodLabels: { tweedie: 'Gradient Guidance (α=0.01)', trust: 'Trust Sampling (w=0.3)' },
+    blurb: 'A 7-DoF Panda reaches through spheres; Level 2 adds six it never saw. ' +
+           'These tasks were picked to show failures; typical rates are in Results.',
     outcomeCaptions: {
-      success: 'Safe: the arm reaches through the spheres without touching any of them.',
-      fail: 'Failure: the arm collides with a sphere.'
+      success: 'Safe: the arm never touches a sphere.',
+      fail: 'Failure: the arm passes through a sphere (red frame border).'
     },
     absence: {
-      amrFail: 'This environment shows CS-Pi’s collision-free rollouts only.',
-      success: 'No collision-free rollout of this method is shown for this level.',
-      fail: 'No colliding rollout of this method is shown for this level.'
+      amrFail: 'One rollout per method is shown, and CS-Pi’s is collision-free.',
+      success: 'One rollout per method is shown, and this one collides.',
+      fail: 'One rollout per method is shown, and this one is collision-free.'
     },
+    // One task per scenario; every method ran on the same task (release run).
     scenarios: [
-      { key: 'level_1', label: 'Level 1',
-        desc: 'Ten spheres around the arm: the obstacle field of the training environment.' }
+      { key: 'level_1_scenario_1', label: 'Level 1, scenario 1', desc: '' },
+      { key: 'level_1_scenario_2', label: 'Level 1, scenario 2', desc: '' },
+      { key: 'level_1_scenario_3', label: 'Level 1, scenario 3', desc: '' },
+      { key: 'level_2_scenario_1', label: 'Level 2, scenario 1', desc: '' },
+      { key: 'level_2_scenario_2', label: 'Level 2, scenario 2', desc: '' },
+      { key: 'level_2_scenario_3', label: 'Level 2, scenario 3', desc: '' }
     ]
   }
 ];
+
+// --- Real-world runs, as a task for the Results comparison ------------------
+// (the filmed hardware runs; one setting, so one scenario)
+export const HARDWARE_TASK: Task = {
+  key: 'hardware',
+  label: 'Real world',
+  dim: 'Franka FR3 + π₀.₅',
+  available: true,
+  outcomes: true,
+  methods: ['amr', 'unguided', 'tweedie', 'trust', 'projection'],
+  methodLabels: { unguided: 'Unconstrained π₀.₅' },
+  blurb: 'Pick up the apple and place it on the blue plate. Baseline clips play at 4×, the unconstrained run at 1×.',
+  outcomeCaptions: {
+    success: 'Picks the apple and places it on the plate without touching the obstacle.',
+    fail: 'Hits the obstacle or does not complete the pick-and-place.'
+  },
+  absence: {
+    amrFail: 'No failed CS-Pi run was filmed.',
+    success: 'No successful run of this method was filmed.',
+    fail: 'No failed run of this method was filmed.'
+  },
+  scenarios: [{ key: 'real', label: 'Pick and place', desc: '' }]
+};
 
 // --- Result tables (from the paper) -----------------------------------------
 // `ours` flags the CS-Pi row; `best` lists column indices where this row holds
@@ -265,6 +294,21 @@ export const RESULTS: Record<string, ResultTable> = {
         best: [2, 4] },
       { c: ['CS-Pi (k=10, Kmax=3) (ours)', '65.6%', '98.9%', '10.21', '0.07', '210'],
         ours: true, best: [1, 2, 4] }
+    ]
+  },
+  spheres: {
+    title: 'Sphere avoidance (7-DoF Panda)',
+    caption: '120 tasks per level, best configuration per method. Level 1: 10 spheres; ' +
+             'Level 2: 6 more the policy never saw. Collision-free if the MPD cost is ' +
+             'below 1e-3.',
+    bar: 2,
+    cols: ['Method', 'Level 1 safe-SR (%) ↑', 'Level 2 safe-SR (%) ↑'],
+    rows: [
+      { c: ['Unconstrained',                   '8.9',  '0.8'] },
+      { c: ['Gradient Guidance (α=0.01)',      '23.6', '4.7'] },
+      { c: ['Trust Sampling (w=0.3, J=5)',     '77.0', '38.7'] },
+      { c: ['Projection',                      '88.2', '62.1'] },
+      { c: ['CS-Pi (k=50, Kmax=20) (ours)',    '99.9', '91.8'], ours: true, best: [1, 2] }
     ]
   },
   hw: {

@@ -131,10 +131,38 @@ def add_2d(tasks: dict) -> None:
         }
 
 
+def media_video(stem: str) -> dict:
+    """A clip already converted under site/public/media (e.g. hardware/...)."""
+    out: dict = {"mp4": f"media/{stem}.mp4", "webm": f"media/{stem}.webm", "poster": f"media/{stem}.jpg"}
+    for k in ("mp4", "webm", "poster"):
+        if not (PUBLIC / out[k]).is_file():
+            print(f"  ! missing {out[k]}")
+    if Image is not None and (PUBLIC / out["poster"]).is_file():
+        with Image.open(PUBLIC / out["poster"]) as im:
+            out["w"], out["h"] = im.size
+    return out
+
+
+# The filmed real-world runs, for the Results comparison (task "hardware").
+HARDWARE = {
+    "amr": {"success": "hardware/cspi_success_0"},
+    "unguided": {"fail": "hardware/unconstrained_1x"},
+    "tweedie": {"fail": "hardware/gradient_guidance"},
+    "trust": {"fail": "hardware/trust_fail"},
+    "projection": {"fail": "hardware/project_fail"},
+}
+
+
+def add_hardware(tasks: dict) -> None:
+    tasks["hardware"] = {"real": {m: {o: media_video(stem) for o, stem in outs.items()}
+                                  for m, outs in HARDWARE.items()}}
+
+
 def main() -> None:
     tasks = build_scenario_major()
     add_single_outcome(tasks)
     add_2d(tasks)
+    add_hardware(tasks)
     data = {"tasks": tasks}
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(json.dumps(data, indent=2, sort_keys=True) + "\n")

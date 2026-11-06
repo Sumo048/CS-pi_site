@@ -1,21 +1,18 @@
 #!/usr/bin/env python3
-"""Split the side-by-side spheres renders into one GIF per method.
+"""Import the sphere-avoidance renders into the explorer's clip layout.
 
-The renders in viz/spheres_env_gifs/ show two samplers side by side (left
-half / right half). The explorer wants one clip per (scenario, method,
-outcome), so this crops the halves into
+Source: a folder like ~/spheres_gifs/ rendered from the camera-ready release
+run (see its README.md): <unit>/task<N>/{CS-Pi,Guidance,Trust,Projection,
+Unguided}.gif plus info.json, for unit "id" (Level 1, 10 spheres) and "ood"
+(Level 2, 16 spheres). The tasks are illustrative: picked where the shown
+CS-Pi sample is collision-free and every other method's shown sample collides.
 
-    viz/spheres_scenario_method_gifs/<level>/<method>__<outcome>.gif
+Output: viz/spheres_scenario_method_gifs/level_<L>_scenario_<S>/<method>__<outcome>.gif
+with the outcome read from info.json (collision_waypoints == 0 -> success).
+Each frame's three-line header (internal method name, level/task line, and the
+final "RESULT: ..." line) is cropped off: rows 0-69; the scene starts at row 78.
 
-which tools/build_manifest.py picks up like the shelf task. Outcomes are
-read off each render's final frame ("cost=... OK" / "collision"). Only
-collision-free CS-Pi rollouts are used.
-
-Level 2 is left out on purpose: the out_of_distribution_* renders replay the
-Level 1 trajectories with extra obstacles drawn in, and their printed cost
-ignores those obstacles, so they cannot show avoidance of unseen obstacles.
-
-    python3 tools/split_spheres.py --ffmpeg /path/to/ffmpeg
+    python3 tools/split_spheres.py --src ~/spheres_gifs --ffmpeg /path/to/ffmpeg
 then
     python3 tools/convert_media.py --ffmpeg /path/to/ffmpeg
     python3 tools/build_manifest.py
@@ -23,27 +20,32 @@ then
 from __future__ import annotations
 
 import argparse
+import json
 import os
+import shutil
 import subprocess
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-SRC = ROOT / "viz" / "spheres_env_gifs" / "in_distribution_EnvSpheres3D"
 DST = ROOT / "viz" / "spheres_scenario_method_gifs"
 
-# (level, method key, outcome) -> (source render, half)
-CLIPS = {
-    ("level_1", "amr", "success"): ("amr_vs_guidance_sample00", "right"),
-    ("level_1", "tweedie", "fail"): ("amr_vs_guidance_sample00", "left"),
-    ("level_1", "tweedie", "success"): ("amr_vs_guidance_sample01", "left"),
-    ("level_1", "unguided", "fail"): ("amr_success_sample01", "left"),
-    ("level_1", "unguided", "success"): ("amr_success_sample00", "left"),
+# (unit, task) in scenario order per level
+LEVELS = {
+    1: ("id", [58, 86, 98]),
+    2: ("ood", [41, 44, 60]),
 }
+METHODS = {  # render name -> site method key
+    "CS-Pi": "amr",
+    "Guidance": "tweedie",
+    "Trust": "trust",
+    "Projection": "projection",
+    "Unguided": "unguided",
+}
+TOP_CROP = 70
 
 
-def crop(ffmpeg: str, src: Path, half: str, dst: Path) -> None:
-    x = "0" if half == "left" else "iw/2"
-    vf = (f"crop=iw/2:ih:{x}:0,split[a][b];"
+def crop(ffmpeg: str, src: Path, dst: Path) -> None:
+    vf = (f"crop=iw:ih-{TOP_CROP}:0:{TOP_CROP},split[a][b];"
           "[a]palettegen=reserve_transparent=0:stats_mode=full[p];"
           "[b][p]paletteuse=dither=none")
     dst.parent.mkdir(parents=True, exist_ok=True)
@@ -53,16 +55,23 @@ def crop(ffmpeg: str, src: Path, half: str, dst: Path) -> None:
 
 def main() -> None:
     ap = argparse.ArgumentParser()
+    ap.add_argument("--src", default=str(Path.home() / "spheres_gifs"))
     ap.add_argument("--ffmpeg", default=os.environ.get("FFMPEG", "ffmpeg"))
-    ap.add_argument("--force", action="store_true")
     args = ap.parse_args()
-    for (level, method, outcome), (name, half) in CLIPS.items():
-        dst = DST / level / f"{method}__{outcome}.gif"
-        if dst.exists() and not args.force:
-            print("skip", dst.relative_to(ROOT))
-            continue
-        crop(args.ffmpeg, SRC / f"{name}.gif", half, dst)
-        print("wrote", dst.relative_to(ROOT), "<-", f"{name} ({half})")
+    src = Path(args.src).expanduser()
+    if DST.exists():
+        shutil.rmtree(DST)
+    for level, (unit, tasks) in LEVELS.items():
+        for s, task in enumerate(tasks, start=1):
+            folder = src / unit / f"task{task}"
+            info = json.loads((folder / "info.json").read_text())
+            scen = f"level_{level}_scenario_{s}"
+            for render, key in METHODS.items():
+                outcome = "success" if info[render]["collision_waypoints"] == 0 else "fail"
+                crop(args.ffmpeg, folder / f"{render}.gif", DST / scen / f"{key}__{outcome}.gif")
+                print(f"{scen}: {key}__{outcome}  <- {unit}/task{task}/{render}.gif "
+                      f"({info[render]['collision_waypoints']}/64 colliding waypoints)")
+    shutil.copy(src / "README.md", DST / "README.md")   # provenance and table numbers
 
 
 if __name__ == "__main__":

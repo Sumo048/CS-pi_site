@@ -413,6 +413,45 @@ details.reveal figure.fig { margin-top: 22px; }
 /* Method: the intuition in two short statements */
 .method-points p, p.method-points { font-size: 19px; line-height: 1.55; }
 
+/* Results: compare any two methods side by side */
+.compare-scen { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+.chip {
+  appearance: none;
+  border: 1px solid var(--rule-strong);
+  border-radius: var(--radius);
+  background: none;
+  padding: 5px 11px;
+  font-family: var(--sans);
+  font-size: 13.5px;
+  color: var(--ink-2);
+  cursor: pointer;
+}
+.chip:hover { color: var(--ink); border-color: var(--ink-3); }
+.chip[aria-pressed="true"] { color: var(--accent); border-color: var(--accent); }
+.compare-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; margin-top: 18px; }
+.compare-side { min-width: 0; }
+.compare-head { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; margin-bottom: 10px; font-family: var(--sans); }
+.compare-head select {
+  appearance: none;
+  min-width: 0;
+  flex: 1 1 12rem;
+  max-width: 100%;
+  padding: 6px 30px 6px 10px;
+  border: 1px solid var(--rule-strong);
+  border-radius: var(--radius);
+  background: var(--bg) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%23888' stroke-width='1.5'/%3E%3C/svg%3E") no-repeat right 10px center;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--ink);
+  cursor: pointer;
+}
+.compare-head select:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.compare .still { width: auto; max-width: 100%; margin-inline: auto; }
+:root[data-theme="dark"] .compare .still { background: var(--fig-panel); padding: var(--fig-pad); box-sizing: border-box; }
+.compare-note { margin-top: 12px; font-size: 15px; color: var(--ink-2); max-width: var(--measure); }
+@media (max-width: 700px) { .compare-grid { grid-template-columns: 1fr; } }
+
 /* Real-world results (explorer section): one method toggle, one clip */
 .realworld { margin-top: 20px; }
 .realworld-stage { max-width: 860px; margin-top: 18px; }

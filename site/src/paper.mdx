@@ -19,8 +19,8 @@ import FourMethods from "./components/FourMethods.astro";
 import RealWorld from "./components/RealWorld.astro";
 import ResultsTabs from "./components/ResultsTabs.astro";
 import Explorer from "./islands/Explorer.tsx";
-import FaceOff from "./islands/FaceOff.tsx";
-import { SITE, METHODS, TASKS, HEADLINE } from "./data/site";
+import Compare from "./islands/Compare.tsx";
+import { SITE, METHODS, TASKS, HARDWARE_TASK, HEADLINE } from "./data/site";
 import manifest from "./data/media_manifest.json";
 import { base } from "./lib/lazyMedia";
 
@@ -172,12 +172,7 @@ export const story = (n) => ({
 
 </Section>
 
-<Section id="faceoff" num={5} kicker="Head to head">
-  <Fragment slot="title">Same scenario, same policy: <span class="cs">CS-Pi</span> vs a baseline</Fragment>
-  <FaceOff client:visible task={TASKS.find((t) => t.key === "shelf")} methods={METHODS} manifest={manifest.tasks} />
-</Section>
-
-<Section id="explorer" num={6} kicker="Interactive explorer" title="Pick a task, a scenario, and a method">
+<Section id="explorer" num={5} kicker="Rollouts" title="Qualitative results">
 
 <h3 class="col">Real world</h3>
 
@@ -189,14 +184,20 @@ export const story = (n) => ({
 
 </Section>
 
-<Section id="results" num={7} kicker="Results">
-  <Fragment slot="title">Safe success on four benchmarks</Fragment>
+<Section id="results" num={6} kicker="Results" title="Compare any two methods">
 
-<ResultsTabs />
+<p class="col small">Pick a setting, then a method for each side.</p>
+
+<Compare client:visible tasks={[HARDWARE_TASK, ...TASKS]} methods={METHODS} manifest={manifest.tasks} />
+
+<details class="reveal wide">
+  <summary>Safe success and full tables</summary>
+  <ResultsTabs />
+</details>
 
 </Section>
 
-<Section id="cite" num={8} kicker="Cite" title="BibTeX">
+<Section id="cite" num={7} kicker="Cite" title="BibTeX">
 
 <div class="bib">
 
