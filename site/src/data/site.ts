@@ -187,24 +187,27 @@ export const TASKS: Task[] = [
     dim: '7-DoF Panda',
     available: true,
     outcomes: true,
-    methods: ['amr', 'tweedie', 'unguided'],
-    methodLabels: { tweedie: 'Gradient Guidance (α=0.5)' },
-    blurb: 'A 7-DoF Panda reaches through a field of spheres; safe means no contact.',
+    methods: ['amr', 'projection', 'trust', 'tweedie', 'unguided'],
+    methodLabels: { tweedie: 'Gradient Guidance (α=0.01)', trust: 'Trust Sampling (w=0.3)' },
+    blurb: 'A 7-DoF Panda reaches through spheres; Level 2 adds six it never saw. ' +
+           'These tasks were picked to show failures; typical rates are in Results.',
     outcomeCaptions: {
-      success: 'Safe: the arm reaches through the spheres without touching any of them.',
-      fail: 'Failure: the arm collides with a sphere.'
+      success: 'Safe: the arm never touches a sphere.',
+      fail: 'Failure: the arm passes through a sphere (red frame border).'
     },
     absence: {
-      amrFail: 'This environment shows CS-Pi’s collision-free rollouts only.',
-      success: 'This method was not run on this scene.',
-      fail: 'This method was not run on this scene.'
+      amrFail: 'One rollout per method is shown, and CS-Pi’s is collision-free.',
+      success: 'One rollout per method is shown, and this one collides.',
+      fail: 'One rollout per method is shown, and this one is collision-free.'
     },
-    // Each scene is one render: both methods in a scene ran on the same task.
+    // One task per scenario; every method ran on the same task (release run).
     scenarios: [
-      { key: 'level_1_scene_1', label: 'Level 1, scene 1', desc: '' },
-      { key: 'level_1_scene_2', label: 'Level 1, scene 2', desc: '' },
-      { key: 'level_1_scene_3', label: 'Level 1, scene 3', desc: '' },
-      { key: 'level_1_scene_4', label: 'Level 1, scene 4', desc: '' }
+      { key: 'level_1_scenario_1', label: 'Level 1, scenario 1', desc: '' },
+      { key: 'level_1_scenario_2', label: 'Level 1, scenario 2', desc: '' },
+      { key: 'level_1_scenario_3', label: 'Level 1, scenario 3', desc: '' },
+      { key: 'level_2_scenario_1', label: 'Level 2, scenario 1', desc: '' },
+      { key: 'level_2_scenario_2', label: 'Level 2, scenario 2', desc: '' },
+      { key: 'level_2_scenario_3', label: 'Level 2, scenario 3', desc: '' }
     ]
   }
 ];
@@ -291,6 +294,21 @@ export const RESULTS: Record<string, ResultTable> = {
         best: [2, 4] },
       { c: ['CS-Pi (k=10, Kmax=3) (ours)', '65.6%', '98.9%', '10.21', '0.07', '210'],
         ours: true, best: [1, 2, 4] }
+    ]
+  },
+  spheres: {
+    title: 'Sphere avoidance (7-DoF Panda)',
+    caption: '120 tasks per level, best configuration per method. Level 1: 10 spheres; ' +
+             'Level 2: 6 more the policy never saw. Collision-free if the MPD cost is ' +
+             'below 1e-3.',
+    bar: 2,
+    cols: ['Method', 'Level 1 safe-SR (%) ↑', 'Level 2 safe-SR (%) ↑'],
+    rows: [
+      { c: ['Unconstrained',                   '8.9',  '0.8'] },
+      { c: ['Gradient Guidance (α=0.01)',      '23.6', '4.7'] },
+      { c: ['Trust Sampling (w=0.3, J=5)',     '77.0', '38.7'] },
+      { c: ['Projection',                      '88.2', '62.1'] },
+      { c: ['CS-Pi (k=50, Kmax=20) (ours)',    '99.9', '91.8'], ours: true, best: [1, 2] }
     ]
   },
   hw: {

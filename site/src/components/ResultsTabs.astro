@@ -14,6 +14,7 @@ const order: [string, string][] = [
   ["shelf", "Shelf"],
   ["d3il", "2D Avoidance"],
   ["orient", "3D-Orient"],
+  ["spheres", "Sphere avoidance"],
 ];
 
 // "CS-Pi (k=50, Kmax=5) (ours)" -> "CS-Pi"; keep a parameter only where two
@@ -40,6 +41,7 @@ const CHART_LABEL: Record<string, string> = {
   shelf: "Safe success",
   d3il: "Safe success",
   orient: "Success",
+  spheres: "Safe success, Level 2",
 };
 const metricName = (key: string) => CHART_LABEL[key]!;
 ---
