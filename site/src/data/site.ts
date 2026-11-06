@@ -15,7 +15,7 @@ export interface Task {
   scenarios: Scenario[];
 }
 export interface ResultTable {
-  title: string; lead?: string; caption: string; cols: string[];
+  title: string; caption: string; cols: string[]; bar: number;
   rows: { c: string[]; ours?: boolean; best?: number[] }[];
 }
 
@@ -32,10 +32,8 @@ export const SITE = {
   title: 'CS-Pi: Constraint-Satisfying Flow Policy Sampling',
   subtitle: 'Rejection sampling that knows where to look',
   tagline:
-    'How should you steer a flow policy at deployment, away from an obstacle ' +
-    'it never saw? CS-Pi samples actions that are both safe, satisfying the ' +
-    'constraint, and plausible, remaining likely under the policy, with no ' +
-    'retraining and no constraint gradient at noisy states.',
+    'Steer a flow policy around obstacles it never saw: safe actions the policy ' +
+    'would still choose, with no retraining and no constraint gradients.',
 
   // Links. Empty string hides the button.
   links: {
@@ -109,8 +107,7 @@ export const METHODS: Method[] = [
   }
 ];
 
-// --- Benchmarks. Only `shelf` has GIFs today; the others are placeholders that
-//     light up automatically once tools/build_manifest.py finds their folders.
+// --- Simulation benchmarks shown in the explorer.
 export const TASKS: Task[] = [
   {
     key: 'shelf',
@@ -119,11 +116,7 @@ export const TASKS: Task[] = [
     available: true,
     outcomes: true,
     methods: ['amr', 'projection', 'tweedie', 'trust'],
-    blurb:
-      'A 7-DoF Franka picks a 4 cm cube from a three-rung shelf and places it ' +
-      'on the table. At inference we add obstacles that were absent at training. ' +
-      'A rollout counts as safe-and-successful only if it is collision-free, ' +
-      'picks the cube, and places it.',
+    blurb: 'Pick a cube from a shelf and place it on the table, past obstacles added at deployment.',
     scenarios: [
       { key: 'clutter_combo',       label: 'Clutter combo',
         desc: 'Several deployment-time obstacles crowd the shelf and table.' },
@@ -146,46 +139,23 @@ export const TASKS: Task[] = [
     methods: ['amr', 'amr_dyn', 'unguided', 'tweedie', 'tweedie_weak', 'trust'],
     methodLabels: { amr: 'CS-Pi, task aligned', tweedie: 'Gradient Guidance (α=0.03)' },
     methodBlurbs: {
-      amr: 'Task aligned: CS-Pi with no projection step at the end of the loop.',
-      unguided: 'The policy alone, with no constraint enforcement. It reaches the ' +
-                'goal but ignores the orientation preference, which was absent from ' +
-                'its demonstrations.'
+      amr: 'Task aligned: no projection step at the end of the loop.',
+      amr_dyn: 'Cost aligned: a projection step at the end of the loop.'
     },
-    blurb:
-      'A 7-DoF reach to a goal sampled anywhere in the reachable workspace, with ' +
-      'a soft preference added on top: hold a top-down end-effector orientation ' +
-      'R*, encoded as the cost λ Σₜ ‖R(qₜ) − R*‖²_F. The test is whether a ' +
-      'method can achieve the orientation without giving up the reach. CS-Pi ' +
-      'replaces its projection with the proximal operator of this cost; nothing ' +
-      'else changes. Two CS-Pi variants are shown: task aligned has no projection ' +
-      'step at the end of the loop, and cost aligned adds a projection step at the ' +
-      'end of the loop. Projection, rejection and the CBF samplers need a safe set ' +
-      'and do not apply to a continuous cost.',
-    rolloutCaption:
-      'Reach-and-orient under the orientation preference. Each frame is annotated ' +
-      'with the live end-effector distance and orientation error. CS-Pi is the ' +
-      'only method that does both, with goal reaching and end-effector step size ' +
-      'matching the unconstrained policy. Gradient guidance loses the reach: IK ' +
-      'redundancy means its proxy averages several valid configurations into an ' +
-      'invalid one. Trust Sampling keeps the reach only because it barely changes ' +
-      'the orientation.',
+    blurb: 'Reach a goal while holding a top-down gripper orientation, a soft preference.',
+    rolloutCaption: 'Each frame shows the distance to the goal and the orientation error.',
     scenarios: [
       { key: 'config1', label: 'Config 1',
         desc: 'A goal where the target orientation can be held all the way in.' },
       { key: 'config2', label: 'Config 2 — infeasible under the constraint',
         desc: 'The goal cannot be reached while holding the target orientation.',
-        note: 'This goal is not reachable while holding the target orientation: ' +
-              'the constraint and the reach conflict. Rather than abandoning the ' +
-              'orientation to complete the reach, CS-Pi enforces the constraint for ' +
-              'as long as possible, holding the orientation until the task forces a ' +
-              'trade-off. The annotated orientation error stays low even where the ' +
-              'reach cannot finish.' },
+        note: 'The reach and the orientation conflict here; CS-Pi holds the orientation as long as it can.' },
       { key: 'task28', label: 'Validation task 28',
-        desc: 'A held-out reach target. Read success off the on-frame distance and orientation error.' },
+        desc: 'A held-out reach target.' },
       { key: 'task31', label: 'Validation task 31',
-        desc: 'A held-out reach target. Read success off the on-frame distance and orientation error.' },
+        desc: 'A held-out reach target.' },
       { key: 'task43', label: 'Validation task 43',
-        desc: 'A held-out reach target. Read success off the on-frame distance and orientation error.' }
+        desc: 'A held-out reach target.' }
     ]
   },
   {
@@ -195,15 +165,7 @@ export const TASKS: Task[] = [
     available: true,
     outcomes: false,
     methods: ['amr', 'tweedie', 'trust', 'rejection', 'projection'],
-    blurb:
-      'Demonstrations reach the goal along distinct paths, so the policy is ' +
-      'multimodal. At deployment we impose obstacles the policy never saw, in six ' +
-      'scenarios of varying difficulty. Each panel overlays 20 rollouts on the ' +
-      'demonstration support (shaded green); obstacles are outlined in navy and the ' +
-      'goal region is yellow.',
-    rolloutCaption:
-      '2D Avoidance trajectory distributions: 20 rollouts overlaid on the ' +
-      'demonstration support (shaded); the obstacles are outlined.',
+    blurb: 'A multimodal 2D policy meets obstacles it never saw. Each panel shows 20 rollouts on the demonstration support (green).',
     scenarios: [
       { key: 'left', label: 'Left',
         desc: 'Two obstacles block the routes near the start.' },
@@ -227,10 +189,7 @@ export const TASKS: Task[] = [
     outcomes: true,
     methods: ['amr', 'tweedie', 'unguided'],
     methodLabels: { tweedie: 'Gradient Guidance (α=0.5)' },
-    blurb:
-      'A 7-DoF Panda reaches a target through a field of spheres. A rollout is ' +
-      'safe if the arm never touches a sphere. Each frame is annotated with the ' +
-      'rollout’s collision cost and whether it collided.',
+    blurb: 'A 7-DoF Panda reaches through a field of spheres; safe means no contact.',
     outcomeCaptions: {
       success: 'Safe: the arm reaches through the spheres without touching any of them.',
       fail: 'Failure: the arm collides with a sphere.'
@@ -250,24 +209,14 @@ export const TASKS: Task[] = [
 // --- Result tables (from the paper) -----------------------------------------
 // `ours` flags the CS-Pi row; `best` lists column indices where this row holds
 // the best value (for bolding). Values are display strings; '—' = not scored.
-// `lead` is the takeaway shown above the table.
+// `bar` is the column charted as safe success above the table.
 export const RESULTS: Record<string, ResultTable> = {
   shelf: {
     title: 'Shelf pick-and-place',
-    lead: 'CS-Pi reaches the highest safe-success (81.3%) and is the only method ' +
-          'whose samples stay at or above the unconstrained policy in ' +
-          'log-likelihood. Collision rates are low for most methods, so performance ' +
-          'depends mainly on whether the gripper still reaches the cube. Projection ' +
-          'and the gradient baselines avoid the obstacles by moving the arm away from ' +
-          'them, and often away from the cube as well; CS-Pi instead re-denoises a ' +
-          'trajectory that passes between the obstacles and still reaches the cube ' +
-          '(84.7% goal reaching, against at most 60.7%). CS-Pi and projection share ' +
-          'the same L-BFGS proximal step, so the gap between them is the iterative loop.',
-    caption: '5 scenarios, 150 tasks (30 per scenario). Safe-SR: collision-free ' +
-             'rollouts that pick and place the cube. logL: mean log-likelihood under ' +
-             'the policy (nats/dim; the unconstrained policy scores 15.02; higher is ' +
-             'more plausible). NFE: flow-model calls per trajectory. †Median: a few ' +
-             'diverged SafeDiffuser chunks make its mean uninformative.',
+    caption: '150 tasks over 5 scenarios. Safe-SR: collision-free pick and place. ' +
+             'logL in nats/dim (unconstrained policy: 15.02). NFE: model calls per ' +
+             'trajectory. †Median.',
+    bar: 1,
     cols: ['Method', 'Safe-SR (%) ↑', 'Goal reach (%) ↑',
            'Collision (%) ↓', 'logL ↑', 'NFE ↓'],
     rows: [
@@ -284,15 +233,9 @@ export const RESULTS: Record<string, ResultTable> = {
   },
   d3il: {
     title: '2D Avoidance (macro over 6 scenarios)',
-    lead: 'Three methods reach at least 99% safe success: SafeDiffuser, projection ' +
-          'and CS-Pi. Among them, CS-Pi keeps the most rollouts fully on-support ' +
-          '(0.857) and has the highest log-likelihood (1.53), while projection’s ' +
-          'log-likelihood collapses to −85.89. Gradient guidance, Trust Sampling and ' +
-          'rejection stay plausible but reach at most 79.4% safe success.',
-    caption: '200 rollouts per cell, best hyperparameter per method. Safe-SR: ' +
-             'rollouts reaching the goal collision-free. Fully-in-supp.: fraction ' +
-             'of rollouts whose every waypoint lies inside the demonstration support. ' +
-             'logL: mean log-likelihood under the policy.',
+    caption: '200 rollouts per cell. Fully-in-supp.: share of rollouts entirely ' +
+             'inside the demonstration support.',
+    bar: 1,
     cols: ['Method', 'Safe-SR (%) ↑', 'Fully-in-supp. ↑', 'logL ↑', 'NFE ↓'],
     rows: [
       { c: ['Unconstrained',      '5.2',   '0.800', '1.66',   '456'],   best: [3] },
@@ -308,20 +251,9 @@ export const RESULTS: Record<string, ResultTable> = {
   },
   orient: {
     title: '3D-Orient (reach with an orientation preference)',
-    lead: 'CS-Pi is the only method that achieves the orientation without giving ' +
-          'up the reach: 65.6% success, with goal reaching (98.9%) and end-effector ' +
-          'step size (0.07 m) matching the unconstrained policy. Gradient guidance ' +
-          'loses the reach and roughens the path, so its success stays below 7%; ' +
-          'Trust Sampling keeps the reach and a high log-likelihood only because it ' +
-          'barely changes the orientation (1.1% success). CS-Pi’s log-likelihood is ' +
-          'lower than the unconstrained policy’s (10.21 vs 13.46), the cost of moving ' +
-          'the gripper away from the orientations the policy prefers.',
-    caption: '90 rollouts per cell. Success: a step simultaneously within 10 cm ' +
-             'of the target position and 0.36 rad of the target orientation. ' +
-             'Goal reach: rollouts ending within 10 cm of the target position. ' +
-             'logL comparisons are meaningful only at comparable success, since the ' +
-             'guidance configurations attain only 2.2% and 6.7%. Max step: largest ' +
-             'single-step end-effector displacement. NFE: model evaluations per rollout.',
+    caption: '90 rollouts per cell. Success: within 10 cm and 0.36 rad of the ' +
+             'target. Max step: largest end-effector jump in one step.',
+    bar: 1,
     cols: ['Method', 'Success ↑', 'Goal reach ↑', 'logL ↑',
            'Max step (m)', 'NFE ↓'],
     rows: [
@@ -337,19 +269,9 @@ export const RESULTS: Record<string, ResultTable> = {
   },
   hw: {
     title: 'Hardware: pick the apple, place it on the blue plate',
-    lead: 'CS-Pi reaches the highest safe-success in both layouts (60% and 50%) ' +
-          'and averaged over both (55%), versus 40% for projection, 25% for gradient ' +
-          'guidance, 20% for Trust Sampling, and 10% for the unconstrained policy. Its ' +
-          'per-step latency (0.143 s) matches gradient guidance (0.139 s) and Trust ' +
-          'Sampling (0.135 s). Projection is cheaper (0.099 s), but its one-shot ' +
-          'projection drops its log-likelihood below the unconstrained policy’s ' +
-          '(−473.2 against −470.2), whereas CS-Pi stays close (−471.8). The runs are ' +
-          'small (10 trials per layout), but CS-Pi leads in both layouts.',
-    caption: 'Safe-success rate (%). Zero-shot on a Franka FR3 with a DROID-finetuned ' +
-             'π₀.₅; the safe set is obstacle bounding boxes from a ZED 2 RGB-D vision ' +
-             'pipeline. Two layouts, 10 trials per method per layout. logL is the ' +
-             'log-likelihood the policy assigns to executed actions (the unconstrained ' +
-             'policy’s own draws score −470.2; higher is more plausible).',
+    caption: 'Safe success (%), two layouts, 10 trials each. logL of executed ' +
+             'actions (unconstrained policy: −470.2).',
+    bar: 3,
     cols: ['Method', 'Layout 1 ↑', 'Layout 2 ↑', 'Averaged ↑',
            'Time/step (s) ↓', 'logL ↑'],
     rows: [
@@ -366,11 +288,8 @@ export const RESULTS: Record<string, ResultTable> = {
 // --- Headline numbers for the abstract strip --------------------------------
 export const HEADLINE = [
   { big: '55%',   small: 'safe-success on a real Franka',
-    sub: 'zero-shot with π₀.₅; vs 40% projection, 25% guidance, 10% unconstrained' },
+    sub: 'vs 40% for projection' },
   { big: '81.3%', small: 'safe-success on the shelf',
-    sub: 'vs 55.3% projection, 53.3% Trust Sampling, 32% guidance' },
-  { big: '17.96', small: 'log-likelihood on the shelf',
-    sub: 'the only sampler above the unconstrained policy (15.02); projection 11.41, guidance 10.42' },
-  { big: '0',     small: 'constraint gradients needed',
-    sub: 'No gradients based on proxies' }
+    sub: 'vs 55.3% for projection' },
+  { big: '0',     small: 'constraint gradients needed', sub: '' }
 ];

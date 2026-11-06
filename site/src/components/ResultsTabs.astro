@@ -1,5 +1,11 @@
 ---
-// The four result tables from the paper, behind the template's tabs.
+// The four result tables from the paper, behind the template's tabs. Each tab
+// opens with a bar chart of its safe-success column (the headline metric), so
+// the takeaway is visible without reading the table.
+//   * one measure per chart: CS-Pi in the accent, every other method grey
+//     (emphasis, not a categorical palette), sorted by value
+//   * values printed on CS-Pi and the runner-up only; every other value appears
+//     on hover/focus and is always in the table below
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "./starwind/tabs";
 import { RESULTS } from "../data/site";
 
@@ -9,7 +15,33 @@ const order: [string, string][] = [
   ["d3il", "2D Avoidance"],
   ["orient", "3D-Orient"],
 ];
-const cs = (t: string) => t.replace(/CS-Pi/g, '<span class="cs">CS-Pi</span>');
+
+// "CS-Pi (k=50, Kmax=5) (ours)" -> "CS-Pi"; keep a parameter only where two
+// rows would otherwise share a name (the two Gradient Guidance weights).
+function shortNames(names: string[]) {
+  const bare = names.map((n) => n.replace(/\s*\([^)]*\)/g, "").trim());
+  return names.map((n, i) => {
+    const dup = bare.filter((b) => b === bare[i]).length > 1;
+    return dup ? n.replace(/\s*\(ours\)/, "").replace("Gradient Guidance", "Guidance").trim() : bare[i]!;
+  });
+}
+
+function bars(key: string) {
+  const r = RESULTS[key]!;
+  const labels = shortNames(r.rows.map((row) => row.c[0]!));
+  const items = r.rows
+    .map((row, i) => ({ label: labels[i]!, value: parseFloat(row.c[r.bar]!.replace("%", "")), ours: !!row.ours }))
+    .sort((a, b) => b.value - a.value);
+  const runnerUp = items.find((x) => !x.ours);
+  return items.map((x) => ({ ...x, shown: x.ours || x === runnerUp }));
+}
+const CHART_LABEL: Record<string, string> = {
+  hw: "Safe success, both layouts",
+  shelf: "Safe success",
+  d3il: "Safe success",
+  orient: "Success",
+};
+const metricName = (key: string) => CHART_LABEL[key]!;
 ---
 
 <Tabs defaultValue="hw" class="results-tabs wide">
@@ -19,10 +51,28 @@ const cs = (t: string) => t.replace(/CS-Pi/g, '<span class="cs">CS-Pi</span>');
   {
     order.map(([k]) => {
       const r = RESULTS[k]!;
+      const metric = metricName(k);
       return (
         <TabsContent value={k}>
           <h3>{r.title}</h3>
-          {r.lead && <p class="tlead" set:html={cs(r.lead)} />}
+          <figure class="barchart">
+            <figcaption class="barchart-title">{metric} (%), higher is better</figcaption>
+            <ol class="bars" aria-label={`${metric} by method, ${r.title}`}>
+              {bars(k).map((b) => (
+                <li class:list={["bar-row", b.ours && "ours", b.shown && "shown"]} tabindex="0"
+                    title={`${b.label}: ${b.value}%`} aria-label={`${b.label}: ${b.value}%`}>
+                  <span class="bar-label">{b.label}</span>
+                  <span class="bar-track">
+                    <span class="bar" style={`width:${Math.max(b.value, 0.6)}%`}></span>
+                    <span class="bar-value" style={`left:${Math.max(b.value, 0.6)}%`}>{b.value}%</span>
+                  </span>
+                </li>
+              ))}
+            </ol>
+            <div class="bar-axis" aria-hidden="true"><span></span><span class="ticks"><i>0</i><i>50</i><i>100%</i></span></div>
+          </figure>
+          <details class="reveal">
+          <summary>Show the table</summary>
           <div class="tablewrap">
             <table class="results">
               <thead>
@@ -43,7 +93,8 @@ const cs = (t: string) => t.replace(/CS-Pi/g, '<span class="cs">CS-Pi</span>');
               </tbody>
             </table>
           </div>
-          <p class="tcap">{r.caption}</p>
+          <p class="tcap">{r.caption} The <span class="cs">CS-Pi</span> row is highlighted; bold is best per column.</p>
+          </details>
         </TabsContent>
       );
     })
