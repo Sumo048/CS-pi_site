@@ -240,7 +240,7 @@ section p { margin-top: 0; margin-bottom: 1.1em; }
 /* Headline numbers */
 .stats {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 28px;
   margin-top: 64px;
 }
@@ -254,8 +254,7 @@ section p { margin-top: 0; margin-bottom: 1.1em; }
 }
 .stat-item .label { margin-top: 6px; font-weight: 600; font-size: 16.5px; line-height: 1.35; }
 .stat-item .sub { margin-top: 4px; font-size: 14.5px; line-height: 1.45; color: var(--ink-2); }
-@media (max-width: 900px) { .stats { grid-template-columns: repeat(2, 1fr); } }
-@media (max-width: 420px) { .stats { gap: 22px 18px; } .stat-item .big { font-size: 28px; } }
+@media (max-width: 560px) { .stats { grid-template-columns: 1fr; gap: 18px; } .stat-item .big { font-size: 28px; } }
 
 /* ---------------------------------------------------------------------------
    Media: figures and clips
@@ -327,46 +326,58 @@ figcaption b { color: var(--ink); }
 .hw-grid { margin-top: 36px; }
 .hw-grid .grid3 { margin-top: 28px; }
 
-/* Annotated hardware frame strips (full resolution, wide) */
-.strips { display: grid; gap: 22px; margin-top: 18px; }
-.strip img { display: block; width: 100%; height: auto; aspect-ratio: 5039 / 536; border: 1px solid var(--rule); border-radius: var(--radius); background: var(--panel); }
-.strip .clip-cap { justify-content: flex-start; }
-
-/* Overview steps */
-.steps { display: grid; gap: 56px; margin-top: 40px; }
-.step {
-  display: grid;
-  grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
-  gap: 36px;
-  align-items: start;
-}
-.step h3 { margin-top: 0; }
-.step-num {
-  display: block;
-  font-family: var(--sans);
-  font-size: 13px;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--ink-3);
-  margin-bottom: 6px;
-}
-.step p { font-size: 17px; }
-@media (max-width: 820px) { .step { grid-template-columns: 1fr; gap: 16px; } }
-
-/* Method list (not cards) */
-.methods {
+/* Overview: four animations, a few words each */
+.story-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0 40px;
-  margin: 48px auto 0;
-  padding: 0;
-  list-style: none;
+  gap: 36px 28px;
+  margin-top: 8px;
 }
-.methods li { border-top: 1px solid var(--rule); padding: 16px 0 18px; }
-.methods h4 { margin: 0 0 4px; font-size: 18px; font-weight: 600; display: flex; align-items: center; gap: 9px; }
-.methods .tag { font-family: var(--sans); font-size: 12.5px; font-weight: 500; color: var(--ink-2); letter-spacing: 0.04em; text-transform: uppercase; }
-.methods p { margin: 0; font-size: 16px; color: var(--ink-2); line-height: 1.55; }
-@media (max-width: 720px) { .methods { grid-template-columns: 1fr; } }
+.story-card figcaption { max-width: none; margin-top: 10px; font-size: 16.5px; color: var(--ink-2); }
+.step-num {
+  display: inline-grid;
+  place-items: center;
+  width: 22px; height: 22px;
+  margin-right: 8px;
+  border: 1px solid var(--rule-strong);
+  border-radius: 50%;
+  font-family: var(--sans);
+  font-size: 12.5px;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink-2);
+  vertical-align: 1px;
+}
+@media (max-width: 760px) { .story-grid { grid-template-columns: 1fr; } }
+
+/* Four methods: names only; each opens its panel of the concept figure */
+.four {
+  display: grid;
+  grid-template-columns: var(--four-cols);
+  gap: 12px;
+  align-items: start;
+  margin-top: 4px;
+}
+.four-item > summary {
+  list-style: none;
+  cursor: pointer;
+  padding: 12px 14px;
+  border: 1px solid var(--rule-strong);
+  border-radius: var(--radius);
+  font-family: var(--sans);
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--ink);
+}
+.four-item > summary::-webkit-details-marker { display: none; }
+.four-item > summary::after { content: "+"; float: right; color: var(--ink-3); }
+.four-item[open] > summary::after { content: "−"; }
+.four-item > summary:hover { border-color: var(--ink-3); }
+.four-item.ours > summary { border-color: var(--accent); color: var(--accent); }
+.four-item[open] > summary { margin-bottom: 10px; }
+.four-item img { display: block; width: 100%; height: auto; border-radius: var(--radius); }
+.four-item p { margin: 10px 0 0; font-size: 14.5px; line-height: 1.5; color: var(--ink-2); }
+@media (max-width: 820px) { .four { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 480px) { .four { grid-template-columns: 1fr; } }
 
 .swatch {
   display: inline-block;
@@ -377,8 +388,9 @@ figcaption b { color: var(--ink); }
   background: var(--sw, var(--ink-3));
 }
 
-/* Abstract, folded behind a disclosure */
-details.abstract > summary {
+/* Click-to-reveal blocks (method details, generalization, result tables) */
+details.reveal { margin-top: 18px; margin-bottom: 18px; }
+details.reveal > summary {
   cursor: pointer;
   width: fit-content;
   font-family: var(--sans);
@@ -386,13 +398,20 @@ details.abstract > summary {
   font-weight: 500;
   color: var(--accent);
 }
-details.abstract > summary:hover { text-decoration: underline; text-underline-offset: 3px; }
-details.abstract[open] > summary { margin-bottom: 14px; }
+details.reveal > summary:hover { text-decoration: underline; text-underline-offset: 3px; }
+details.reveal[open] > summary { margin-bottom: 14px; }
+/* a wide reveal (clips inside) still lines its toggle up with the text column */
+details.reveal.wide > summary { box-sizing: border-box; width: auto; max-width: var(--measure); margin-inline: auto; }
+details.reveal > p, details.reveal .two-col p { font-size: 16.5px; }
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin: 6px 0 4px; }
+.two-col > div { border-top: 1px solid var(--rule-strong); padding-top: 10px; }
+.two-col h4 { margin: 0 0 4px; font-size: 16.5px; font-weight: 600; }
+.two-col p { margin: 0; color: var(--ink-2); }
+@media (max-width: 600px) { .two-col { grid-template-columns: 1fr; } }
+details.reveal figure.fig { margin-top: 22px; }
 
-/* Method: three short points instead of paragraphs */
-ul.keys { padding-left: 1.1em; margin-top: 0; margin-bottom: 8px; }
-ul.keys li { margin-bottom: 8px; line-height: 1.55; }
-ul.keys li::marker { color: var(--ink-3); }
+/* Method: the intuition in two short statements */
+.method-points p, p.method-points { font-size: 19px; line-height: 1.55; }
 
 /* Real-world results (explorer section): one method toggle, one clip */
 .realworld { margin-top: 20px; }

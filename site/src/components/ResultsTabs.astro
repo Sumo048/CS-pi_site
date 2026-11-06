@@ -71,6 +71,8 @@ const metricName = (key: string) => CHART_LABEL[key]!;
             </ol>
             <div class="bar-axis" aria-hidden="true"><span></span><span class="ticks"><i>0</i><i>50</i><i>100%</i></span></div>
           </figure>
+          <details class="reveal">
+          <summary>Show the table</summary>
           <div class="tablewrap">
             <table class="results">
               <thead>
@@ -91,7 +93,8 @@ const metricName = (key: string) => CHART_LABEL[key]!;
               </tbody>
             </table>
           </div>
-          <p class="tcap">{r.caption}</p>
+          <p class="tcap">{r.caption} The <span class="cs">CS-Pi</span> row is highlighted; bold is best per column.</p>
+          </details>
         </TabsContent>
       );
     })

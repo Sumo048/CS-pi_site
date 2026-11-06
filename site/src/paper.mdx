@@ -15,7 +15,7 @@ import Video from "./components/Video.astro";
 import Clip from "./components/Clip.astro";
 import Outcome from "./components/Outcome.astro";
 import Hardware from "./components/Hardware.astro";
-import HardwareStrips from "./components/HardwareStrips.astro";
+import FourMethods from "./components/FourMethods.astro";
 import RealWorld from "./components/RealWorld.astro";
 import ResultsTabs from "./components/ResultsTabs.astro";
 import Explorer from "./islands/Explorer.tsx";
@@ -25,7 +25,6 @@ import manifest from "./data/media_manifest.json";
 import { base } from "./lib/lazyMedia";
 
 import methodFig from "./assets/figures/method.png";
-import dist2d from "./assets/figures/2d_distributions.png";
 import hardSoft from "./assets/figures/2d_hard_soft.png";
 
 export const links = [
@@ -63,87 +62,70 @@ export const story = (n) => ({
 
 <Section id="hardware" num={1} kicker="Hardware" title="Zero-shot on a Franka with π₀.₅">
 
-<i>Pick up the apple and place it on the blue plate</i>, with obstacles the policy never saw. Clips play at 4× unless marked 1×.
+<p class="col small">Pick up the apple and place it on the blue plate, around obstacles the policy never saw.</p>
 
 <Hardware />
 
 </Section>
 
-<Section id="abstract" num={2} kicker="Abstract" title="Satisfy a deployment-time constraint without leaving the policy">
+<Section id="story" num={2} kicker="Overview" title="Safe isn't enough: the action must also be plausible">
 
-<details class="abstract col">
-<summary>Read the abstract</summary>
-
-A flow-matching policy deployed in the field must often satisfy a constraint that was absent from its demonstrations, such as avoiding an obstacle it has never seen. Retraining for every new constraint is impractical, so the constraint must be enforced at inference time. Enforcing it must not discard what the policy learned: an action the policy would rarely sample may avoid the obstacle yet fail the task. We therefore want actions that are both <i>safe</i>, satisfying the constraint, and <i>plausible</i>, remaining likely under the policy.
-
-Gradient guidance, the most common approach, steers noisy states, so it must evaluate its cost on the policy's running estimate of the clean action; when the policy is uncertain between passing left or right of an obstacle, this estimate is their average and can pass straight through it. We instead build on rejection and projection. Rejection redraws actions until one is safe: every output is plausible, but the wait is intractable when safe actions are rare. Projection moves an action to the nearest safe one: it is efficient, but the result need not be plausible.
-
-Our key insight is that flow-matching sampling lets us combine the two, keeping projection's efficiency and rejection's plausibility. <span class="cs">CS-Pi</span>, our draw-project-renoise sampler, projects each draw to the nearest safe action, adds noise back scaled to how far the projection moved it, and re-runs the unmodified policy until a draw is safe. Replacing only the projection step extends <span class="cs">CS-Pi</span> to continuous costs. Across a 2D diagnostic, a 7-DoF shelf pick-and-place, an orientation preference, and a zero-shot Franka deployment, <span class="cs">CS-Pi</span> reaches 81% safe success on the shelf and 55% on hardware, against 55% and 40% for projection, while staying plausible.
-
-</details>
-
-</Section>
-
-<Section id="story" num={3} kicker="Overview" title="Safe isn't enough: the action must also be plausible">
-
-<div class="steps wide">
-  <div class="step">
-    <div>
-      <span class="step-num">Step 1</span>
-      <h3>Safe and plausible</h3>
-      <p>We want actions that are <b>safe</b> (they satisfy the constraint) and <b>plausible</b> (the policy would likely produce them).</p>
-    </div>
+<div class="story-grid wide">
+  <figure class="story-card">
     <div class="on-panel"><Video {...story("safe_vs_plausible")} w={1080} h={520} label="2D illustration: smooth demonstrations, then a plausible-but-unsafe, a safe-but-implausible and a safe-and-plausible trajectory" /></div>
-  </div>
-  <div class="step">
-    <div>
-      <span class="step-num">Step 2</span>
-      <h3>Why projection and guidance fail</h3>
-      <p><b>Projection</b> snaps to the nearest safe action and bends sharply. <b>Gradient guidance</b> follows an averaged proxy and overshoots the goal.</p>
-    </div>
+    <figcaption><span class="step-num">1</span><b>Safe and plausible.</b> Avoid the obstacle, but move like the demonstrations.</figcaption>
+  </figure>
+  <figure class="story-card">
     <div class="on-panel"><Video {...story("why_both_fail")} w={1080} h={520} label="2D illustration: projection produces a sharp bend around the obstacle; gradient guidance overshoots the goal" /></div>
-  </div>
-  <div class="step">
-    <div>
-      <span class="step-num">Step 3</span>
-      <h3>Rejection: plausible, but slow</h3>
-      <p>Redraw until a sample is safe. Always plausible, but here 47 of 48 draws are wasted.</p>
-    </div>
+    <figcaption><span class="step-num">2</span><b>Projection and guidance fail.</b> One bends sharply, the other overshoots.</figcaption>
+  </figure>
+  <figure class="story-card">
     <div class="on-panel"><Video {...story("rejection")} w={1080} h={520} label="2D illustration: rejection sampling discards 47 colliding samples before accepting one" /></div>
-  </div>
-  <div class="step">
-    <div>
-      <span class="step-num">Step 4</span>
-      <h3><span class="cs">CS-Pi</span>: rejection sampling that knows where to look</h3>
-      <p>Project, add noise back in proportion to how far the projection moved the draw, and re-run the policy: rejection's samples at a fraction of the cost.</p>
-    </div>
+    <figcaption><span class="step-num">3</span><b>Rejection is plausible, but slow.</b> 47 of 48 draws are wasted.</figcaption>
+  </figure>
+  <figure class="story-card">
     <div class="on-panel"><Video {...story("cspi_loop")} w={900} h={434} label="2D animation of the CS-Pi loop: sample, project, noise to level n, sample again until the draw is safe" /></div>
-  </div>
+    <figcaption><span class="step-num">4</span><b><span class="cs">CS-Pi</span> knows where to look.</b> Each projection guides the next draw.</figcaption>
+  </figure>
 </div>
 
 </Section>
 
-<Section id="idea" num={4} kicker="The idea" title="Four ways to enforce a constraint, one that keeps the policy">
+<Section id="idea" num={3} kicker="Four methods" title="Four ways to enforce a constraint">
 
-<Figure panel>
-  <img slot="figure" src={base("figures/concept.png")} width="3818" height="1234" loading="lazy" decoding="async" alt="Four panels, one per sampler, each denoising from noise (t = 0) to a sample (t = 1) for a gripper reaching an apple behind an obstacle. Gradient guidance: a proxy-cost gradient steers every step and the final action still hits the obstacle. Projection: the colliding draw is projected onto the safe set, giving a feasible path off the data manifold. Rejection sampling: a colliding draw is dropped and the policy resamples from noise until a draw is accepted. CS-Pi: the draw is projected, renoised to a depth set by the projection residual (large residual, renoise more; small residual, renoise less), and re-run until a draw is accepted." />
-  <Fragment slot="caption"><b>Sampling a safe action from a flow-matching policy.</b> <b>Gradient guidance</b> steers each denoising step with a cost gradient evaluated at a proxy and can still violate the constraint. <b>Projection</b> moves the draw to the safe set, yielding an action the policy would rarely sample. <b>Rejection sampling</b> redraws from pure noise until a draw is safe. <b><span class="cs">CS-Pi</span></b> projects the draw, renoises the projection to time <i>n</i> = <i>k</i>/(<i>k</i> + δ) set by the projection residual δ (larger δ renoises more), and re-runs the policy until a draw is safe and plausible.</Fragment>
-</Figure>
+<p class="col small">Click a method to see how it samples.</p>
+
+<FourMethods />
 
 </Section>
 
-<Section id="method" num={5} kicker="Method" title="Draw, project, renoise to n = k/(k+δ), re-run">
+<Section id="method" num={4} kicker="Method" title="Our intuition">
 
-<ul class="keys col">
-  <li><b>Anchor.</b> Project the clean draw, a<sub>c</sub> = 𝒫(â): safe and cheap, used as a target, never executed.</li>
-  <li><b>Depth from the residual.</b> δ = ‖â − a<sub>c</sub>‖ sets n = k/(k+δ): a large δ renoises deeply (room to switch modes), a small δ refines.</li>
-  <li><b>One knob.</b> k → 0 recovers rejection, k → ∞ recovers projection.</li>
-</ul>
+<div class="col method-points">
+  <p>We start from <b>rejection sampling</b>: it gives exactly the distribution we want, safe and on-policy.</p>
+  <p>Our idea: at every sample, the <b>projection</b> tells us roughly how far we are from the safe set. We use it to <b>bias the next sample</b>.</p>
+</div>
 
-<Figure panel narrow>
-  <Picture slot="figure" src={methodFig} alt="CS-Pi algorithm: flow ODE, project, renoise by depth n, iterate" />
-  <Fragment slot="caption">One <span class="cs">CS-Pi</span> iteration per row: a larger residual δ₁ renoises deeper (n₁ = 0.6), a smaller δ₂ shallower (n₂ = 0.8).</Fragment>
-</Figure>
+<details class="reveal col">
+  <summary>Why the projection helps</summary>
+  <p>The projected sample tells us where to look. The distance δ between the policy's sample and its projection estimates our uncertainty.</p>
+  <div class="two-col">
+    <div>
+      <h4>Moved a lot (large δ)</h4>
+      <p>The projection is less likely to be near an on-policy safe sample: add more noise and search more widely.</p>
+    </div>
+    <div>
+      <h4>Moved a little (small δ)</h4>
+      <p>The projection is more likely to be near an on-policy safe sample: add less noise and refine it.</p>
+    </div>
+  </div>
+  <figure class="fig">
+    <div class="on-panel"><Picture src={methodFig} alt="CS-Pi iterations: a large residual renoises deeper (n = 0.6), a smaller residual shallower (n = 0.8)" /></div>
+    <figcaption>Large δ₁ renoises deeper (n₁ = 0.6); small δ₂ shallower (n₂ = 0.8).</figcaption>
+  </figure>
+</details>
+
+<p class="col method-points">This intuition gives the algorithm:</p>
 
 <pre class="algo"><span class="ttl">Algorithm 1  Constraint-Satisfying Flow Policy Sampling</span>{` 1  a₀ ~ 𝒩(0, I);  â⁽⁰⁾ ← `}π<sub>θ</sub>{`(a₀; 0)                `}<span class="c">▷ initial policy draw</span>{`
  2  for i = 0, …, K`}<sub>max</sub>{`−1:
@@ -154,79 +136,67 @@ Our key insight is that flow-matching sampling lets us combine the two, keeping 
  7      â⁽ⁱ⁺¹⁾ ← π`}<sub>θ</sub>{`(a`}<sub>n</sub>{`⁽ⁱ⁾; n⁽ⁱ⁾)              `}<span class="c">▷ re-denoise from time n</span>{`
  8  return 𝒫(â⁽ᴷᵐᵃˣ⁾)                            `}<span class="c">▷ optional terminal projection</span></pre>
 
-<h3 class="col">Soft preferences</h3>
-<p class="col small">For a continuous cost, the projection becomes a proximal step toward lower cost; nothing else changes. Here the preference is a gripper orientation: reach the blue goal with the gripper (bold axes) matching the target (pale axes).</p>
-
-<div class="soft-pref wide">
-  <h4 class="col">The goal and the preference agree</h4>
-  <div class="grid2">
-    <Clip src="media/soft_pref/agree_unconstrained.mp4" webm="media/soft_pref/agree_unconstrained.webm" poster="media/soft_pref/agree_unconstrained.jpg" w={640} h={604} panel who="Unconstrained" note="2.8 cm from the goal · orientation error 2.62">
-      <Outcome kind="ok" text="reaches the goal" /> <Outcome kind="bad" text="orientation not held" />
-    </Clip>
-    <Clip src="media/soft_pref/agree_cspi.mp4" webm="media/soft_pref/agree_cspi.webm" poster="media/soft_pref/agree_cspi.jpg" w={640} h={604} panel who="CS-Pi (ours)" note="8.3 cm from the goal · orientation error ≈ 0">
-      <Outcome kind="ok" text="reaches the goal" /> <Outcome kind="ok" text="orientation held" />
-    </Clip>
+<details class="reveal wide">
+  <summary>We also generalize to arbitrary cost functions</summary>
+  <p class="col small">For a continuous cost, the projection becomes a proximal step toward lower cost; nothing else changes. Below, the preference is a gripper orientation: reach the blue goal with the gripper (bold axes) matching the target (pale axes).</p>
+  <div class="soft-pref">
+    <h4 class="col">The goal and the preference agree</h4>
+    <div class="grid2">
+      <Clip src="media/soft_pref/agree_unconstrained.mp4" webm="media/soft_pref/agree_unconstrained.webm" poster="media/soft_pref/agree_unconstrained.jpg" w={640} h={604} panel who="Unconstrained" note="2.8 cm from the goal · orientation error 2.62">
+        <Outcome kind="ok" text="reaches the goal" /> <Outcome kind="bad" text="orientation not held" />
+      </Clip>
+      <Clip src="media/soft_pref/agree_cspi.mp4" webm="media/soft_pref/agree_cspi.webm" poster="media/soft_pref/agree_cspi.jpg" w={640} h={604} panel who="CS-Pi (ours)" note="8.3 cm from the goal · orientation error ≈ 0">
+        <Outcome kind="ok" text="reaches the goal" /> <Outcome kind="ok" text="orientation held" />
+      </Clip>
+    </div>
+    <h4 class="col">They conflict: CS-Pi can prioritize either</h4>
+    <p class="col small"><b>Task aligned:</b> no projection step at the end of the loop. <b>Cost aligned:</b> a projection step at the end of the loop.</p>
+    <div class="grid3">
+      <Clip src="media/soft_pref/conflict_unconstrained.mp4" webm="media/soft_pref/conflict_unconstrained.webm" poster="media/soft_pref/conflict_unconstrained.jpg" w={640} h={604} panel who="Unconstrained" note="5.4 cm from the goal · orientation error 2.32">
+        <Outcome kind="ok" text="reaches the goal" /> <Outcome kind="bad" text="orientation not held" />
+      </Clip>
+      <Clip src="media/soft_pref/conflict_task_aligned.mp4" webm="media/soft_pref/conflict_task_aligned.webm" poster="media/soft_pref/conflict_task_aligned.jpg" w={640} h={604} panel who="CS-Pi, task aligned" note="5.7 cm from the goal · orientation error 1.22">
+        <Outcome kind="ok" text="reaches the goal" /> <Outcome kind="bad" text="orientation not held" />
+      </Clip>
+      <Clip src="media/soft_pref/conflict_cost_aligned.mp4" webm="media/soft_pref/conflict_cost_aligned.webm" poster="media/soft_pref/conflict_cost_aligned.jpg" w={640} h={604} panel who="CS-Pi, cost aligned" note="75.8 cm from the goal · orientation error 0.10">
+        <Outcome kind="bad" text="goal not reached" /> <Outcome kind="ok" text="orientation held" />
+      </Clip>
+    </div>
+    <h4 class="col">A hard constraint and a soft preference together</h4>
+    <figure class="fig">
+      <div class="on-panel"><Picture src={hardSoft} alt="Hard obstacle constraint plus soft height preference: gradient guidance at three weights, Trust Sampling, and CS-Pi" /></div>
+      <figcaption>Obstacle (hard) plus a height preference y = 0.7 (soft): no guidance weight satisfies both; <span class="cs">CS-Pi</span> applies them in order of priority.</figcaption>
+    </figure>
   </div>
-  <h4 class="col">They conflict: CS-Pi can prioritize either</h4>
-  <p class="col small"><b>Task aligned:</b> no projection step at the end of the loop. <b>Cost aligned:</b> a projection step at the end of the loop.</p>
-  <div class="grid3">
-    <Clip src="media/soft_pref/conflict_unconstrained.mp4" webm="media/soft_pref/conflict_unconstrained.webm" poster="media/soft_pref/conflict_unconstrained.jpg" w={640} h={604} panel who="Unconstrained" note="5.4 cm from the goal · orientation error 2.32">
-      <Outcome kind="ok" text="reaches the goal" /> <Outcome kind="bad" text="orientation not held" />
-    </Clip>
-    <Clip src="media/soft_pref/conflict_task_aligned.mp4" webm="media/soft_pref/conflict_task_aligned.webm" poster="media/soft_pref/conflict_task_aligned.jpg" w={640} h={604} panel who="CS-Pi, task aligned" note="5.7 cm from the goal · orientation error 1.22">
-      <Outcome kind="ok" text="reaches the goal" /> <Outcome kind="bad" text="orientation not held" />
-    </Clip>
-    <Clip src="media/soft_pref/conflict_cost_aligned.mp4" webm="media/soft_pref/conflict_cost_aligned.webm" poster="media/soft_pref/conflict_cost_aligned.jpg" w={640} h={604} panel who="CS-Pi, cost aligned" note="75.8 cm from the goal · orientation error 0.10">
-      <Outcome kind="bad" text="goal not reached" /> <Outcome kind="ok" text="orientation held" />
-    </Clip>
-  </div>
-</div>
+</details>
 
 </Section>
 
-<Section id="faceoff" num={6} kicker="Head to head">
+<Section id="faceoff" num={5} kicker="Head to head">
   <Fragment slot="title">Same scenario, same policy: <span class="cs">CS-Pi</span> vs a baseline</Fragment>
   <FaceOff client:visible task={TASKS.find((t) => t.key === "shelf")} methods={METHODS} manifest={manifest.tasks} />
 </Section>
 
-<Section id="explorer" num={7} kicker="Interactive explorer" title="Pick a task, a scenario, and a method">
+<Section id="explorer" num={6} kicker="Interactive explorer" title="Pick a task, a scenario, and a method">
 
 <h3 class="col">Real world</h3>
 
 <RealWorld />
 
 <h3 class="col">Simulation</h3>
-<p class="col small">An empty cell means that outcome never happened for that method.</p>
 
 <Explorer client:visible tasks={TASKS} methods={METHODS} manifest={manifest.tasks} />
 
-<HardwareStrips>
-  <h3 class="col">Annotated rollout frames</h3>
-  <p class="col small">Green: <span class="cs">CS-Pi</span> completes the pick-and-place. Red: the same π₀.₅ run unconstrained, which clips the cup (Layout 1) or hits the obstacle (Layout 2).</p>
-</HardwareStrips>
-
 </Section>
 
-<Section id="results" num={8} kicker="Results">
-  <Fragment slot="title"><span class="cs">CS-Pi</span> departs from the policy only as far as the constraint forces</Fragment>
-
-<p class="col small"><b>Safe success:</b> the rollout satisfies the constraint and completes the task. <b>logL:</b> how likely the policy finds the actions (higher is more plausible).</p>
+<Section id="results" num={7} kicker="Results">
+  <Fragment slot="title">Safe success on four benchmarks</Fragment>
 
 <ResultsTabs />
 
-<Figure panel>
-  <Picture slot="figure" src={dist2d} alt="2D Avoidance trajectory distributions for gradient guidance, Trust Sampling, rejection, CS-Pi and projection" />
-  <Fragment slot="caption"><b>2D Avoidance, one scenario per method.</b> 20 rollouts on the demonstration support (shaded); obstacles outlined. All six scenarios are in the explorer above.</Fragment>
-</Figure>
-
-<Figure panel>
-  <Picture slot="figure" src={hardSoft} alt="Hard obstacle constraint plus soft height preference: gradient guidance at three weights, Trust Sampling, and CS-Pi" />
-  <Fragment slot="caption"><b>Obstacle (hard) plus a height preference y = 0.7 (soft).</b> No guidance weight α satisfies both; <span class="cs">CS-Pi</span> applies them in order of priority and is the only method that does.</Fragment>
-</Figure>
-
 </Section>
 
-<Section id="cite" num={9} kicker="Cite" title="BibTeX">
+<Section id="cite" num={8} kicker="Cite" title="BibTeX">
 
 <div class="bib">
 

@@ -1,0 +1,34 @@
+---
+// "Four ways to enforce a constraint": the four method names, each opening its
+// panel of the paper's concept figure plus that method's sentence from the
+// figure caption. Columns are sized to the panels' widths, so with all four
+// open they rebuild the full figure. Pure <details>, no script.
+import { base } from "../lib/lazyMedia";
+
+const methods = [
+  { key: "guidance", name: "Gradient guidance", w: 796,
+    text: "Steers each denoising step with a cost gradient evaluated at a proxy and can still violate the constraint." },
+  { key: "projection", name: "Projection", w: 728,
+    text: "Moves the draw to the safe set, yielding an action the policy would rarely sample." },
+  { key: "rejection", name: "Rejection sampling", w: 788,
+    text: "Redraws from pure noise until a draw is safe." },
+  { key: "cspi", name: "CS-Pi (ours)", w: 1162, ours: true,
+    text: "Projects the draw, renoises the projection to time n = k/(k + δ) set by the projection residual δ (larger δ renoises more), and re-runs the policy until a draw is safe and plausible." },
+];
+const cols = methods.map((m) => `${m.w}fr`).join(" ");
+---
+
+<div class="four wide" style={`--four-cols:${cols}`}>
+  {
+    methods.map((m) => (
+      <details class:list={["four-item", m.ours && "ours"]}>
+        <summary>{m.name}</summary>
+        <div class="on-panel">
+          <img src={base(`figures/concept/${m.key}.png`)} width={m.w} height="1234" loading="lazy" decoding="async"
+               alt={`${m.name} panel of the concept figure`} />
+        </div>
+        <p>{m.text}</p>
+      </details>
+    ))
+  }
+</div>

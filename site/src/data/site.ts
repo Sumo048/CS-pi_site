@@ -291,7 +291,5 @@ export const HEADLINE = [
     sub: 'vs 40% for projection' },
   { big: '81.3%', small: 'safe-success on the shelf',
     sub: 'vs 55.3% for projection' },
-  { big: '17.96', small: 'log-likelihood on the shelf',
-    sub: 'above the unconstrained policy (15.02)' },
   { big: '0',     small: 'constraint gradients needed', sub: '' }
 ];

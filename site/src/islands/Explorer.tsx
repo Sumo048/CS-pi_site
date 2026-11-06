@@ -127,7 +127,6 @@ export default function Explorer({ tasks, methods, manifest }: Props) {
                   {p ? <img src={base(p)} alt="" loading="lazy" decoding="async" /> : <span className="ph" />}
                   <span>
                     <span className="name" style={{ display: "block" }}>{s.label}</span>
-                    <span className="desc" style={{ display: "block" }}>{s.desc}</span>
                   </span>
                 </button>
               );
