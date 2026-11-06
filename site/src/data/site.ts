@@ -37,7 +37,9 @@ export const SITE = {
 
   // Links. Empty string hides the button.
   links: {
-    paper: '',     // arXiv link once the listing is live
+    // Also the target of the /paper/ redirect (src/pages/paper.astro).
+    // Swap for the arXiv link once the listing is live.
+    paper: 'https://openreview.net/forum?id=2NBZAh51If#discussion',
     pdf: '',       // e.g. 'assets/paper.pdf'
     arxiv: '',     // e.g. 'https://arxiv.org/abs/2611.xxxxx'
     code: 'https://github.com/Sumo048/CS-Pi',
